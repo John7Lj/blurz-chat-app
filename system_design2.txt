@@ -1,0 +1,117 @@
+laod blanceing server ::
+
+chat server and message queue server ::
+
+so when the user send the message ,the mesasage recieved by the server and then 
+the server push this message into message queue like kafak or rabbbitq or even redis pub/sub 
+notivce pushing to the queue is asyncrounous 
+then message queue will push this message to the consumer whic is DB like :MONGO db 
+which is suitable for storing messages aslo there dynamobb and casendero but use mongo db 
+
+
+
+chashing servcice ::also u have to use redis for caching for user tracking online or offline and also for storing session token 
+
+
+blob storage like google cloude storage or aws s3 for storing images and videos and files also
+configure cdn for fast delivery of media files 
+
+
+
+notification service ::
+
+precence service :: for tracking online and offline users and updating the redis caching
+
+
+
+we will use websockets for real time messaging and also for recieving messages 
+ also for read receipts and delievery receipts 
+
+
+ there is a problem in load balacing::
+ so how the load balance know which server is healthy or not::
+ so will be a bakground proccess that check every server and based on ther response of these server 
+the background will upate the discovery cluster healthy serevrs and based on it the load balance 
+can now know which one is avillable or not nottice the backgroun may be check each server 
+each 10 or 15 seconds and the response of the server will be like this ::
+{   "ip_address": "[IP_ADDRESS]",
+    "port": 8000,
+    "status": "healthy"unhealthy",
+    "timestamp ": "2022-01-01T00:00:00Z",
+}
+and then the laod balnce get a list of server that is avillable in the cluster discovery and 
+update the routind table for encoing requests 
+
+
+
+data modelling ::
+
+1 : user will be stored in relationla db like postgresql ::
+users::
+
+user_id
+phone_number
+email
+name
+username
+created_at
+last_seen
+created_at
+
+messages wich will be stored in high write db like mongo db ::
+messages::
+
+message_id 
+sender_id: fk from user table 
+receiver_id: fk from user table 
+media_url:string:if there any media like image or video 
+message_content:txt
+message_status:string
+sent_at:timestamp
+updated_at:timestamp
+is_deleted:boolean 
+primary_key(conversation_id, sent_at, message_id)
+
+
+groups: this in the postgresql
+
+group_id
+name
+created_at
+created_by : user.user_id as foreign key 
+
+
+group_member : also in postgresql
+group_id as pk from group table 
+user_id as fk from user table 
+joined_at:timestamp
+role:string
+
+
+another db which will be caching db like redis ::
+will contain a user_connection_registry
+
+user_id : user id 
+connection_id : connection id 
+server_id
+last_seen
+device_type
+this table is linked to group table
+========================
+
+api design :: the normal message will be be sent over WS connection
+and i have to mange hte close and open the conncection via the redis cach to not consume the 
+the server bandwidth and resources via heartbeat every 5 or 10 seconds between the server and 
+client
+
+on the other hand the media files need to be sent over http pr restapi 
+like post/api/media(media type size, conversation_id, sender_id)/upload
+then the server take this media and store in blob service as we mentioned
+like google cloude storage
+then the server get ack the user if the media is uploaded successfully
+like this ::
+{
+    "message": "media uploaded successfully",
+    "media_url": "https://blob.service.com/media/media_id"
+}
+or ecounter an error 

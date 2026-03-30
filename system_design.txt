@@ -1,0 +1,186 @@
+# blurz chat App — System Design
+
+---
+
+## 1. Requirements
+
+### Functional Requirements
+
+- User registration and authentication via phone number
+- One-to-one (direct) messaging
+- Group messaging (one-to-many)
+- Fetch full chat history including media (images) within a specific conversation
+- Message delivery and read receipts
+
+### Non-Functional Requirements
+
+- **Availability:** System must be highly available at all times. CAP Theorem → AP (Availability + Partition Tolerance)
+- **Latency:** Message delivery latency must be < 300ms
+- **Reliability:** Zero message loss — every sent message must be delivered to the recipient
+- **Scalability:** Horizontal scaling must be built-in from the ground up
+
+---
+
+## 2. Core Entities
+
+| Entity   | Description                                      |
+|----------|--------------------------------------------------|
+| `User`   | An account identified by phone number            |
+| `Message`| A single unit of communication between users     |
+| `Chat`   | A conversation thread (direct or group)          |
+| `Group`  | A many-to-many chat room with multiple members   |
+
+---
+
+## 3. API Design
+
+### 3.1 Authentication
+
+#### Register a new account
+```
+POST /api/v1/auth/signup
+```
+```json
+{
+  "phone_number": "1234567890",
+  "password": "password",
+  "name": "John Doe",
+  "email": "john@example.com"
+}
+```
+
+#### Authenticate and receive token
+```
+POST /api/v1/auth/login
+```
+```json
+{
+  "phone_number": "1234567890",
+  "password": "password"
+}
+```
+
+#### Invalidate session token
+```
+POST /api/v1/auth/logout
+```
+
+---
+
+### 3.2 User Account (CRUD)
+
+| Method   | Endpoint                  | Description                  |
+|----------|---------------------------|------------------------------|
+| `GET`    | `/api/v1/users/me`        | Retrieve current user profile |
+| `POST`   | `/api/v1/users/me`        | Create user profile details   |
+| `PUT`    | `/api/v1/users/me`        | Replace user profile          |
+| `PATCH`  | `/api/v1/users/me`        | Partially update user profile |
+| `DELETE` | `/api/v1/users/me`        | Delete user account           |
+
+---
+
+### 3.3 Direct Messaging (One-to-One)
+
+#### Initiate a new direct conversation
+```
+POST /api/v1/conversations
+```
+```json
+{
+  "recipient_id": "user_id"
+}
+
+
+#### Send a message in real time (WebSocket)
+```
+WS /api/v1/conversations/{conversation_id}/messages
+```
+> Uses WebSocket for real-time, low-latency communication instead of polling.
+
+#### Fetch paginated message history (lazy load)
+```
+GET /api/v1/conversations/{conversation_id}/messages?cursor={cursor}&limit={limit}
+```
+> Lazy/cursor-based pagination — earlier messages are loaded as the user scrolls up.
+
+#### Fetch full chat history between two users
+```
+GET /api/v1/conversations/{conversation_id}/messages/all
+```
+> Returns the complete message history including media (images, files) within the conversation.
+
+---
+
+### 3.4 Group Messaging (One-to-Many)
+
+#### Create a new group
+```
+POST /api/v1/groups
+```
+```json
+{
+  "name": "Group Name",
+  "description": "Group description"
+}
+```
+
+#### Add members to a group
+```
+POST /api/v1/groups/{group_id}/members
+```
+```json
+{
+  "user_ids": ["user_id_1", "user_id_2", "user_id_3"]
+}
+```
+
+#### Remove members from a group
+```
+DELETE /api/v1/groups/{group_id}/members
+```
+```json
+{
+  "user_ids": ["user_id_1", "user_id_2", "user_id_3"]
+}
+```
+
+#### Send a message in real time (WebSocket)
+```
+WS /api/v1/groups/{group_id}/messages
+```
+> Uses WebSocket for real-time broadcast to all group members.
+
+#### Fetch paginated group message history (lazy load)
+```
+GET /api/v1/groups/{group_id}/messages?cursor={cursor}&limit={limit}
+```
+> Lazy/cursor-based pagination — earlier messages load as the user scrolls up.
+
+#### Fetch full group chat history
+```
+GET /api/v1/groups/{group_id}/messages/all
+```
+> Returns the complete message history including all shared media within the group.
+
+---
+
+## 4. Endpoint Summary
+
+| #  | Method     | Endpoint                                              | Description                          |
+|----|------------|-------------------------------------------------------|--------------------------------------|
+| 1  | `POST`     | `/api/v1/auth/signup`                                 | Register a new user                  |
+| 2  | `POST`     | `/api/v1/auth/login`                                  | Login and receive token              |
+| 3  | `POST`     | `/api/v1/auth/logout`                                 | Logout and invalidate token          |
+| 4  | `GET`      | `/api/v1/users/me`                                    | Get current user profile             |
+| 5  | `PATCH`    | `/api/v1/users/me`                                    | Update user profile                  |
+| 6  | `DELETE`   | `/api/v1/users/me`                                    | Delete user account                  |
+| 7  | `POST`     | `/api/v1/conversations`                               | Start a direct conversation          |
+| 8  | `WS`       | `/api/v1/conversations/{conversation_id}/messages`    | Send/receive real-time messages      |
+| 9  | `GET`      | `/api/v1/conversations/{conversation_id}/messages`    | Paginated message history            |
+| 10 | `GET`      | `/api/v1/conversations/{conversation_id}/messages/all`| Full message + media history         |
+| 11 | `POST`     | `/api/v1/groups`                                      | Create a group                       |
+| 12 | `POST`     | `/api/v1/groups/{group_id}/members`                   | Add members to a group               |
+| 13 | `DELETE`   | `/api/v1/groups/{group_id}/members`                   | Remove members from a group          |
+| 14 | `WS`       | `/api/v1/groups/{group_id}/messages`                  | Send/receive real-time group messages|
+| 15 | `GET`      | `/api/v1/groups/{group_id}/messages`                  | Paginated group message history      |
+| 16 | `GET`      | `/api/v1/groups/{group_id}/messages/all`              | Full group message + media history   |
