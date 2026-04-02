@@ -2,7 +2,7 @@ from pydantic import BaseModel
 import uuid
 from fastapi import UploadFile
 
-
+# this class will be the respone of other users when u search or open the profile of this user
 class other_users(BaseModel):
     id: uuid.UUID
     username: str
