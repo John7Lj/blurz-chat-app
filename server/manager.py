@@ -1,6 +1,6 @@
 from fastapi.websockets import WebSocket
 from datetime import datetime
-
+# this a basic implementation of websocket service bu this one not yet completed 
 
 class WebSocketManager:
     def __init__(self):
@@ -55,4 +55,4 @@ class WebSocketManager:
 
     async def disconnect(self, websocket):
         if websocket in self.connected_clients:
-            self.connected_clients.remove(websocket)
+            self.connected_clients.remove(websocket)
