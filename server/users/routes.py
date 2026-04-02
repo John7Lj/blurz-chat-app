@@ -57,5 +57,3 @@ async def Update_profile_picture(update_data:Update_Profile_Picture,
     ext = Path(update_data.profile_picture.filename).suffix
     bg_save_profile_picture.delay(file_bytes,ext,user_details.id)
     return {"message":"Profile picture is being uploaded"}
-
-
