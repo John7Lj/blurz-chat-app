@@ -5,7 +5,6 @@ from fastapi import FastAPI,status
 class AppError(Exception):
     """This is the base class of the entire App"""
     
-    
 class InvalidToken(AppError):
     """User has provided an invalid or expired token"""
     pass
