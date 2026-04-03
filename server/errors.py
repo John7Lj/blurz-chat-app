@@ -76,7 +76,6 @@ class EmailNotVerified(AppError):
 
 
 
-
 def create_exception_handler(status_code:int,
                               initial_detail:Any):
     
