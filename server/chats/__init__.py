@@ -1,0 +1,1 @@
+# chats service package

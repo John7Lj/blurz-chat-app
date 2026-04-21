@@ -33,7 +33,7 @@ class User(SQLModel, table=True):
     phone: str = Field(unique=True)
     first_name: str = Field(default="new_user") 
     last_name: str = Field(default="new_user") 
-    picture_url: Optional[str] = Field(default=None)
+    profile_url: Optional[str] = Field(default=None)
     password_hash: str = Field(exclude=True)
     is_verified: bool = Field(default=False)
     created_at: datetime = Field(
