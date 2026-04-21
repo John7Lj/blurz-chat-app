@@ -42,7 +42,7 @@ class BearerToken(HTTPBearer):
         return token_data # here if all exceptions false then the token will be valid and will return it to the user 
     
     @abstractmethod
-    def verify_token(self,token:dict):
+    def verify_token(self,token_data:dict):
         pass          
      
    

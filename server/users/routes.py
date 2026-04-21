@@ -16,8 +16,7 @@ MAX_FILE_SIZE = 5 * 1024 * 1024
 CHUNK_SIZE = 1024 * 1024  # Read 1MB at a time
 
 
-@user_router.get('/me', response_model=UserInfo,
-                    dependencies=[Depends(AccessTokenBearer())])
+@user_router.get('/me', response_model=UserInfo)
 async def get_me(user_details: User = Depends(get_current_user)):
     return user_details
 

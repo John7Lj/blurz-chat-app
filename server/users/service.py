@@ -3,6 +3,7 @@ from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from errors import UserNotFound, UserAlreadyExists
 from .schema import Update_User
+import uuid
 
 # get all active users or verified users
 async def get_contacts(session: AsyncSession):
@@ -45,3 +46,11 @@ async def update_user(user_id: str, session: AsyncSession, update_data: Update_U
     await session.commit()
     await session.refresh(user)
     return user
+
+
+async def get_user_by_id(id:uuid.UUID,session:AsyncSession):
+    statment = select(User).where(User.id == id)
+    result = await session.execute(statment)
+    user = result.scalar_one_or_none()
+    return user
+

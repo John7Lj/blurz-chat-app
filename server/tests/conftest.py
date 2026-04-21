@@ -13,7 +13,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 import fakeredis.aioredis
 
-# ── Ensure the server package is importable ──────────────────────
+# ── Ensure the server package is importable ──────────────────────────
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 # ── Patch heavy/env-dependent modules BEFORE they are imported ───────
@@ -36,7 +36,7 @@ os.environ.setdefault("profile_picture_path", "./test_media")
 os.environ.setdefault("BCRYPT_ROUNDS", "4")  # Fast for tests
 
 
-# ── Event loop fixture ───────────────────────────────────────
+# ── Event loop fixture ───────────────────────────────────────────────
 @pytest.fixture(scope="session")
 def event_loop():
     """Create a single event loop for the entire test session."""
@@ -45,14 +45,14 @@ def event_loop():
     loop.close()
 
 
-# ── Fake Redis ───────────────────────────────────────────
+# ── Fake Redis ───────────────────────────────────────────────────────
 @pytest.fixture
 def fake_redis():
     """Return a fakeredis async client."""
     return fakeredis.aioredis.FakeRedis(decode_responses=True)
 
 
-# ── Sample user data ─────────────────────────────────────
+# ── Sample user data ─────────────────────────────────────────────────
 @pytest.fixture
 def sample_user_data():
     """A raw dict matching Create_User schema."""
