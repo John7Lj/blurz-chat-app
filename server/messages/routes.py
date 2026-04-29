@@ -5,7 +5,6 @@ from auth.dependencies import get_current_user
 from db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .service import get_message_by_chatId ,delete_messages_byID,edit_message_byID,read_message_byID
-from typing import List
 from .schema import MessageOut
 import uuid
 
