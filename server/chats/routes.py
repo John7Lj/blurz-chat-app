@@ -14,7 +14,7 @@ from .schema import StartChatRequest,MessageOut,StartChatResponse
 from users.service import get_user_by_id
 import uuid
 
-chat_router = APIRouter(prefix='/chats')
+chat_router = APIRouter(prefix='/chats', tags=["CHATS"])
 
 
 
