@@ -11,7 +11,7 @@ import uuid
 
 
 
-msg_router = APIRouter(prefix="/messages",tage="MESSAGE")
+msg_router = APIRouter(prefix="/messages",tags=["MESSAGE"])
 
 # get the 50 message pagination only and when the user sclroll get the next old 50 
 
