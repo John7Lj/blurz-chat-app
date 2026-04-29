@@ -8,7 +8,6 @@ from db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .service import  get_user_chats_with_others,add_message_to_chat,find_existing_chat,create_chat_with_message
 from .service import delete_chats_service 
-from typing import List
 from db.models import User
 from .schema import StartChatRequest,MessageOut,StartChatResponse
 from users.service import get_user_by_id
