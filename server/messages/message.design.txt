@@ -1,0 +1,30 @@
+
+## 📋 Messages Module — Endpoints to Build
+
+### `messages/routes.py`
+
+**`GET /messages/{chat_id}`** — get all messages for a chat with pagination (`skip`/`limit` query params). Only participants of that chat should be allowed access.
+
+**`DELETE /messages/{message_id}`** — soft or hard delete a single message. Only the sender should be able to delete their own message.
+
+**`PATCH /messages/{message_id}`** — edit the content of a message. Again, sender only.
+
+**`PATCH /messages/{chat_id}/read`** — mark all messages in a chat as `read` for the current user. This is what you'd call when a user opens a conversation.
+
+---
+
+### `messages/service.py`
+
+**`get_messages_by_chat(session, chat_id, skip, limit)`** — paginated fetch of messages for a chat, ordered by `sent_at` ascending.
+
+**`delete_message(session, message_id, user_id)`** — verify the requester is the sender, then delete.
+
+**`edit_message(session, message_id, user_id, new_content)`** — verify sender ownership, update content and `updated_at`.
+
+**`mark_messages_as_read(session, chat_id, user_id)`** — bulk update `status` to `read` for all messages in the chat not sent by the current user.
+
+**`is_chat_participant(session, chat_id, user_id)`** — a reusable guard you'll want to call at the top of most message endpoints to verify the user belongs to the chat before letting them read or write anything.
+
+---
+
+Go build those and come back for review!

@@ -64,32 +64,42 @@ class RefreshToken(BearerToken):
 
 
 
-async def get_current_user(token: dict = Depends(AccessTokenBearer()),
-                           session: AsyncSession = Depends(get_session)) -> object:
+async def get_current_user(
+    token: dict = Depends(AccessTokenBearer()),
+    session: AsyncSession = Depends(get_session)
+) -> User:
     if not token:
         raise InvalidToken()
+
     email = token['user']['email']
+
     try:
-        user = await User_Service().get_user_by_email(email, session)
-        
+        user: User = await User_Service().get_user_by_email(email, session)
+
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User not found"
             )
-        
+
+        if not user.is_verified:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Account not verified. Please verify your email."
+            )
+
         return user
-        
+
     except HTTPException:
-        raise  # Re-raise HTTP exceptions
-        
+        raise
+
     except Exception as e:
         logging.exception(f'Error fetching user: {e}')
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch user"
         )
- 
+        
 class CheckRoler :
     def __init__ (self,allowd_rloes:list[str]):
         self.allowd_rloes = allowd_rloes

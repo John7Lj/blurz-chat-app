@@ -1,12 +1,14 @@
 from fastapi.responses import JSONResponse
-from .schema import ChatList,participant 
+from .schema import ChatList,Participant 
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException,status
-from auth.dependencies import get_current_user, AccessTokenBearer
+from fastapi import APIRouter, Depends, HTTPException,status,Query
+from auth.dependencies import get_current_user
 from auth.schema import User, UserInfo
 from db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
-from .service import  get_user_chats_with_others,add_message_to_chat,find_existing_chat,create_chat_with_message,delete_chats
+from .service import  get_user_chats_with_others,add_message_to_chat,find_existing_chat,create_chat_with_message
+from .service import delete_chats_service 
+from typing import List
 from db.models import User
 from .schema import StartChatRequest,MessageOut,StartChatResponse
 from users.service import get_user_by_id
@@ -24,7 +26,7 @@ async def get_all_user_chats(session:AsyncSession=Depends(get_session),C_User:Us
         ChatList(
             id=chat.id,
             created_at=chat.created_at,
-            participants=participant(
+            participants=Participant(
                 user_id=user.id,
                 first_name=user.first_name,
                 last_name=user.last_name,
@@ -52,17 +54,17 @@ async def start_chat(
         raise HTTPException(status_code=400, detail="Cannot start a chat with yourself.")
 
     # 2. Check recipient exists
-    recipient:User = await get_user_by_id(id =current_user.id ,session=session)
+    recipient = await get_user_by_id(id=body.recipient_id, session=session)
+
     if not recipient:
         raise HTTPException(status_code=404, detail="User not found.")
 
     # 3. Find existing chat or create a new one
     existing_chat = await find_existing_chat(
-        current_user.id, 
-        recipient.id, 
-        session=Depends(get_session)
-    )
-
+    session=session,
+    user1_id=current_user.id,
+    user2_id=recipient.id,
+)
     if existing_chat:
         message = await add_message_to_chat(
            session=session,
@@ -89,15 +91,30 @@ async def start_chat(
         )
 
 
-# this endpoit delete one chat or multiple chats based on ids chat
 
-@chat_router.delete('/delete',status_code=200)
-async def delete_chats(id=[uuid.UUID], session :AsyncSession=Depends(get_session)):
-    deltion =  await delete_chats(id,session)
-    if not deltion:
-        return JSONResponse(content={'message':"an error occure when Deleting",
-                                       "status_code":status.HTTP_400_BAD_REQUEST}) 
-    return JSONResponse(content={'message':"chats deleted successfully",
-                                       "status_code":status.HTTP_200_OK}) 
+@chat_router.delete('/delete', status_code=status.HTTP_200_OK)
+async def delete_chats(
+    ids: List[uuid.UUID] = Query(...),
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user)  # correct dependency
+):
+    try:
+        success = await delete_chats_service(ids, current_user.uid, session)
 
-                            
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No chats found or you don't have permission to delete them."
+            )
+
+        return {"message": f"Successfully deleted {len(ids)} chat(s)"}
+
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred while deleting chats."
+        )         
+
+

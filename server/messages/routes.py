@@ -1,116 +1,118 @@
-import uuid
-from fastapi import APIRouter, Depends, status, HTTPException, UploadFile, File, Form
-from sqlmodel.ext.asyncio.session import AsyncSession
+from fastapi.responses import JSONResponse
+from typing import List
+from fastapi import APIRouter, Depends, HTTPException,status,Query
+from auth.dependencies import get_current_user
 from db.main import get_session
-from auth.dependencies import AccessTokenBearer, get_current_user
-from db.models import User
-from .schema import MessageResponse
-from .service import (
-    get_messages,
-    create_message,
-    save_media_file,
-    validate_chat_participant,
-    message_to_broadcast_dict,
-)
-from pubsub.pubsub import publish_message
-from typing import Optional
+from sqlmodel.ext.asyncio.session import AsyncSession
+from .service import get_message_by_chatId ,delete_messages_byID,edit_message_byID,read_message_byID
+from typing import List
+from .schema import MessageOut
+import uuid
 
 
-messages_router = APIRouter(tags=["messages"])
 
+msg_router = APIRouter(prefix="/messages",tage="MESSAGE")
 
-@messages_router.get(
-    "/chats/{chat_id}/messages",
-    response_model=list[MessageResponse],
-    status_code=status.HTTP_200_OK,
-    dependencies=[Depends(AccessTokenBearer())],
-)
-async def get_chat_messages(
-    chat_id: uuid.UUID,
-    current_user: User = Depends(get_current_user),
-    session: AsyncSession = Depends(get_session),
-    limit: int = 50,
-    before: Optional[uuid.UUID] = None,
-):
-    """
-    Get paginated messages for a chat.
-    
-    - `limit`: number of messages to return (default 50, max 100)
-    - `before`: message ID cursor — returns messages older than this
-    """
-    # Verify user is in this chat
-    await validate_chat_participant(chat_id, current_user.id, session)
-    
-    # Clamp limit
-    limit = min(limit, 100)
-    
-    messages = await get_messages(chat_id, session, limit=limit, before_id=before)
-    
-    return [
-        MessageResponse(
-            id=msg.id,
-            content=msg.content,
-            file_key=msg.file_key,
-            file_name=msg.file_name,
-            sender_id=msg.sender_id,
-            chat_id=msg.chat_id,
-            msg_type=msg.msg_type.value if msg.msg_type else "text",
-            status=msg.status.value if msg.status else "sent",
-            sent_at=msg.sent_at,
+# get the 50 message pagination only and when the user sclroll get the next old 50 
+
+@msg_router.get('/{chat_id}',response_model=List[MessageOut])
+async def get_messages(
+    chat_id:uuid.UUID
+    ,limit:int=Query(default=50,ge=1,le=100)
+    ,skip:int=Query(default=0,ge=0)
+    ,user =Depends(get_current_user)
+    ,session:AsyncSession = Depends(get_session)
+    ):
+    messages:List[MessageOut]
+    try:
+        messages = await get_message_by_chatId(
+            user_id=user.id,session=session,chat_id=chat_id,limit=limit,skip=skip
         )
-        for msg in messages
-    ]
+        if not messages:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No messages found."
+            )
+        return messages
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
+
+# need to implment edit and delete in service and routes
+
+@msg_router.delete("/messages")
+async def delete_message(
+    message_id:List[uuid.UUID]=Query(...),
+    user =Depends(get_current_user),
+    session:AsyncSession = Depends(get_session)
+    ):
+    try:
+        await delete_messages_byID(message_id,user.id,session)
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"message": "Message deleted successfully."}
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
 
 
-@messages_router.post(
-    "/messages/media",
-    response_model=MessageResponse,
-    status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(AccessTokenBearer())],
-)
-async def upload_media_message(
-    chat_id: uuid.UUID = Form(...),
-    file: UploadFile = File(...),
-    current_user: User = Depends(get_current_user),
-    session: AsyncSession = Depends(get_session),
-):
-    """
-    Upload a media file and create a file message in the chat.
-    
-    - Validates file extension and size (max 5MB)
-    - Saves file to local storage
-    - Creates a message with msg_type='file'
-    - Publishes to Redis so online participants receive it in real time
-    """
-    # Verify user is in this chat
-    await validate_chat_participant(chat_id, current_user.id, session)
-    
-    # Save the file
-    file_key, original_name = await save_media_file(file)
-    
-    # Create the message
-    message = await create_message(
-        chat_id=chat_id,
-        sender_id=current_user.id,
-        session=session,
-        content=None,
-        msg_type="file",
-        file_key=file_key,
-        file_name=original_name,
-    )
-    
-    # Publish to Redis so WS subscribers get notified
-    broadcast_data = message_to_broadcast_dict(message)
-    await publish_message(str(chat_id), broadcast_data)
-    
-    return MessageResponse(
-        id=message.id,
-        content=message.content,
-        file_key=message.file_key,
-        file_name=message.file_name,
-        sender_id=message.sender_id,
-        chat_id=message.chat_id,
-        msg_type=message.msg_type.value if message.msg_type else "file",
-        status=message.status.value if message.status else "sent",
-        sent_at=message.sent_at,
-    )
+@msg_router.patch("/messages/{message_id}")
+async def edit_message(
+    message_id:uuid.UUID,
+    content:str,
+    user=Depends(get_current_user),
+    session:AsyncSession = Depends(get_session)
+    ):
+    try:
+        is_edited=await edit_message_byID(message_id,user.id,content,session)
+        if not is_edited:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Message not found."
+            )
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"message": "Message edited successfully."}
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
+
+
+@msg_router.patch("/messages/{message_id}/read")
+async def read_message(
+    message_id:uuid.UUID,
+    user=Depends(get_current_user),
+    session:AsyncSession = Depends(get_session)
+    ):
+    try:
+        is_read=await read_message_byID(message_id,user.id,session)
+        if not is_read:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Message not found."
+            )
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"message": "Message read successfully."}
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
