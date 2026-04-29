@@ -13,7 +13,7 @@ import uuid
 
 msg_router = APIRouter(prefix="/messages",tags=["MESSAGE"])
 
-# get the 50 message pagination only and when the user sclroll get the next old 50 
+# get the 50 message pagination only and when the user scroll get the next old 50 
 
 @msg_router.get('/{chat_id}',response_model=List[MessageOut])
 async def get_messages(
