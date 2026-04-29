@@ -99,7 +99,7 @@ async def delete_chats(
     current_user: User = Depends(get_current_user)  # correct dependency
 ):
     try:
-        success = await delete_chats_service(ids, current_user.uid, session)
+        success = await delete_chats_service(ids, current_user.id, session)
 
         if not success:
             raise HTTPException(
