@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from db.config import config
 from fastapi.responses import JSONResponse
 from .dependencies import RefreshToken, AccessTokenBearer, get_current_user, CheckRoler
-from core.errors import AccessTokenRequired, UserAlreadyExists, UserNotFound, InvalidCredentials, VerificationError, DataNotFound, PasswordAlreadyReset, UserAlreadyVerify
+from core.errors import AccessTokenRequired, UserAlreadyExists, UserNotFound, InvalidCredentials, VerificationError, DataNotFound, PasswordAlreadyReset, UserAlreadyVerify, EmailNotVerified
 from db.redis import add_to_blacklist, check_blacklist
 from mailserver.service import send_email, mail
 from celery_service.celery_tasks import bg_send_mail, bg_save_profile_picture
@@ -197,6 +197,9 @@ async def login_user(user_data: Login_User, session: AsyncSession = Depends(get_
      
     if not is_valid_password:
         raise InvalidCredentials()
+        
+    if not user_existence.is_verified:
+        raise EmailNotVerified()
         
         # Create tokens
     access_token_str = access_token(
