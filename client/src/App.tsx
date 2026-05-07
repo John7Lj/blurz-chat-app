@@ -4,6 +4,7 @@ import { useAuthStore } from './stores/auth.store';
 import { useUIStore } from './stores/ui.store';
 import AppShell from './components/layout/AppShell';
 import type { ReactNode } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 // Lazy loaded pages
 const LoginPage = lazy(() => import('./features/auth/LoginPage'));
@@ -61,6 +62,7 @@ export default function App() {
 
   return (
     <Suspense fallback={<LoadingFallback />}>
+      <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
