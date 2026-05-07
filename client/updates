@@ -1,0 +1,93 @@
+
+why these coming soon i think they are ready 
+Emojis coming soon!
+More options coming soon!
+Search messages coming soon
+
+
+also the contacts http://localhost:5173/contacts
+i dont want to fetch all user i want to search only not just fetch all of them cuz if i have 1000 user will be overload to the db so search is better 
+another thing when click any one from these contacts not directing me to chat room ??
+
+another thing the sign up login page the form not consistent at all the text not correctlty padding and margine so plz fix it the same thing for setting page ,prfile::
+Chats
+
+Contacts
+
+Notifications
+
+Settings
+
+BB
+blurz blurz
+
+Profile
+BB
+
+blurz blurz
+
+blurz@gmail.com
+
+Verified
+Account Details
+Username
+blurz
+First Name
+blurz
+Last Name
+blurz
+Email
+blurz@gmail.com
+Email cannot be changed
+
+Phone
+123456789
+Phone cannot be changed
+
+Save Changes
+Danger Zone
+
+Sign Out
+
+Blurz
+Blurz
+Connect with
+everyone, anywhere.
+Experience real-time messaging with a modern interface, secure connections, and blazing fast performance.
+
+⚡
+Lightning fast messaging
+🎨
+Beautiful dynamic design
+🔒
+Secure & private
+Welcome back
+Sign in to your account to continue
+
+Email Address
+blurz@gmail.com
+Password
+••••••••••
+
+
+Remember me
+Forgot password?
+Sign In
+Don't have an account? Create one now
+
+English
+Blurz Connect with everyone, anywhere. Experience real-time messaging with a modern interface, secure connections, and
+
+EXTENSION OPTIONSMORE »
+
+
+another thing all page the same color except this one http://localhost:5173/chat
+
+
+
+plz remove this End-to-end encrypted
+
+
+another thing the logo is not set its an icon which is upsetting me so plz all logo exist in this dir and replace the current icon with my logo client\public\blurz-logo.png
+
+

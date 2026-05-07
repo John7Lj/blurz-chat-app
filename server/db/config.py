@@ -25,7 +25,6 @@ class settings(BaseSettings):
     VALIDATE_CERTS: bool = True
     domain:str
     password_secrete_reset:str
-    profile_picture_path:str
 
     DEBUG: bool = True
     model_config = SettingsConfigDict (env_file=".env",  extra="ignore")

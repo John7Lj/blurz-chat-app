@@ -132,7 +132,7 @@ class TestUserServiceActivation:
     @pytest.mark.asyncio
     async def test_raises_if_user_not_found(self, mock_session):
         from auth.service import User_Service
-        from errors import UserNotFound
+        from core.errors import UserNotFound
         
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = None
@@ -145,7 +145,7 @@ class TestUserServiceActivation:
     @pytest.mark.asyncio
     async def test_raises_if_already_verified(self, mock_session):
         from auth.service import User_Service
-        from errors import UserAlreadyVerify
+        from core.errors import UserAlreadyVerify
         
         user = MagicMock()
         user.is_verified = True

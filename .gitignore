@@ -182,6 +182,8 @@ Thumbs.db
 
 # Project specific
 server/media/local-storage/
+server/test.db
 client/node_modules/
 .gemini/
 .env*
+.ruff_cache/

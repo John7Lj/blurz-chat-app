@@ -99,7 +99,7 @@ class TestUpdateUser:
     @pytest.mark.asyncio
     async def test_updates_user_fields(self, mock_session):
         from users.service import update_user
-        from users.schema import Update_User
+        from users.schemas import Update_User
         
         user = MagicMock()
         user.id = uuid.uuid4()
@@ -126,8 +126,8 @@ class TestUpdateUser:
     @pytest.mark.asyncio
     async def test_raises_user_not_found(self, mock_session):
         from users.service import update_user
-        from users.schema import Update_User
-        from errors import UserNotFound
+        from users.schemas import Update_User
+        from core.errors import UserNotFound
         
         mock_result = MagicMock()
         mock_result.scalar_one_or_none.return_value = None
@@ -140,8 +140,8 @@ class TestUpdateUser:
     @pytest.mark.asyncio
     async def test_raises_user_already_exists_for_taken_username(self, mock_session, sample_user_model):
         from users.service import update_user
-        from users.schema import Update_User
-        from errors import UserAlreadyExists
+        from users.schemas import Update_User
+        from core.errors import UserAlreadyExists
         
         # is_username_exist returns existing user
         mock_result = MagicMock()
@@ -155,7 +155,7 @@ class TestUpdateUser:
     @pytest.mark.asyncio
     async def test_skips_username_check_when_not_provided(self, mock_session):
         from users.service import update_user
-        from users.schema import Update_User
+        from users.schemas import Update_User
         
         user = MagicMock()
         user.id = uuid.uuid4()

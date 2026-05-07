@@ -1,40 +1,37 @@
 from db.models import Chat ,ChatParticipants,User,Message
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from .schema import MessageType,MessageStatus
-from annotated_types import List
+from .schemas import MessageType,MessageStatus
+from typing import List
 from fastapi.exceptions import HTTPException
 from fastapi import status
 import uuid
 
 
 # this is shred code and not make any request to the database directly
-async def ownership_chat_id(chat_id:uuid.UUID,user_id:uuid.UUID):
-    subquery=select(ChatParticipants.chat_id).where(
-            ChatParticipants.chat_id.in_(chat_id),
+async def get_message_by_chatId(
+    limit: int,
+    skip: int,
+    chat_id: uuid.UUID,
+    user_id: uuid.UUID,
+    session: AsyncSession
+):
+    statement = (
+        select(Message)
+        .join(ChatParticipants, ChatParticipants.chat_id == Message.chat_id)
+        .where(
+            Message.chat_id == chat_id,
             ChatParticipants.user_id == user_id
         )
-    return subquery
+        .order_by(Message.sent_at.asc())
+        .offset(skip)
+        .limit(limit)
+    )
 
-async def get_message_by_chatId(limit:int,skip:int,
- chat_id:uuid.UUID,user_id:uuid.UUID
- ,session:AsyncSession):
-    try:
-        subquery=ownership_chat_id(chat_id,user_id)
+    result = await session.exec(statement)
+    messages = result.all()
 
-        statement=select(Message).where(
-            Message.chat_id.in_(subquery)
-            ).offset(skip).limit(limit)
-
-        result = await session.exec(statement)
-        messages = result.all()
-        return messages
-    except HTTPException:
-        raise
-    except Exception as e:
-        await session.rollback()
-        raise e
-
+    return messages
     
 from sqlmodel import delete,update
 async def delete_messages_byID(
@@ -90,7 +87,7 @@ async def read_message_byID(message_id:uuid.UUID
             update(Message)
             .where(
                 Message.id == message_id,
-                Message.sender_id == user_id
+                Message.sender_id != user_id  # reader is NOT the sender
             )
             .values(status=MessageStatus.read.value)
         )

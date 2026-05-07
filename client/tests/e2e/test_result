@@ -1,0 +1,2537 @@
+[global-setup] Seeding test users…
+[global-setup] register user_a@test.com: 403 {"status_code":403,"detail":{"message":"User with email already exists","error_code":"user_exists"}}
+[global-setup] register user_b@test.com: 403 {"status_code":403,"detail":{"message":"User with email already exists","error_code":"user_exists"}}
+[global-setup] register user_c@test.com: 403 {"status_code":403,"detail":{"message":"User with email already exists","error_code":"user_exists"}}
+[global-setup] Done.
+
+——————————————————————————————————————————————————————————————————  [8:26:12 PM]
+Running 83 tests using 4 workers
+[1/83] …auth.spec.ts:42:3 › Authentication flows › user can log in with correct 
+[2/83] …ests\e2e\auth.spec.ts:59:3 › Authentication flows › login fails with wro
+[3/83] …\e2e\auth.spec.ts:78:3 › Authentication flows › login fails with non-exi
+[4/83] …ests\e2e\auth.spec.ts:16:3 › Authentication flows › user can register a 
+  1) [chromium] › tests\e2e\auth.spec.ts:78:3 › Authentication flows › login fails with non-existent email 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: apiRequestContext._wrapApiCall: Test ended.
+
+      89 |     await assertNoToken(page);
+      90 |
+    > 91 |     await ctx.close();
+         |               ^
+      92 |   });
+      93 |
+      94 |   // ── Route guard ──────────────────────────────────────────────────────────
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\auth.spec.ts:91:15
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\auth-Authentication-flows--f08d6-ils-with-non-existent-email-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-Authentication-flows--f08d6-ils-with-non-existent-email-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\auth-Authentication-flows--f08d6-ils-with-non-existent-email-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\auth-Authentication-flows--f08d6-ils-with-non-existent-email-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests\e2e\auth.spec.ts:42:3 › Authentication flows › user can log in with correct credentials 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+      48 |     await login.login(USER_A.email, USER_A.password);
+      49 |
+    > 50 |     await page.waitForURL('**/chat**', { timeout: 10_000 });
+         |                ^
+      51 |     // Either the nav-rail or the sidebar header "Blurz" is visible
+      52 |     await expect(page.locator('text=Blurz').first()).toBeVisible();
+      53 |
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\auth.spec.ts:50:16
+
+    Error Context: test-results\auth-Authentication-flows--af45b-in-with-correct-credentials-chromium\error-context.md
+
+    attachment #2: trace (application/zip) ────────────────────────────────────────────────
+    test-results\auth-Authentication-flows--af45b-in-with-correct-credentials-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\auth-Authentication-flows--af45b-in-with-correct-credentials-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests\e2e\auth.spec.ts:59:3 › Authentication flows › login fails with wrong password 
+
+    Test timeout of 30000ms exceeded.
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\auth-Authentication-flows-login-fails-with-wrong-password-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-Authentication-flows-login-fails-with-wrong-password-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\auth-Authentication-flows-login-fails-with-wrong-password-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\auth-Authentication-flows-login-fails-with-wrong-password-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[5/83] …uthentication flows › unauthenticated user is redirected to /login when 
+[6/83] …2e\auth.spec.ts:108:3 › Authentication flows › user stays logged in on p
+[7/83] …s\e2e\auth.spec.ts:117:3 › Authentication flows › token refresh works tr
+  4) [chromium] › tests\e2e\auth.spec.ts:16:3 › Authentication flows › user can register a new account 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test ended.
+    Browser logs:
+
+    <launching> C:\Users\hp\AppData\Local\ms-playwright\chromium_headless_shell-1217\chrome-headless-shell-win64\chrome-headless-shell.exe --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=C:\Users\hp\AppData\Local\Temp\playwright_chromiumdev_profile-yxYo2M --remote-debugging-pipe --no-startup-window
+    <launched> pid=3724
+    [pid=3724][err] [0507/202637.546:INFO:CONSOLE:827] "[vite] connecting...", source: http://localhost:5173/@vite/client (827)
+    [pid=3724][err] [0507/202637.595:INFO:CONSOLE:931] "[vite] connected.", source: http://localhost:5173/@vite/client (931)
+    [pid=3724][err] [0507/202639.265:INFO:CONSOLE:14338] "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold", source: http://localhost:5173/node_modules/.vite/deps/react-dom_client.js?v=32bb2ed5 (14338)
+    [pid=3724] <gracefully close start>
+    Call log:
+      - waiting for locator('#signup-submit')
+        - locator resolved to <button type="submit" id="signup-submit" class="inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none bg-gradient-to-r from-violet-600 to-violet-500 text-white shadow-[0_4px_20px_rgba(109,40,217,0.35)] hover:shadow-[0_4px_28px_rgba(109,40,217,0.5)] hover:brightness-110 active:brightness-95 …>Create Account</button>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+        - element is not stable
+      - retrying click action
+        - waiting for element to be visible, enabled and stable
+        - element is visible, enabled and stable
+        - scrolling into view if needed
+
+
+      30 |     await page.locator('#signup-phone').fill('1234567890');
+      31 |     await page.locator('input[type="password"], #signup-password').first().fill('Test1234!');
+    > 32 |     await page.locator('#signup-submit').click();
+         |                                          ^
+      33 |
+      34 |     await page.waitForURL('**/chat**', { timeout: 15_000 });
+      35 |     await expect(page.locator('nav.nav-rail, [data-testid="sidebar"]')).toBeVisible();
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\auth.spec.ts:32:42
+
+    Error Context: test-results\auth-Authentication-flows-user-can-register-a-new-account-chromium\error-context.md
+
+    attachment #2: trace (application/zip) ────────────────────────────────────────────────
+    test-results\auth-Authentication-flows-user-can-register-a-new-account-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\auth-Authentication-flows-user-can-register-a-new-account-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[8/83] …s:136:3 › Authentication flows › logging out clears session and redirect
+[9/83] …› Authentication flows › two sessions of the same user can be active sim
+  5) [chromium] › tests\e2e\auth.spec.ts:117:3 › Authentication flows › token refresh works transparently 
+
+    Test timeout of 30000ms exceeded while setting up "loggedInPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\auth-Authentication-flows-token-refresh-works-transparently-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-Authentication-flows-token-refresh-works-transparently-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\auth-Authentication-flows-token-refresh-works-transparently-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\auth-Authentication-flows-token-refresh-works-transparently-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[10/83] …:33:3 › Flow 1: Open app and read messages › app loads and sidebar show
+  6) [chromium] › tests\e2e\auth.spec.ts:108:3 › Authentication flows › user stays logged in on page refresh 
+
+    Test timeout of 30000ms exceeded while setting up "loggedInPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\auth-Authentication-flows--3eb74-s-logged-in-on-page-refresh-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-Authentication-flows--3eb74-s-logged-in-on-page-refresh-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\auth-Authentication-flows--3eb74-s-logged-in-on-page-refresh-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\auth-Authentication-flows--3eb74-s-logged-in-on-page-refresh-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[11/83] …:45:3 › Flow 1: Open app and read messages › clicking a chat opens the 
+  7) [chromium] › tests\e2e\auth.spec.ts:157:3 › Authentication flows › two sessions of the same user can be active simultaneously 
+
+    Test timeout of 30000ms exceeded.
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\auth-Authentication-flows--cf9d5-an-be-active-simultaneously-chromium\test-failed-2.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\auth-Authentication-flows--cf9d5-an-be-active-simultaneously-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-Authentication-flows--cf9d5-an-be-active-simultaneously-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ────────────────────────────────────────────────
+    test-results\auth-Authentication-flows--cf9d5-an-be-active-simultaneously-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\auth-Authentication-flows--cf9d5-an-be-active-simultaneously-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[12/83] …ows.spec.ts:65:3 › Flow 1: Open app and read messages › chat window sho
+  8) [chromium] › tests\e2e\chat-flows.spec.ts:33:3 › Flow 1: Open app and read messages › app loads and sidebar shows chat list 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:30:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-1-Open-app-821b1-and-sidebar-shows-chat-list-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-1-Open-app-821b1-and-sidebar-shows-chat-list-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-1-Open-app-821b1-and-sidebar-shows-chat-list-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-1-Open-app-821b1-and-sidebar-shows-chat-list-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  9) [chromium] › tests\e2e\auth.spec.ts:136:3 › Authentication flows › logging out clears session and redirects to /login 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Target page, context or browser has been closed
+    Call log:
+      - waiting for locator('button[aria-label*="User"], button[aria-label*="Test"]').first()
+
+
+      138 |     // First find any logout trigger (NavRail profile → logout)
+      139 |     const profileBtn = page.locator('button[aria-label*="User"], button[aria-label*="Test"]').first();
+    > 140 |     await profileBtn.click();
+          |                      ^
+      141 |
+      142 |     // Look for a logout option in the UI
+      143 |     const logoutBtn = page.locator('button, a', { hasText: /log ?out|sign ?out/i }).first();
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\auth.spec.ts:140:22
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\auth-Authentication-flows--3592a-sion-and-redirects-to-login-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\auth-Authentication-flows--3592a-sion-and-redirects-to-login-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\auth-Authentication-flows--3592a-sion-and-redirects-to-login-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\auth-Authentication-flows--3592a-sion-and-redirects-to-login-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[13/83] …lows.spec.ts:85:3 › Flow 2: Send a message › type and send a message vi
+[14/83] ….spec.ts:106:3 › Flow 2: Send a message › send button appears when text
+  10) [chromium] › tests\e2e\chat-flows.spec.ts:45:3 › Flow 1: Open app and read messages › clicking a chat opens the chat window 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:30:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-1-Open-app-c1d63--chat-opens-the-chat-window-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-1-Open-app-c1d63--chat-opens-the-chat-window-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-1-Open-app-c1d63--chat-opens-the-chat-window-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-1-Open-app-c1d63--chat-opens-the-chat-window-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[15/83] …2e\chat-flows.spec.ts:120:3 › Flow 2: Send a message › empty message do
+  11) [chromium] › tests\e2e\chat-flows.spec.ts:85:3 › Flow 2: Send a message › type and send a message via Enter key 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:82:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-2-Send-a-m-f1169-end-a-message-via-Enter-key-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-2-Send-a-m-f1169-end-a-message-via-Enter-key-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-2-Send-a-m-f1169-end-a-message-via-Enter-key-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-2-Send-a-m-f1169-end-a-message-via-Enter-key-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  12) [chromium] › tests\e2e\chat-flows.spec.ts:65:3 › Flow 1: Open app and read messages › chat window shows messages 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:30:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-1-Open-app-fb881--chat-window-shows-messages-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-1-Open-app-fb881--chat-window-shows-messages-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-1-Open-app-fb881--chat-window-shows-messages-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-1-Open-app-fb881--chat-window-shows-messages-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[16/83] …hat-flows.spec.ts:140:3 › Flow 3: Search and select › search filters th
+[17/83] …:167:3 › Flow 3: Search and select › selecting a chat from search resul
+  13) [chromium] › tests\e2e\chat-flows.spec.ts:106:3 › Flow 2: Send a message › send button appears when text is entered 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:82:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-2-Send-a-m-acd25-ppears-when-text-is-entered-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-2-Send-a-m-acd25-ppears-when-text-is-entered-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-2-Send-a-m-acd25-ppears-when-text-is-entered-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-2-Send-a-m-acd25-ppears-when-text-is-entered-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  14) [chromium] › tests\e2e\chat-flows.spec.ts:140:3 › Flow 3: Search and select › search filters the chat list 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:137:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-3-Search-a-53741-earch-filters-the-chat-list-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-3-Search-a-53741-earch-filters-the-chat-list-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-3-Search-a-53741-earch-filters-the-chat-list-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-3-Search-a-53741-earch-filters-the-chat-list-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[18/83] …-flows.spec.ts:189:3 › Flow 4: Theme switching › switch to light mode v
+  15) [chromium] › tests\e2e\chat-flows.spec.ts:120:3 › Flow 2: Send a message › empty message does not send 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:82:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-2-Send-a-message-empty-message-does-not-send-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-2-Send-a-message-empty-message-does-not-send-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-2-Send-a-message-empty-message-does-not-send-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-2-Send-a-message-empty-message-does-not-send-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[19/83] …lows.spec.ts:235:3 › Flow 5: Mobile behavior › sidebar fills full scree
+[20/83] …› Flow 5: Mobile behavior › selecting chat shows full-screen chat windo
+  16) [chromium] › tests\e2e\chat-flows.spec.ts:167:3 › Flow 3: Search and select › selecting a chat from search results opens it 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:137:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-3-Search-a-e88fa-rom-search-results-opens-it-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-3-Search-a-e88fa-rom-search-results-opens-it-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-3-Search-a-e88fa-rom-search-results-opens-it-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-3-Search-a-e88fa-rom-search-results-opens-it-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  17) [chromium] › tests\e2e\chat-flows.spec.ts:189:3 › Flow 4: Theme switching › switch to light mode via settings 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:186:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-4-Theme-sw-b3800--to-light-mode-via-settings-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-4-Theme-sw-b3800--to-light-mode-via-settings-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-4-Theme-sw-b3800--to-light-mode-via-settings-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-4-Theme-sw-b3800--to-light-mode-via-settings-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  18) [chromium] › tests\e2e\chat-flows.spec.ts:235:3 › Flow 5: Mobile behavior › sidebar fills full screen on mobile 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:232:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-5-Mobile-b-fadcb-fills-full-screen-on-mobile-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-5-Mobile-b-fadcb-fills-full-screen-on-mobile-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-5-Mobile-b-fadcb-fills-full-screen-on-mobile-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-5-Mobile-b-fadcb-fills-full-screen-on-mobile-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[21/83] …spec.ts:260:3 › Flow 5: Mobile behavior › back button returns to sideba
+[22/83] … side by side › on desktop, sidebar and chat window are side by side (n
+[23/83] …t-flows.spec.ts:275:3 › Flow 5: Mobile behavior › no horizontal overflo
+  19) [chromium] › tests\e2e\chat-flows.spec.ts:245:3 › Flow 5: Mobile behavior › selecting chat shows full-screen chat window on mobile 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:232:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-5-Mobile-b-e326b-creen-chat-window-on-mobile-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-5-Mobile-b-e326b-creen-chat-window-on-mobile-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-5-Mobile-b-e326b-creen-chat-window-on-mobile-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-5-Mobile-b-e326b-creen-chat-window-on-mobile-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[24/83] …es.spec.ts:9:3 › Error & edge case flows › chat with no messages shows 
+  20) [chromium] › tests\e2e\chat-flows.spec.ts:260:3 › Flow 5: Mobile behavior › back button returns to sidebar on mobile 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:232:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-5-Mobile-b-d83c9-eturns-to-sidebar-on-mobile-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-5-Mobile-b-d83c9-eturns-to-sidebar-on-mobile-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-5-Mobile-b-d83c9-eturns-to-sidebar-on-mobile-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-5-Mobile-b-d83c9-eturns-to-sidebar-on-mobile-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  21) [chromium] › tests\e2e\chat-flows.spec.ts:296:3 › Flow 6: Layout regression — sidebar + chat side by side › on desktop, sidebar and chat window are side by side (not stacked) 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:293:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-6-Layout-r-ce3d3-e-side-by-side-not-stacked--chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-6-Layout-r-ce3d3-e-side-by-side-not-stacked--chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-6-Layout-r-ce3d3-e-side-by-side-not-stacked--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-6-Layout-r-ce3d3-e-side-by-side-not-stacked--chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[25/83] …ase flows › very long contact name is truncated in sidebar without brea
+[26/83] …ts:70:3 › Error & edge case flows › avatar shows initials when image fa
+  22) [chromium] › tests\e2e\chat-flows.spec.ts:275:3 › Flow 5: Mobile behavior › no horizontal overflow on mobile 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat" until "load"
+    ============================================================
+
+      19 |   await page.click('button[type="submit"]');
+      20 |   // Wait for navigation to chat page
+    > 21 |   await page.waitForURL('**/chat', { timeout: 10000 });
+         |              ^
+      22 | }
+      23 |
+      24 | // ═══════════════════════════════════════════════════════════════════
+        at login (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:21:14)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\chat-flows.spec.ts:232:5
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\chat-flows-Flow-5-Mobile-b-37b39-rizontal-overflow-on-mobile-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\chat-flows-Flow-5-Mobile-b-37b39-rizontal-overflow-on-mobile-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\chat-flows-Flow-5-Mobile-b-37b39-rizontal-overflow-on-mobile-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\chat-flows-Flow-5-Mobile-b-37b39-rizontal-overflow-on-mobile-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[27/83] …85:3 › Error & edge case flows › app handles server returning 500 witho
+  23) [chromium] › tests\e2e\edge-cases.spec.ts:70:3 › Error & edge case flows › avatar shows initials when image fails to load 
+
+    Test timeout of 30000ms exceeded while setting up "loggedInPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-70197-ls-when-image-fails-to-load-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\edge-cases-Error-edge-case-70197-ls-when-image-fails-to-load-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-70197-ls-when-image-fails-to-load-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\edge-cases-Error-edge-case-70197-ls-when-image-fails-to-load-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[28/83] …& edge case flows › app handles 401 response by redirecting to /login w
+  24) [chromium] › tests\e2e\edge-cases.spec.ts:39:3 › Error & edge case flows › very long contact name is truncated in sidebar without breaking layout 
+
+    Test timeout of 30000ms exceeded while setting up "loggedInPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-61eae-bar-without-breaking-layout-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\edge-cases-Error-edge-case-61eae-bar-without-breaking-layout-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-61eae-bar-without-breaking-layout-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\edge-cases-Error-edge-case-61eae-bar-without-breaking-layout-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[29/83] …s:163:3 › Error & edge case flows › Shift+Enter inserts newline instead
+  25) [chromium] › tests\e2e\edge-cases.spec.ts:9:3 › Error & edge case flows › chat with no messages shows empty state 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-testid="chat-list-item"]').first()
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('[data-testid="chat-list-item"]').first()
+
+
+      10 |     const chat = new ChatPage(page);
+      11 |
+    > 12 |     await expect(chat.getSidebarItems().first()).toBeVisible({ timeout: 10_000 });
+         |                                                  ^
+      13 |     await chat.getSidebarItems().first().click();
+      14 |
+      15 |     // Check for empty state text (may or may not be empty depending on seed)
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\edge-cases.spec.ts:12:50
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-c9446--messages-shows-empty-state-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\edge-cases-Error-edge-case-c9446--messages-shows-empty-state-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-c9446--messages-shows-empty-state-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\edge-cases-Error-edge-case-c9446--messages-shows-empty-state-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[30/83] …ses.spec.ts:132:3 › Error & edge case flows › app handles going offline
+  26) [chromium] › tests\e2e\edge-cases.spec.ts:85:3 › Error & edge case flows › app handles server returning 500 without crashing 
+
+    TimeoutError: page.waitForURL: Timeout 10000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+      91 |     // Reload triggers the chat list fetch
+      92 |     await page.reload();
+    > 93 |     await page.waitForURL('**/chat**', { timeout: 10_000 });
+         |                ^
+      94 |
+      95 |     // App must not show white screen (body must have meaningful content)
+      96 |     const bodyText = await page.locator('body').innerText();
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\edge-cases.spec.ts:93:16
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-0fa54-urning-500-without-crashing-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\edge-cases-Error-edge-case-0fa54-urning-500-without-crashing-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-0fa54-urning-500-without-crashing-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\edge-cases-Error-edge-case-0fa54-urning-500-without-crashing-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[31/83] …ec.ts:182:3 › Error & edge case flows › navigating to unknown route sho
+[32/83] …3 › Error & edge case flows › no unexpected console errors during norma
+  27) [chromium] › tests\e2e\edge-cases.spec.ts:132:3 › Error & edge case flows › app handles going offline gracefully 
+
+    Test timeout of 30000ms exceeded while setting up "chatPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:91:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-8b51a-es-going-offline-gracefully-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\edge-cases-Error-edge-case-8b51a-es-going-offline-gracefully-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-8b51a-es-going-offline-gracefully-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\edge-cases-Error-edge-case-8b51a-es-going-offline-gracefully-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  28) [chromium] › tests\e2e\edge-cases.spec.ts:182:3 › Error & edge case flows › navigating to unknown route shows 404 page 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('text=404, text=not found, text=Page not found').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('text=404, text=not found, text=Page not found').first()
+
+
+      184 |     // NotFoundPage is rendered for *
+      185 |     const notFound = page.locator('text=404, text=not found, text=Page not found');
+    > 186 |     await expect(notFound.first()).toBeVisible({ timeout: 5_000 });
+          |                                    ^
+      187 |   });
+      188 |
+      189 |   // ── Console errors during normal use ─────────────────────────────────────
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\edge-cases.spec.ts:186:36
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-84aea-nknown-route-shows-404-page-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\edge-cases-Error-edge-case-84aea-nknown-route-shows-404-page-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-84aea-nknown-route-shows-404-page-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\edge-cases-Error-edge-case-84aea-nknown-route-shows-404-page-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[33/83] …pec.ts:8:3 › Layout & navigation › sidebar and chat window both visible
+[34/83] …ut.spec.ts:28:3 › Layout & navigation › desktop sidebar has correct wid
+  29) [chromium] › tests\e2e\edge-cases.spec.ts:163:3 › Error & edge case flows › Shift+Enter inserts newline instead of sending 
+
+    TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="chat-list-item"]').first() to be visible
+
+
+       at fixtures.ts:94
+
+      92 |     // Click the first chat item in the sidebar
+      93 |     const firstChat = page.locator('[data-testid="chat-list-item"]').first();
+    > 94 |     await firstChat.waitFor({ state: 'visible', timeout: 10_000 });
+         |                     ^
+      95 |     await firstChat.click();
+      96 |     await use(page);
+      97 |     await ctx.close();
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:94:21)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-07222--newline-instead-of-sending-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\edge-cases-Error-edge-case-07222--newline-instead-of-sending-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-07222--newline-instead-of-sending-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\edge-cases-Error-edge-case-07222--newline-instead-of-sending-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[35/83] …e\layout.spec.ts:38:3 › Layout & navigation › mobile shows sidebar only
+  30) [chromium] › tests\e2e\layout.spec.ts:8:3 › Layout & navigation › sidebar and chat window both visible on desktop 
+
+    Test timeout of 30000ms exceeded while setting up "loggedInPage".
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-s-5a0d6-dow-both-visible-on-desktop-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\layout-Layout-navigation-s-5a0d6-dow-both-visible-on-desktop-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-s-5a0d6-dow-both-visible-on-desktop-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\layout-Layout-navigation-s-5a0d6-dow-both-visible-on-desktop-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[36/83] …:3 › Layout & navigation › mobile: selecting chat shows chat window, hi
+  31) [chromium] › tests\e2e\edge-cases.spec.ts:191:3 › Error & edge case flows › no unexpected console errors during normal chat flow 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-testid="chat-list-item"]').first()
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('[data-testid="chat-list-item"]').first()
+
+
+      210 |
+      211 |     const chat = new ChatPage(page);
+    > 212 |     await expect(chat.getSidebarItems().first()).toBeVisible({ timeout: 10_000 });
+          |                                                  ^
+      213 |     await chat.getSidebarItems().first().click();
+      214 |
+      215 |     await page.waitForTimeout(2_000);
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\edge-cases.spec.ts:212:50
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-865f7-ors-during-normal-chat-flow-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\edge-cases-Error-edge-case-865f7-ors-during-normal-chat-flow-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\edge-cases-Error-edge-case-865f7-ors-during-normal-chat-flow-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\edge-cases-Error-edge-case-865f7-ors-during-normal-chat-flow-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  32) [chromium] › tests\e2e\layout.spec.ts:28:3 › Layout & navigation › desktop sidebar has correct width (≥300px) 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-testid="sidebar"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('[data-testid="sidebar"]')
+
+
+      28 |   test('desktop sidebar has correct width (≥300px)', async ({ loggedInPage: page }) => {
+      29 |     const sidebar = page.locator('[data-testid="sidebar"]');
+    > 30 |     await expect(sidebar).toBeVisible();
+         |                           ^
+      31 |     const box = await sidebar.boundingBox();
+      32 |     expect(box).not.toBeNull();
+      33 |     expect(box!.width).toBeGreaterThanOrEqual(300);
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\layout.spec.ts:30:27
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-d-94b33-r-has-correct-width-≥300px--chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\layout-Layout-navigation-d-94b33-r-has-correct-width-≥300px--chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-d-94b33-r-has-correct-width-≥300px--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\layout-Layout-navigation-d-94b33-r-has-correct-width-≥300px--chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[37/83] …layout.spec.ts:63:3 › Layout & navigation › mobile: back button returns
+[38/83] …c.ts:85:3 › Layout & navigation › dark mode applied when system prefere
+[39/83] …\layout.spec.ts:115:5 › Layout & navigation › no layout overflow at 375
+[40/83] …\layout.spec.ts:115:5 › Layout & navigation › no layout overflow at 768
+[41/83] …layout.spec.ts:115:5 › Layout & navigation › no layout overflow at 1280
+[42/83] …layout.spec.ts:115:5 › Layout & navigation › no layout overflow at 1920
+  33) [chromium] › tests\e2e\layout.spec.ts:63:3 › Layout & navigation › mobile: back button returns to sidebar 
+
+    TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="chat-list-item"]').first() to be visible
+
+
+      64 |     // Open a chat
+      65 |     const firstChat = page.locator('[data-testid="chat-list-item"]').first();
+    > 66 |     await firstChat.waitFor({ state: 'visible', timeout: 10_000 });
+         |                     ^
+      67 |     await firstChat.click();
+      68 |
+      69 |     // Click back
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\layout.spec.ts:66:21
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-m-ec287-k-button-returns-to-sidebar-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\layout-Layout-navigation-m-ec287-k-button-returns-to-sidebar-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-m-ec287-k-button-returns-to-sidebar-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\layout-Layout-navigation-m-ec287-k-button-returns-to-sidebar-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[43/83] …2e\layout.spec.ts:139:3 › Layout & navigation › NavRail navigates to co
+  34) [chromium] › tests\e2e\layout.spec.ts:49:3 › Layout & navigation › mobile: selecting chat shows chat window, hides sidebar 
+
+    TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="chat-list-item"]').first() to be visible
+
+
+      49 |   test('mobile: selecting chat shows chat window, hides sidebar', async ({ mobilePage: page }) => {
+      50 |     const firstChat = page.locator('[data-testid="chat-list-item"]').first();
+    > 51 |     await firstChat.waitFor({ state: 'visible', timeout: 10_000 });
+         |                     ^
+      52 |     await firstChat.click();
+      53 |
+      54 |     // After selection, chat window is full-screen
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\layout.spec.ts:51:21
+
+    Test timeout of 30000ms exceeded.
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-m-00811-s-chat-window-hides-sidebar-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\layout-Layout-navigation-m-00811-s-chat-window-hides-sidebar-chromium\error-context.md
+
+  35) [chromium] › tests\e2e\layout.spec.ts:38:3 › Layout & navigation › mobile shows sidebar only by default 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-testid="sidebar"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('[data-testid="sidebar"]')
+
+
+      40 |     const chatWin  = page.locator('[data-testid="chat-window"]');
+      41 |
+    > 42 |     await expect(sidebar).toBeVisible();
+         |                           ^
+      43 |     // Chat window should not be visible when no chat is open
+      44 |     await expect(chatWin).not.toBeVisible().catch(() => {
+      45 |       // If chatWin doesn't exist yet, that's also fine
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\layout.spec.ts:42:27
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-m-337da-ows-sidebar-only-by-default-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\layout-Layout-navigation-m-337da-ows-sidebar-only-by-default-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-m-337da-ows-sidebar-only-by-default-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\layout-Layout-navigation-m-337da-ows-sidebar-only-by-default-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[44/83] …yout.spec.ts:145:3 › Layout & navigation › NavRail navigates to notific
+[45/83] …2e\layout.spec.ts:151:3 › Layout & navigation › NavRail navigates to se
+  36) [chromium] › tests\e2e\layout.spec.ts:145:3 › Layout & navigation › NavRail navigates to notifications page 
+
+    Test timeout of 30000ms exceeded while setting up "loggedInPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-N-21979-gates-to-notifications-page-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\layout-Layout-navigation-N-21979-gates-to-notifications-page-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-N-21979-gates-to-notifications-page-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\layout-Layout-navigation-N-21979-gates-to-notifications-page-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[46/83] … › tests\e2e\messaging.spec.ts:8:3 › Messaging — sending › user can sen
+  37) [chromium] › tests\e2e\layout.spec.ts:115:5 › Layout & navigation › no layout overflow at 1920px viewport 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+      124 |       await page.evaluate((t) => localStorage.setItem('access_token', t), body.access_token);
+      125 |       await page.goto('/chat');
+    > 126 |       await page.waitForURL('**/chat**');
+          |                  ^
+      127 |
+      128 |       const hasHScroll = await page.evaluate(
+      129 |         () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\layout.spec.ts:126:18
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-n-5a669-overflow-at-1920px-viewport-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\layout-Layout-navigation-n-5a669-overflow-at-1920px-viewport-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-n-5a669-overflow-at-1920px-viewport-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\layout-Layout-navigation-n-5a669-overflow-at-1920px-viewport-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[47/83] …essaging.spec.ts:22:3 › Messaging — sending › send button replaces mic 
+  38) [chromium] › tests\e2e\layout.spec.ts:139:3 › Layout & navigation › NavRail navigates to contacts page 
+
+    Test timeout of 30000ms exceeded while setting up "loggedInPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-NavRail-navigates-to-contacts-page-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\layout-Layout-navigation-NavRail-navigates-to-contacts-page-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-NavRail-navigates-to-contacts-page-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\layout-Layout-navigation-NavRail-navigates-to-contacts-page-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+[48/83] …\messaging.spec.ts:40:3 › Messaging — sending › clicking send button se
+  39) [chromium] › tests\e2e\layout.spec.ts:151:3 › Layout & navigation › NavRail navigates to settings page 
+
+    Test timeout of 30000ms exceeded while setting up "loggedInPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-NavRail-navigates-to-settings-page-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\layout-Layout-navigation-NavRail-navigates-to-settings-page-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\layout-Layout-navigation-NavRail-navigates-to-settings-page-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\layout-Layout-navigation-NavRail-navigates-to-settings-page-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  40) [chromium] › tests\e2e\messaging.spec.ts:8:3 › Messaging — sending › user can send a message 
+
+    TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="chat-list-item"]').first() to be visible
+
+
+       at fixtures.ts:94
+
+      92 |     // Click the first chat item in the sidebar
+      93 |     const firstChat = page.locator('[data-testid="chat-list-item"]').first();
+    > 94 |     await firstChat.waitFor({ state: 'visible', timeout: 10_000 });
+         |                     ^
+      95 |     await firstChat.click();
+      96 |     await use(page);
+      97 |     await ctx.close();
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:94:21)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-sending-user-can-send-a-message-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-sending-user-can-send-a-message-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-sending-user-can-send-a-message-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\messaging-Messaging-—-sending-user-can-send-a-message-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  41) [chromium] › tests\e2e\messaging.spec.ts:22:3 › Messaging — sending › send button replaces mic when typing 
+
+    Test timeout of 30000ms exceeded while setting up "chatPage".
+
+    Fixture "trace recording" timeout of 30000ms exceeded during teardown.
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:91:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-f459e-on-replaces-mic-when-typing-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-send-f459e-on-replaces-mic-when-typing-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-f459e-on-replaces-mic-when-typing-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\messaging-Messaging-—-send-f459e-on-replaces-mic-when-typing-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  42) [chromium] › tests\e2e\messaging.spec.ts:40:3 › Messaging — sending › clicking send button sends message 
+
+    Test timeout of 30000ms exceeded while setting up "chatPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:91:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-12528-g-send-button-sends-message-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-send-12528-g-send-button-sends-message-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-12528-g-send-button-sends-message-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\messaging-Messaging-—-send-12528-g-send-button-sends-message-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  43) [chromium] › tests\e2e\messaging.spec.ts:52:3 › Messaging — sending › pressing Enter key sends message 
+
+    Test timeout of 30000ms exceeded while setting up "chatPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:91:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-384e4-ing-Enter-key-sends-message-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-send-384e4-ing-Enter-key-sends-message-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-384e4-ing-Enter-key-sends-message-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\messaging-Messaging-—-send-384e4-ing-Enter-key-sends-message-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  44) [chromium] › tests\e2e\messaging.spec.ts:64:3 › Messaging — sending › empty input does not send a message 
+
+    TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="chat-list-item"]').first() to be visible
+
+
+       at fixtures.ts:94
+
+      92 |     // Click the first chat item in the sidebar
+      93 |     const firstChat = page.locator('[data-testid="chat-list-item"]').first();
+    > 94 |     await firstChat.waitFor({ state: 'visible', timeout: 10_000 });
+         |                     ^
+      95 |     await firstChat.click();
+      96 |     await use(page);
+      97 |     await ctx.close();
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:94:21)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-2de7d-put-does-not-send-a-message-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-send-2de7d-put-does-not-send-a-message-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-2de7d-put-does-not-send-a-message-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\messaging-Messaging-—-send-2de7d-put-does-not-send-a-message-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  45) [chromium] › tests\e2e\messaging.spec.ts:77:3 › Messaging — sending › whitespace-only input does not send 
+
+    TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="chat-list-item"]').first() to be visible
+
+
+       at fixtures.ts:94
+
+      92 |     // Click the first chat item in the sidebar
+      93 |     const firstChat = page.locator('[data-testid="chat-list-item"]').first();
+    > 94 |     await firstChat.waitFor({ state: 'visible', timeout: 10_000 });
+         |                     ^
+      95 |     await firstChat.click();
+      96 |     await use(page);
+      97 |     await ctx.close();
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:94:21)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-a082a-ce-only-input-does-not-send-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-send-a082a-ce-only-input-does-not-send-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-a082a-ce-only-input-does-not-send-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\messaging-Messaging-—-send-a082a-ce-only-input-does-not-send-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  46) [chromium] › tests\e2e\messaging.spec.ts:89:3 › Messaging — sending › very long message (1000 chars) sends correctly 
+
+    Test timeout of 30000ms exceeded while setting up "chatPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:91:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-43ab2--1000-chars-sends-correctly-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-send-43ab2--1000-chars-sends-correctly-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-43ab2--1000-chars-sends-correctly-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\messaging-Messaging-—-send-43ab2--1000-chars-sends-correctly-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  47) [chromium] › tests\e2e\messaging.spec.ts:108:3 › Messaging — sending › sending multiple messages rapidly all appear in correct order 
+
+    Test timeout of 30000ms exceeded while setting up "chatPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:91:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-87d0d-all-appear-in-correct-order-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-send-87d0d-all-appear-in-correct-order-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-87d0d-all-appear-in-correct-order-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\messaging-Messaging-—-send-87d0d-all-appear-in-correct-order-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  48) [chromium] › tests\e2e\messaging.spec.ts:130:3 › Messaging — sending › sidebar updates after sending a message 
+
+    Test timeout of 30000ms exceeded while setting up "chatPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:91:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-c3c53-tes-after-sending-a-message-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-send-c3c53-tes-after-sending-a-message-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-send-c3c53-tes-after-sending-a-message-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\messaging-Messaging-—-send-c3c53-tes-after-sending-a-message-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  49) [chromium] › tests\e2e\messaging.spec.ts:147:3 › Messaging — receiving › message received from other user appears in real time 
+
+    Test timeout of 30000ms exceeded while setting up "twoUserPages".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.twoUserPages (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:77:5)
+
+    Test timeout of 30000ms exceeded.
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-rece-052c7-r-user-appears-in-real-time-chromium\test-failed-2.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-rece-052c7-r-user-appears-in-real-time-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-rece-052c7-r-user-appears-in-real-time-chromium\error-context.md
+
+  50) [chromium] › tests\e2e\messaging.spec.ts:184:3 › Messaging — receiving › incoming message while scrolled up shows floating button 
+
+    Test timeout of 30000ms exceeded while setting up "twoUserPages".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.twoUserPages (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:77:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-rece-aa927-ed-up-shows-floating-button-chromium\test-failed-2.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-rece-aa927-ed-up-shows-floating-button-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-rece-aa927-ed-up-shows-floating-button-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-rece-aa927-ed-up-shows-floating-button-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\messaging-Messaging-—-rece-aa927-ed-up-shows-floating-button-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  51) [chromium] › tests\e2e\messaging.spec.ts:168:3 › Messaging — receiving › sender does NOT see their own message twice 
+
+    Test timeout of 30000ms exceeded while setting up "chatPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:91:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-rece-38f78-see-their-own-message-twice-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-rece-38f78-see-their-own-message-twice-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-rece-38f78-see-their-own-message-twice-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\messaging-Messaging-—-rece-38f78-see-their-own-message-twice-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  52) [chromium] › tests\e2e\performance.spec.ts:10:3 › Performance E2E checks › initial page load is fully interactive under 2 seconds 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-testid="chat-list-item"]').first()
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('[data-testid="chat-list-item"]').first()
+
+
+      27 |     // Wait until the sidebar items are rendered (= page is interactive)
+      28 |     const chat = new ChatPage(page);
+    > 29 |     await expect(chat.getSidebarItems().first()).toBeVisible({ timeout: 5_000 });
+         |                                                  ^
+      30 |
+      31 |     const elapsed = Date.now() - start;
+      32 |     expect(elapsed, `Load time ${elapsed}ms exceeds 2000ms`).toBeLessThan(2_000);
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\performance.spec.ts:29:50
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\performance-Performance-E2-140e5-interactive-under-2-seconds-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\performance-Performance-E2-140e5-interactive-under-2-seconds-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\performance-Performance-E2-140e5-interactive-under-2-seconds-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\performance-Performance-E2-140e5-interactive-under-2-seconds-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  53) [chromium] › tests\e2e\messaging.spec.ts:210:3 › Messaging — receiving › messages arrive in correct order under load 
+
+    Test timeout of 30000ms exceeded while setting up "twoUserPages".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.twoUserPages (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:77:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-rece-46d1a-in-correct-order-under-load-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-rece-46d1a-in-correct-order-under-load-chromium\test-failed-2.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\messaging-Messaging-—-rece-46d1a-in-correct-order-under-load-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ────────────────────────────────────────────────
+    test-results\messaging-Messaging-—-rece-46d1a-in-correct-order-under-load-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\messaging-Messaging-—-rece-46d1a-in-correct-order-under-load-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  54) [chromium] › tests\e2e\sidebar.spec.ts:15:3 › Chat list / Sidebar › search filters chat list by contact name 
+
+    Test timeout of 30000ms exceeded while setting up "loggedInPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--d7a1c-s-chat-list-by-contact-name-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\sidebar-Chat-list-Sidebar--d7a1c-s-chat-list-by-contact-name-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--d7a1c-s-chat-list-by-contact-name-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-Chat-list-Sidebar--d7a1c-s-chat-list-by-contact-name-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  55) [chromium] › tests\e2e\sidebar.spec.ts:7:3 › Chat list / Sidebar › sidebar shows all chats on load 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-testid="chat-list-item"]').first()
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('[data-testid="chat-list-item"]').first()
+
+
+       8 |     const chat = new ChatPage(page);
+       9 |     // Wait for chats to load (skeleton disappears)
+    > 10 |     await expect(chat.getSidebarItems().first()).toBeVisible({ timeout: 10_000 });
+         |                                                  ^
+      11 |     const count = await chat.getSidebarItems().count();
+      12 |     expect(count).toBeGreaterThanOrEqual(1);
+      13 |   });
+        at E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\sidebar.spec.ts:10:50
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar-sidebar-shows-all-chats-on-load-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\sidebar-Chat-list-Sidebar-sidebar-shows-all-chats-on-load-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar-sidebar-shows-all-chats-on-load-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-Chat-list-Sidebar-sidebar-shows-all-chats-on-load-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  56) [chromium] › tests\e2e\sidebar.spec.ts:23:3 › Chat list / Sidebar › search is case-insensitive 
+
+    Test timeout of 30000ms exceeded while setting up "loggedInPage".
+
+    Error: page.waitForURL: Test ended.
+    =========================== logs ===========================
+    waiting for navigation to "**/chat**" until "load"
+    ============================================================
+
+       at fixtures.ts:44
+
+      42 |   // 4. Navigate to the app — ProtectedRoute will now pass
+      43 |   await page.goto('/chat');
+    > 44 |   await page.waitForURL('**/chat**');
+         |              ^
+      45 |   return token;
+      46 | }
+      47 |
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:44:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:5)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar-search-is-case-insensitive-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\sidebar-Chat-list-Sidebar-search-is-case-insensitive-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar-search-is-case-insensitive-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-Chat-list-Sidebar-search-is-case-insensitive-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  57) [chromium] › tests\e2e\sidebar.spec.ts:46:3 › Chat list / Sidebar › search with no results shows empty state 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:11)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--e75eb-o-results-shows-empty-state-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\sidebar-Chat-list-Sidebar--e75eb-o-results-shows-empty-state-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--e75eb-o-results-shows-empty-state-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-Chat-list-Sidebar--e75eb-o-results-shows-empty-state-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  58) [chromium] › tests\e2e\sidebar.spec.ts:31:3 › Chat list / Sidebar › clearing search restores the full list 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:11)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--fd944-arch-restores-the-full-list-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\sidebar-Chat-list-Sidebar--fd944-arch-restores-the-full-list-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--fd944-arch-restores-the-full-list-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-Chat-list-Sidebar--fd944-arch-restores-the-full-list-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  59) [chromium] › tests\e2e\sidebar.spec.ts:55:3 › Chat list / Sidebar › clicking a chat opens the chat window 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:11)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--a21aa--chat-opens-the-chat-window-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\sidebar-Chat-list-Sidebar--a21aa--chat-opens-the-chat-window-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--a21aa--chat-opens-the-chat-window-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-Chat-list-Sidebar--a21aa--chat-opens-the-chat-window-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  60) [chromium] › tests\e2e\sidebar.spec.ts:65:3 › Chat list / Sidebar › active chat is highlighted in sidebar 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:11)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--cc9aa-t-is-highlighted-in-sidebar-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\sidebar-Chat-list-Sidebar--cc9aa-t-is-highlighted-in-sidebar-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--cc9aa-t-is-highlighted-in-sidebar-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-Chat-list-Sidebar--cc9aa-t-is-highlighted-in-sidebar-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  61) [chromium] › tests\e2e\sidebar.spec.ts:77:3 › Chat list / Sidebar › chat list reorders when new message arrives via WebSocket 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.twoUserPages (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:78:7)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--11a8f-ssage-arrives-via-WebSocket-chromium\test-failed-2.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--11a8f-ssage-arrives-via-WebSocket-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\sidebar-Chat-list-Sidebar--11a8f-ssage-arrives-via-WebSocket-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--11a8f-ssage-arrives-via-WebSocket-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-Chat-list-Sidebar--11a8f-ssage-arrives-via-WebSocket-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  62) [chromium] › tests\e2e\sidebar.spec.ts:96:3 › Chat list / Sidebar › unread badge appears for unread messages 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.twoUserPages (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:79:7)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--06ee6-appears-for-unread-messages-chromium\test-failed-2.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--06ee6-appears-for-unread-messages-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\sidebar-Chat-list-Sidebar--06ee6-appears-for-unread-messages-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--06ee6-appears-for-unread-messages-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-Chat-list-Sidebar--06ee6-appears-for-unread-messages-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  63) [chromium] › tests\e2e\sidebar.spec.ts:115:3 › Chat list / Sidebar › unread badge disappears when chat is opened 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.twoUserPages (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:79:7)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--24778-appears-when-chat-is-opened-chromium\test-failed-2.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--24778-appears-when-chat-is-opened-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\sidebar-Chat-list-Sidebar--24778-appears-when-chat-is-opened-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ────────────────────────────────────────────────
+    test-results\sidebar-Chat-list-Sidebar--24778-appears-when-chat-is-opened-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\sidebar-Chat-list-Sidebar--24778-appears-when-chat-is-opened-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  64) [chromium] › tests\e2e\websocket.spec.ts:44:3 › WebSocket connection › connection indicator shows connected state on load 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:11)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-WebSocket-connec-18745-ows-connected-state-on-load-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\websocket-WebSocket-connec-18745-ows-connected-state-on-load-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\websocket-WebSocket-connec-18745-ows-connected-state-on-load-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\websocket-WebSocket-connec-18745-ows-connected-state-on-load-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  65) [chromium] › tests\e2e\websocket.spec.ts:77:3 › WebSocket connection › UI recovers after WebSocket reconnects 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:11)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-WebSocket-connec-bc8ce--after-WebSocket-reconnects-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\websocket-WebSocket-connec-bc8ce--after-WebSocket-reconnects-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\websocket-WebSocket-connec-bc8ce--after-WebSocket-reconnects-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\websocket-WebSocket-connec-bc8ce--after-WebSocket-reconnects-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  66) [chromium] › tests\e2e\websocket.spec.ts:57:3 › WebSocket connection › disconnection banner appears when WebSocket drops 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:11)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-WebSocket-connec-04b25-ppears-when-WebSocket-drops-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\websocket-WebSocket-connec-04b25-ppears-when-WebSocket-drops-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\websocket-WebSocket-connec-04b25-ppears-when-WebSocket-drops-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\websocket-WebSocket-connec-04b25-ppears-when-WebSocket-drops-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  67) [chromium] › tests\e2e\websocket.spec.ts:96:3 › WebSocket connection › messages sent during disconnection show error or queue 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.loggedInPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:64:11)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-WebSocket-connec-2b39a-nection-show-error-or-queue-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\websocket-WebSocket-connec-2b39a-nection-show-error-or-queue-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\websocket-WebSocket-connec-2b39a-nection-show-error-or-queue-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\websocket-WebSocket-connec-2b39a-nection-show-error-or-queue-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  68) [chromium] › tests\e2e\websocket.spec.ts:126:3 › WebSocket connection › multiple rapid reconnects do not cause duplicate messages 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.twoUserPages (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:78:7)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-WebSocket-connec-83b0b-ot-cause-duplicate-messages-chromium\test-failed-2.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-WebSocket-connec-83b0b-ot-cause-duplicate-messages-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\websocket-WebSocket-connec-83b0b-ot-cause-duplicate-messages-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ────────────────────────────────────────────────
+    test-results\websocket-WebSocket-connec-83b0b-ot-cause-duplicate-messages-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\websocket-WebSocket-connec-83b0b-ot-cause-duplicate-messages-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  69) [chromium] › tests\e2e\websocket.spec.ts:189:3 › Scroll behavior › chat opens scrolled to bottom 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.chatPage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:91:11)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-Scroll-behavior-chat-opens-scrolled-to-bottom-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\websocket-Scroll-behavior-chat-opens-scrolled-to-bottom-chromium\error-context.md
+
+    attachment #3: trace (application/zip) ────────────────────────────────────────────────
+    test-results\websocket-Scroll-behavior-chat-opens-scrolled-to-bottom-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\websocket-Scroll-behavior-chat-opens-scrolled-to-bottom-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  70) [chromium] › tests\e2e\websocket.spec.ts:163:3 › Read receipts & message status › sent message shows tick after delivery 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.twoUserPages (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:79:7)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-Read-receipts-me-bd5ac-e-shows-tick-after-delivery-chromium\test-failed-2.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-Read-receipts-me-bd5ac-e-shows-tick-after-delivery-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\websocket-Read-receipts-me-bd5ac-e-shows-tick-after-delivery-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ────────────────────────────────────────────────
+    test-results\websocket-Read-receipts-me-bd5ac-e-shows-tick-after-delivery-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\websocket-Read-receipts-me-bd5ac-e-shows-tick-after-delivery-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  71) [chromium] › tests\e2e\websocket.spec.ts:200:3 › Scroll behavior › new message auto-scrolls to bottom when user is at bottom 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.twoUserPages (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:78:7)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-Scroll-behavior--6d46a-ttom-when-user-is-at-bottom-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-Scroll-behavior--6d46a-ttom-when-user-is-at-bottom-chromium\test-failed-2.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\websocket-Scroll-behavior--6d46a-ttom-when-user-is-at-bottom-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ────────────────────────────────────────────────
+    test-results\websocket-Scroll-behavior--6d46a-ttom-when-user-is-at-bottom-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\websocket-Scroll-behavior--6d46a-ttom-when-user-is-at-bottom-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  72) [chromium] › tests\e2e\websocket.spec.ts:218:3 › Scroll behavior › no auto-scroll when user has scrolled up 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5173/login
+    Call log:
+      - navigating to "http://localhost:5173/login", waiting until "load"
+
+
+       at fixtures.ts:22
+
+      20 | ) {
+      21 |   // 1. Go to base URL first so we can manipulate localStorage
+    > 22 |   await page.goto('/login');
+         |              ^
+      23 |
+      24 |   // 2. Hit the API directly for a token
+      25 |   const res = await page.request.post(`${API_URL}/auth/login`, {
+        at authenticatePage (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:22:14)
+        at Object.twoUserPages (E:\MY-PROJECTS\blurz-chatapp\client\tests\e2e\fixtures.ts:79:7)
+
+    attachment #1: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-Scroll-behavior--00168-l-when-user-has-scrolled-up-chromium\test-failed-2.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ─────────────────────────────────────────────────
+    test-results\websocket-Scroll-behavior--00168-l-when-user-has-scrolled-up-chromium\test-failed-1.png
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\websocket-Scroll-behavior--00168-l-when-user-has-scrolled-up-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ────────────────────────────────────────────────
+    test-results\websocket-Scroll-behavior--00168-l-when-user-has-scrolled-up-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\websocket-Scroll-behavior--00168-l-when-user-has-scrolled-up-chromium\trace.zip
+
+    ───────────────────────────────────────────────────────────────────────────────────────
+
+  72 failed
+    [chromium] › tests\e2e\auth.spec.ts:16:3 › Authentication flows › user can register a new account 
+    [chromium] › tests\e2e\auth.spec.ts:42:3 › Authentication flows › user can log in with correct credentials 
+    [chromium] › tests\e2e\auth.spec.ts:59:3 › Authentication flows › login fails with wrong password 
+    [chromium] › tests\e2e\auth.spec.ts:78:3 › Authentication flows › login fails with non-existent email 
+    [chromium] › tests\e2e\auth.spec.ts:108:3 › Authentication flows › user stays logged in on page refresh 
+    [chromium] › tests\e2e\auth.spec.ts:117:3 › Authentication flows › token refresh works transparently 
+    [chromium] › tests\e2e\auth.spec.ts:136:3 › Authentication flows › logging out clears session and redirects to /login 
+    [chromium] › tests\e2e\auth.spec.ts:157:3 › Authentication flows › two sessions of the same user can be active simultaneously 
+    [chromium] › tests\e2e\chat-flows.spec.ts:33:3 › Flow 1: Open app and read messages › app loads and sidebar shows chat list 
+    [chromium] › tests\e2e\chat-flows.spec.ts:45:3 › Flow 1: Open app and read messages › clicking a chat opens the chat window 
+    [chromium] › tests\e2e\chat-flows.spec.ts:65:3 › Flow 1: Open app and read messages › chat window shows messages 
+    [chromium] › tests\e2e\chat-flows.spec.ts:85:3 › Flow 2: Send a message › type and send a message via Enter key 
+    [chromium] › tests\e2e\chat-flows.spec.ts:106:3 › Flow 2: Send a message › send button appears when text is entered 
+    [chromium] › tests\e2e\chat-flows.spec.ts:120:3 › Flow 2: Send a message › empty message does not send 
+    [chromium] › tests\e2e\chat-flows.spec.ts:140:3 › Flow 3: Search and select › search filters the chat list 
+    [chromium] › tests\e2e\chat-flows.spec.ts:167:3 › Flow 3: Search and select › selecting a chat from search results opens it 
+    [chromium] › tests\e2e\chat-flows.spec.ts:189:3 › Flow 4: Theme switching › switch to light mode via settings 
+    [chromium] › tests\e2e\chat-flows.spec.ts:235:3 › Flow 5: Mobile behavior › sidebar fills full screen on mobile 
+    [chromium] › tests\e2e\chat-flows.spec.ts:245:3 › Flow 5: Mobile behavior › selecting chat shows full-screen chat window on mobile 
+    [chromium] › tests\e2e\chat-flows.spec.ts:260:3 › Flow 5: Mobile behavior › back button returns to sidebar on mobile 
+    [chromium] › tests\e2e\chat-flows.spec.ts:275:3 › Flow 5: Mobile behavior › no horizontal overflow on mobile 
+    [chromium] › tests\e2e\chat-flows.spec.ts:296:3 › Flow 6: Layout regression — sidebar + chat side by side › on desktop, sidebar and chat window are side by side (not stacked) 
+    [chromium] › tests\e2e\edge-cases.spec.ts:9:3 › Error & edge case flows › chat with no messages shows empty state 
+    [chromium] › tests\e2e\edge-cases.spec.ts:39:3 › Error & edge case flows › very long contact name is truncated in sidebar without breaking layout 
+    [chromium] › tests\e2e\edge-cases.spec.ts:70:3 › Error & edge case flows › avatar shows initials when image fails to load 
+    [chromium] › tests\e2e\edge-cases.spec.ts:85:3 › Error & edge case flows › app handles server returning 500 without crashing 
+    [chromium] › tests\e2e\edge-cases.spec.ts:132:3 › Error & edge case flows › app handles going offline gracefully 
+    [chromium] › tests\e2e\edge-cases.spec.ts:163:3 › Error & edge case flows › Shift+Enter inserts newline instead of sending 
+    [chromium] › tests\e2e\edge-cases.spec.ts:182:3 › Error & edge case flows › navigating to unknown route shows 404 page 
+    [chromium] › tests\e2e\edge-cases.spec.ts:191:3 › Error & edge case flows › no unexpected console errors during normal chat flow 
+    [chromium] › tests\e2e\layout.spec.ts:8:3 › Layout & navigation › sidebar and chat window both visible on desktop 
+    [chromium] › tests\e2e\layout.spec.ts:28:3 › Layout & navigation › desktop sidebar has correct width (≥300px) 
+    [chromium] › tests\e2e\layout.spec.ts:38:3 › Layout & navigation › mobile shows sidebar only by default 
+    [chromium] › tests\e2e\layout.spec.ts:49:3 › Layout & navigation › mobile: selecting chat shows chat window, hides sidebar 
+    [chromium] › tests\e2e\layout.spec.ts:63:3 › Layout & navigation › mobile: back button returns to sidebar 
+    [chromium] › tests\e2e\layout.spec.ts:115:5 › Layout & navigation › no layout overflow at 1920px viewport 
+    [chromium] › tests\e2e\layout.spec.ts:139:3 › Layout & navigation › NavRail navigates to contacts page 
+    [chromium] › tests\e2e\layout.spec.ts:145:3 › Layout & navigation › NavRail navigates to notifications page 
+    [chromium] › tests\e2e\layout.spec.ts:151:3 › Layout & navigation › NavRail navigates to settings page 
+    [chromium] › tests\e2e\messaging.spec.ts:8:3 › Messaging — sending › user can send a message 
+    [chromium] › tests\e2e\messaging.spec.ts:22:3 › Messaging — sending › send button replaces mic when typing 
+    [chromium] › tests\e2e\messaging.spec.ts:40:3 › Messaging — sending › clicking send button sends message 
+    [chromium] › tests\e2e\messaging.spec.ts:52:3 › Messaging — sending › pressing Enter key sends message 
+    [chromium] › tests\e2e\messaging.spec.ts:64:3 › Messaging — sending › empty input does not send a message 
+    [chromium] › tests\e2e\messaging.spec.ts:77:3 › Messaging — sending › whitespace-only input does not send 
+    [chromium] › tests\e2e\messaging.spec.ts:89:3 › Messaging — sending › very long message (1000 chars) sends correctly 
+    [chromium] › tests\e2e\messaging.spec.ts:108:3 › Messaging — sending › sending multiple messages rapidly all appear in correct order 
+    [chromium] › tests\e2e\messaging.spec.ts:130:3 › Messaging — sending › sidebar updates after sending a message 
+    [chromium] › tests\e2e\messaging.spec.ts:147:3 › Messaging — receiving › message received from other user appears in real time 
+    [chromium] › tests\e2e\messaging.spec.ts:168:3 › Messaging — receiving › sender does NOT see their own message twice 
+    [chromium] › tests\e2e\messaging.spec.ts:184:3 › Messaging — receiving › incoming message while scrolled up shows floating button 
+    [chromium] › tests\e2e\messaging.spec.ts:210:3 › Messaging — receiving › messages arrive in correct order under load 
+    [chromium] › tests\e2e\performance.spec.ts:10:3 › Performance E2E checks › initial page load is fully interactive under 2 seconds 
+    [chromium] › tests\e2e\sidebar.spec.ts:7:3 › Chat list / Sidebar › sidebar shows all chats on load 
+    [chromium] › tests\e2e\sidebar.spec.ts:15:3 › Chat list / Sidebar › search filters chat list by contact name 
+    [chromium] › tests\e2e\sidebar.spec.ts:23:3 › Chat list / Sidebar › search is case-insensitive 
+    [chromium] › tests\e2e\sidebar.spec.ts:31:3 › Chat list / Sidebar › clearing search restores the full list 
+    [chromium] › tests\e2e\sidebar.spec.ts:46:3 › Chat list / Sidebar › search with no results shows empty state 
+    [chromium] › tests\e2e\sidebar.spec.ts:55:3 › Chat list / Sidebar › clicking a chat opens the chat window 
+    [chromium] › tests\e2e\sidebar.spec.ts:65:3 › Chat list / Sidebar › active chat is highlighted in sidebar 
+    [chromium] › tests\e2e\sidebar.spec.ts:77:3 › Chat list / Sidebar › chat list reorders when new message arrives via WebSocket 
+    [chromium] › tests\e2e\sidebar.spec.ts:96:3 › Chat list / Sidebar › unread badge appears for unread messages 
+    [chromium] › tests\e2e\sidebar.spec.ts:115:3 › Chat list / Sidebar › unread badge disappears when chat is opened 
+    [chromium] › tests\e2e\websocket.spec.ts:44:3 › WebSocket connection › connection indicator shows connected state on load 
+    [chromium] › tests\e2e\websocket.spec.ts:57:3 › WebSocket connection › disconnection banner appears when WebSocket drops 
+    [chromium] › tests\e2e\websocket.spec.ts:77:3 › WebSocket connection › UI recovers after WebSocket reconnects 
+    [chromium] › tests\e2e\websocket.spec.ts:96:3 › WebSocket connection › messages sent during disconnection show error or queue 
+    [chromium] › tests\e2e\websocket.spec.ts:126:3 › WebSocket connection › multiple rapid reconnects do not cause duplicate messages 
+    [chromium] › tests\e2e\websocket.spec.ts:163:3 › Read receipts & message status › sent message shows tick after delivery 
+    [chromium] › tests\e2e\websocket.spec.ts:189:3 › Scroll behavior › chat opens scrolled to bottom 
+    [chromium] › tests\e2e\websocket.spec.ts:200:3 › Scroll behavior › new message auto-scrolls to bottom when user is at bottom 
+    [chromium] › tests\e2e\websocket.spec.ts:218:3 › Scroll behavior › no auto-scroll when user has scrolled up 
+  5 did not run
+  6 passed (19.8m)
+[global-teardown] Cleaning up test data…
+[global-teardown] Done.
+[global-setup] Seeding test users…
+[global-setup] register user_c@test.com: 403 {"status_code":403,"detail":{"message":"User with email already exists","error_code":"user_exists"}}
+[global-setup] register user_a@test.com: 403 {"status_code":403,"detail":{"message":"User with email already exists","error_code":"user_exists"}}
+[global-setup] register user_b@test.com: 403 {"status_code":403,"detail":{"message":"User with email already exists","error_code":"user_exists"}}
+[global-setup] Seeding test users…
+[global-setup] register user_a@test.com: 403 {"status_code":403,"detail":{"message":"User with email already exists","error_code":"user_exists"}}
+[global-setup] register user_b@test.com: 403 {"status_code":403,"detail":{"message":"User with email already exists","error_code":"user_exists"}}
+[global-setup] register user_c@test.com: 403 {"status_code":403,"detail":{"message":"User with email already exists","error_code":"user_exists"}}
+[global-setup] Done.
+
+[global-setup] Done.
+

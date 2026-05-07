@@ -17,7 +17,7 @@ class TestAccessTokenBearer:
 
     def test_access_token_raises_for_refresh_token(self):
         from auth.dependencies import AccessTokenBearer
-        from errors import AccessTokenRequired
+        from core.errors import AccessTokenRequired
         bearer = AccessTokenBearer()
         with pytest.raises(AccessTokenRequired):
             bearer.verify_token({"refresh_token": True, "user": {"email": "t@t.com"}})
@@ -40,7 +40,7 @@ class TestRefreshToken:
 
     def test_refresh_token_raises_for_access_token(self):
         from auth.dependencies import RefreshToken
-        from errors import RefreshTokenRequired
+        from core.errors import RefreshTokenRequired
         bearer = RefreshToken()
         with pytest.raises(RefreshTokenRequired):
             bearer.verify_token({"refresh_token": False, "user": {"email": "t@t.com"}})
@@ -60,7 +60,7 @@ class TestCheckRoler:
 
     def test_raises_insufficient_permission_for_wrong_role(self):
         from auth.dependencies import CheckRoler
-        from errors import InsufficientPermission
+        from core.errors import InsufficientPermission
         user = MagicMock()
         user.is_verified = True
         user.role = "user"
@@ -70,7 +70,7 @@ class TestCheckRoler:
 
     def test_raises_email_not_verified(self):
         from auth.dependencies import CheckRoler
-        from errors import EmailNotVerified
+        from core.errors import EmailNotVerified
         user = MagicMock()
         user.is_verified = False
         user.role = "admin"

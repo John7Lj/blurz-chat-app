@@ -11,14 +11,14 @@ class TestMiddlewareSetup:
     """Tests for custome_simple_middle()."""
 
     def test_middleware_registers_without_error(self):
-        from middleware import custome_simple_middle
+        from core.middleware import custome_simple_middle
         app = FastAPI()
         # Should not raise
         custome_simple_middle(app)
 
     def test_cors_does_not_use_wildcard_with_credentials(self):
         """BUG-14 fix verification: CORS origins should not be ['*'] when credentials are enabled."""
-        from middleware import custome_simple_middle
+        from core.middleware import custome_simple_middle
         app = FastAPI()
         custome_simple_middle(app)
         

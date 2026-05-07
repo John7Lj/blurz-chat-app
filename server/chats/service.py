@@ -2,11 +2,11 @@ from logging import exception
 from db.models import Chat ,ChatParticipants,User,Message
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from errors import UserNotFound, UserAlreadyExists
+from core.errors import UserNotFound, UserAlreadyExists
 import uuid
 from sqlalchemy.orm import selectinload
-from .schema import MessageType
-from annotated_types import List
+from .schemas import MessageType
+from typing import List
 from fastapi.exceptions import HTTPException
 from fastapi import status
 async def get_user_chats_with_others(session: AsyncSession, user_id: uuid.UUID):
@@ -82,9 +82,27 @@ async def create_chat_with_message(
 
     await session.commit()
     await session.refresh(chat)
-    await session.refresh(message)
-
     return chat, message
+
+# Add message to an existing chat
+async def add_message_to_chat(
+    session: AsyncSession,
+    chat_id: uuid.UUID,
+    sender_id: uuid.UUID,
+    content: str,
+    msg_type: MessageType = MessageType.text,
+) -> Message:
+    message = Message(
+        content=content,
+        sender_id=sender_id,
+        chat_id=chat_id,
+        msg_type=msg_type,
+    )
+    session.add(message)
+    await session.commit()
+    await session.refresh(message)
+    return message
+
 from sqlmodel import delete
 # this is for existing chat no need to create new chats this will matter in the endpoitn
 async def delete_chats_service(
@@ -128,3 +146,24 @@ async def delete_chats_service(
     except Exception as e:
         await session.rollback()
         raise e
+
+
+async def get_user_chat_ids(session: AsyncSession, user_id: uuid.UUID) -> list[uuid.UUID]:
+    """Return all chat_ids this user belongs to."""
+    stmt = select(ChatParticipants.chat_id).where(ChatParticipants.user_id == user_id)
+    result = await session.exec(stmt)
+    return list(result.all())
+
+
+async def verify_chat_membership(
+    session: AsyncSession, chat_id: uuid.UUID, user_id: uuid.UUID
+) -> bool:
+    """Check if user_id is a participant of chat_id."""
+    stmt = select(ChatParticipants).where(
+        ChatParticipants.chat_id == chat_id,
+        ChatParticipants.user_id == user_id,
+    )
+    result = await session.exec(stmt)
+    return result.first() is not None
+
+

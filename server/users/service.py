@@ -1,8 +1,8 @@
 from db.models import User 
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-from errors import UserNotFound, UserAlreadyExists
-from .schema import Update_User
+from core.errors import UserNotFound, UserAlreadyExists
+from .schemas import Update_User
 import uuid
 
 # get all active users or verified users
@@ -26,7 +26,7 @@ async def is_username_exist(username: str, session: AsyncSession):
     return user
 
 
-async def update_user(user_id: str, session: AsyncSession, update_data: Update_User):
+async def update_user(user_id: uuid.UUID, session: AsyncSession, update_data: Update_User):
     if update_data.username:
         existing = await is_username_exist(update_data.username, session)
         if existing:

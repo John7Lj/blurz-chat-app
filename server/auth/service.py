@@ -2,9 +2,9 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select, or_
 from db.config import config
 from db.models import User as User_Model
-from .schema import Create_User
-from utils import generate_hashed_password
-from errors import UserAlreadyExists, UserAlreadyVerify, UserNotFound
+from .schemas import Create_User
+from core.utils import generate_hashed_password
+from core.errors import UserAlreadyExists, UserAlreadyVerify, UserNotFound
 from fastapi import HTTPException, status
 import uuid
 import logging

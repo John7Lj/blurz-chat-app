@@ -3,14 +3,14 @@ from abc import abstractmethod
 from fastapi.security import HTTPBearer
 from fastapi import status,Request,Depends
 from fastapi.exceptions import HTTPException
-from utils import decode_token
+from core.utils import decode_token
 from db.redis import check_blacklist
 from sqlmodel.ext.asyncio.session import AsyncSession
 from db.main import get_session
 from .service import User_Service
 import logging
 from db.models import User
-from errors import (
+from core.errors import (
     InvalidToken,
     RefreshTokenRequired,
     AccessTokenRequired,
@@ -27,6 +27,8 @@ class BearerToken(HTTPBearer):
     async def __call__(self,request:Request):
         credits = await super().__call__(request)
         
+        if not credits:
+            raise InvalidToken()
         token_data = decode_token(credits.credentials)
     
         if not token_data :
@@ -110,7 +112,9 @@ class CheckRoler :
             raise EmailNotVerified()
         
         if user_details:
-            if user_details.role in self.allowd_rloes:
+            user_role = getattr(user_details, 'role', 'user')
+            if user_role in self.allowd_rloes:
                 return True
             raise InsufficientPermission()
         
+        raise InsufficientPermission()
