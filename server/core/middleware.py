@@ -45,6 +45,7 @@ def custome_simple_middle(app: FastAPI):
 
     app.add_middleware(
         CORSMiddleware,
+        allow_origins=["https://blurz-chat-app.vercel.app"],
         allow_origin_regex=LOCAL_ORIGIN_REGEX,
         allow_methods=['GET', 'POST', 'PATCH', 'DELETE', 'PUT', 'OPTIONS'],
         allow_headers=['*'],
