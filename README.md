@@ -5,7 +5,7 @@ A real-time chat application built with **FastAPI**, **WebSockets**, **Redis Pub
 ## 🏗️ Architecture
 
 ```
-client/          → React/Flutter front-end
+client/          → React front-end
 server/
   ├── auth/          → JWT authentication, registration, login
   ├── chats/         → Chat rooms and DM logic
