@@ -29,8 +29,8 @@ class UserInfo(User):
 
 class Create_User(BaseModel): 
     username: str = Field(max_length=20)
-    email: str = Field(max_length=40)
-    phone: str
+    email: EmailStr
+    phone: str = Field(pattern=r"^\+?[1-9]\d{1,14}$")
     first_name: str
     last_name: str
     password: str = Field(min_length=8, max_length=72) 
