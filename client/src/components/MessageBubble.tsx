@@ -46,6 +46,7 @@ export default function MessageBubble({
     <div
       data-testid="message-bubble"
       data-id={message.id}
+      data-msg-id={message.id}
       data-mine={isMine ? 'true' : 'false'}
       className={`flex ${isMine ? 'justify-end' : 'justify-start'} px-[4%] ${topMargin} animate-msg-in`}
     >

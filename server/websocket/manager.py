@@ -107,6 +107,25 @@ class ConnectionManager:
 
     # ── Delivery ──────────────────────────────────────────────────────────
 
+    async def add_user_to_chat(
+        self, user_id: uuid.UUID, chat_id: uuid.UUID
+    ):
+        """
+        Dynamically add a chat to a connected user's subscription map.
+        Called when a new chat is created while the user is already connected.
+        """
+        if user_id not in self.connections:
+            return  # user not connected, nothing to do
+
+        if user_id in self.user_chats:
+            if chat_id not in self.user_chats[user_id]:
+                self.user_chats[user_id].append(chat_id)
+        else:
+            self.user_chats[user_id] = [chat_id]
+
+        self.chat_members.setdefault(chat_id, set()).add(user_id)
+        logger.info(f"Dynamically added chat {chat_id} to user {user_id}")
+
     async def send_to_user(self, user_id: uuid.UUID, payload: dict):
         """Send a JSON payload directly to a specific user's WebSocket."""
         ws = self.connections.get(user_id)
@@ -161,6 +180,13 @@ class ConnectionManager:
             sender_id_str = data.get("sender_id") or data.get("user_id")
             sender_id = uuid.UUID(sender_id_str) if sender_id_str else None
 
+            msg_type = data.get("type", "unknown")
+            members = self.chat_members.get(chat_id, set())
+            logger.debug(
+                f"PubSub [{msg_type}] chat={chat_id} "
+                f"sender={sender_id} local_members={len(members)}"
+            )
+
             await self.deliver_to_chat(
                 chat_id=chat_id,
                 payload=data,
@@ -168,4 +194,10 @@ class ConnectionManager:
             )
 
         except (KeyError, ValueError) as e:
-            logger.error(f"handle_pubsub_message: bad message format: {e} | {decoded}")
+            logger.error(
+                f"handle_pubsub_message: bad message format: {e} | {decoded}"
+            )
+        except Exception as e:
+            logger.error(
+                f"handle_pubsub_message: unexpected error: {e} | {decoded}"
+            )

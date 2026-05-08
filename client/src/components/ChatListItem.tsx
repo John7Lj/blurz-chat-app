@@ -39,9 +39,13 @@ export default function ChatListItemComponent({ chat, isActive, onClick, current
     }
   }
 
-  // Placeholder unread logic
-  const unreadCount = 0;
-  const isRead = true;
+  // Derive read status from last message's status field
+  const lastMsgStatus = (lastMsg as Record<string, unknown>)?.status as string | undefined;
+  const isRead = lastMsgStatus === 'read';
+  const isDelivered = lastMsgStatus === 'delivered' || lastMsgStatus === 'read';
+
+  // Unread count — will come from server when available; for now derive from status
+  const unreadCount = (chat as Record<string, unknown>).unread_count as number | undefined ?? 0;
 
   return (
     <button
@@ -94,10 +98,12 @@ export default function ChatListItemComponent({ chat, isActive, onClick, current
             className="text-[13px] truncate flex-1"
             style={{ color: 'var(--chat-text-2)' }}
           >
-            {isMe && !unreadCount && (
+            {isMe && lastMsg && (
               <span className="inline-flex items-center mr-1 align-middle">
                 {isRead ? (
                   <CheckCheck size={16} style={{ color: 'var(--chat-tick-read)' }} />
+                ) : isDelivered ? (
+                  <CheckCheck size={16} style={{ color: 'var(--chat-tick-sent)' }} />
                 ) : (
                   <Check size={16} style={{ color: 'var(--chat-tick-sent)' }} />
                 )}

@@ -3,9 +3,10 @@ import { Send, Smile, Paperclip, Mic } from 'lucide-react';
 
 interface MessageInputProps {
   onSend: (text: string) => void;
+  onTyping?: () => void;
 }
 
-export default function MessageInput({ onSend }: MessageInputProps) {
+export default function MessageInput({ onSend, onTyping }: MessageInputProps) {
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -79,7 +80,10 @@ export default function MessageInput({ onSend }: MessageInputProps) {
         <textarea
           ref={textareaRef}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            setInput(e.target.value);
+            onTyping?.();
+          }}
           onKeyDown={handleKeyDown}
           placeholder="Type a message"
           rows={1}

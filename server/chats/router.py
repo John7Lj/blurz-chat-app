@@ -1,7 +1,7 @@
 from fastapi.responses import JSONResponse
 from .schemas import ChatList,Participant 
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException,status,Query
+from fastapi import APIRouter, Depends, HTTPException,status,Query, Request
 from auth.dependencies import get_current_user
 from auth.schemas import User, UserInfo
 from db.main import get_session
@@ -12,6 +12,9 @@ from db.models import User
 from .schemas import StartChatRequest,MessageOut,StartChatResponse
 from users.service import get_user_by_id
 import uuid
+import logging
+
+logger = logging.getLogger(__name__)
 
 chat_router = APIRouter(prefix='/chats', tags=["CHATS"])
 
@@ -45,6 +48,7 @@ try to save the message , participants and chat record
 @chat_router.post('/start', response_model=StartChatResponse)
 async def start_chat(
     body: StartChatRequest,
+    request: Request,
     session: AsyncSession = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
@@ -83,6 +87,35 @@ async def start_chat(
             recipient_id=recipient.id,
             content=body.message,
         )
+
+        # ── Dynamically subscribe both users to the new chat ──────────
+        try:
+            manager = request.app.state.manager
+            subscriber = request.app.state.subscriber
+
+            # Update manager's in-memory maps
+            await manager.add_user_to_chat(current_user.id, chat.id)
+            await manager.add_user_to_chat(recipient.id, chat.id)
+
+            # Subscribe the PubSub listener to the new channel
+            await subscriber.subscribe([chat.id])
+
+            # Notify both users about the new chat via WebSocket
+            new_chat_event = {
+                "type": "new_chat",
+                "chat_id": str(chat.id),
+            }
+            await manager.send_to_user(current_user.id, new_chat_event)
+            await manager.send_to_user(recipient.id, new_chat_event)
+
+            logger.info(
+                f"New chat {chat.id} created: {current_user.id} <-> {recipient.id}. "
+                f"Both users subscribed to PubSub channel."
+            )
+        except Exception as e:
+            # Don't fail the HTTP response if WS notification fails
+            logger.error(f"Failed to dynamically subscribe to new chat: {e}")
+
         return StartChatResponse(
             chat_id=chat.id,
             is_new=True,

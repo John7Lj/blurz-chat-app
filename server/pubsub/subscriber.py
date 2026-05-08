@@ -112,8 +112,6 @@ class PubSubListener:
                 backoff = min(backoff * 2, 30)
                 await self._reconnect()
 
-                await self._reconnect()
-
         await self._close()
 
     async def stop(self):

@@ -4,6 +4,7 @@ import { ChevronDown } from 'lucide-react';
 import type { Message } from '../../schemas/message.schema';
 import MessageBubble from '../../components/MessageBubble';
 import DateDivider from './DateDivider';
+import { useMessageObserver } from '../../hooks/use-message-observer';
 
 interface MessageListProps {
   messages: Message[];
@@ -11,6 +12,8 @@ interface MessageListProps {
   participantName?: string;
   participantAvatar?: string | null;
   isLoading?: boolean;
+  chatId?: string | null;
+  onMessageRead?: (chatId: string, messageId: string) => void;
 }
 
 // ── Helpers ────────────────────────────────────────────────────────
@@ -60,12 +63,23 @@ export default function MessageList({
   participantName,
   participantAvatar,
   isLoading,
+  chatId,
+  onMessageRead,
 }: MessageListProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [newMsgCount, setNewMsgCount] = useState(0);
   const prevLenRef = useRef(messages.length);
+
+  // ── IntersectionObserver for read receipts ─────────────────────
+  useMessageObserver({
+    containerRef,
+    messages,
+    currentUserId,
+    chatId: chatId ?? null,
+    onMessageRead: onMessageRead ?? (() => {}),
+  });
 
   // ── Scroll tracking ───────────────────────────────────────────
   const handleScroll = useCallback(() => {
