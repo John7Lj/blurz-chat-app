@@ -39,12 +39,9 @@ export default function ChatListItemComponent({ chat, isActive, onClick, current
     }
   }
 
-  // Derive read status from last message's status field
   const lastMsgStatus = (lastMsg as Record<string, unknown>)?.status as string | undefined;
   const isRead = lastMsgStatus === 'read';
   const isDelivered = lastMsgStatus === 'delivered' || lastMsgStatus === 'read';
-
-  // Unread count — will come from server when available; for now derive from status
   const unreadCount = (chat as Record<string, unknown>).unread_count as number | undefined ?? 0;
 
   return (
@@ -52,13 +49,12 @@ export default function ChatListItemComponent({ chat, isActive, onClick, current
       data-testid="chat-list-item"
       data-active={isActive ? 'true' : 'false'}
       onClick={onClick}
-      className="w-full flex items-center gap-3 text-left transition-all duration-150 group relative"
+      className="w-full flex items-center gap-3 text-left transition-all duration-100 group px-3 py-2.5"
       style={{
-        height: '72px',
-        /* always reserve 3px for the left border so content never shifts */
-        padding: isActive ? '10px 12px 10px 9px' : '10px 12px',
         background: isActive ? 'var(--chat-selected)' : 'transparent',
-        borderLeft: isActive ? '3px solid var(--chat-green)' : '3px solid transparent',
+        borderRadius: '8px',
+        margin: '0 4px',
+        width: 'calc(100% - 8px)',
       }}
       onMouseEnter={(e) => {
         if (!isActive) e.currentTarget.style.background = 'var(--chat-hover)';
@@ -73,18 +69,19 @@ export default function ChatListItemComponent({ chat, isActive, onClick, current
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0 border-b py-[5px]" style={{ borderColor: 'var(--chat-border)' }}>
+      <div className="flex-1 min-w-0">
+        {/* Top row: name + time */}
         <div className="flex items-center justify-between gap-2">
           <span
             data-testid="contact-name"
-            className="text-[15px] font-semibold truncate"
+            className="text-[14px] font-semibold truncate"
             style={{ color: 'var(--chat-text-1)' }}
           >
             {name}
           </span>
           {timeAgo && (
             <span
-              className="text-[11px] flex-shrink-0"
+              className="text-[11px] flex-shrink-0 font-medium"
               style={{ color: unreadCount > 0 ? 'var(--chat-green)' : 'var(--chat-text-2)' }}
             >
               {timeAgo}
@@ -92,6 +89,7 @@ export default function ChatListItemComponent({ chat, isActive, onClick, current
           )}
         </div>
 
+        {/* Bottom row: preview + unread badge */}
         <div className="flex items-center justify-between gap-2 mt-0.5">
           <p
             data-testid="last-message"
@@ -101,11 +99,11 @@ export default function ChatListItemComponent({ chat, isActive, onClick, current
             {isMe && lastMsg && (
               <span className="inline-flex items-center mr-1 align-middle">
                 {isRead ? (
-                  <CheckCheck size={16} style={{ color: 'var(--chat-tick-read)' }} />
+                  <CheckCheck size={14} style={{ color: '#93c5fd' }} />
                 ) : isDelivered ? (
-                  <CheckCheck size={16} style={{ color: 'var(--chat-tick-sent)' }} />
+                  <CheckCheck size={14} style={{ color: 'var(--chat-tick-sent)' }} />
                 ) : (
-                  <Check size={16} style={{ color: 'var(--chat-tick-sent)' }} />
+                  <Check size={14} style={{ color: 'var(--chat-tick-sent)' }} />
                 )}
               </span>
             )}

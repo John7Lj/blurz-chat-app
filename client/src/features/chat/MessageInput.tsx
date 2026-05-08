@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Smile, Paperclip, Mic } from 'lucide-react';
+import { useState, useRef, useCallback } from 'react';
+import { Send, Smile, Paperclip } from 'lucide-react';
 
 interface MessageInputProps {
   onSend: (text: string) => void;
@@ -10,20 +10,12 @@ export default function MessageInput({ onSend, onTyping }: MessageInputProps) {
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-resize textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + 'px';
-    }
-  }, [input]);
-
   const handleSend = useCallback(() => {
-    const text = input.trim();
-    if (!text) return;
-    onSend(text);
+    const trimmed = input.trim();
+    if (!trimmed) return;
+    onSend(trimmed);
     setInput('');
-    // Reset height
+    // Reset textarea height
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
@@ -39,7 +31,20 @@ export default function MessageInput({ onSend, onTyping }: MessageInputProps) {
     [handleSend],
   );
 
-  const hasText = input.trim().length > 0;
+  // Auto-grow textarea
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setInput(e.target.value);
+      onTyping?.();
+
+      const el = e.target;
+      el.style.height = 'auto';
+      el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
+    },
+    [onTyping],
+  );
+
+  const hasContent = input.trim().length > 0;
 
   return (
     <div
@@ -49,29 +54,31 @@ export default function MessageInput({ onSend, onTyping }: MessageInputProps) {
         borderTop: '1px solid var(--chat-border)',
       }}
     >
-      {/* Emoji button */}
-      <button
-        onClick={() => {}}
-        className="w-10 h-10 flex items-center justify-center rounded-full transition-colors flex-shrink-0 hover:bg-[var(--chat-hover)]"
-        style={{ color: 'var(--chat-text-2)' }}
-        aria-label="Emoji"
-      >
-        <Smile size={22} />
-      </button>
-
       {/* Attachment button */}
       <button
-        onClick={() => {}}
-        className="w-10 h-10 flex items-center justify-center rounded-full transition-colors flex-shrink-0 hover:bg-[var(--chat-hover)]"
+        className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full transition-colors"
         style={{ color: 'var(--chat-text-2)' }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--chat-green)')}
+        onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--chat-text-2)')}
         aria-label="Attach file"
       >
-        <Paperclip size={22} />
+        <Paperclip size={20} />
       </button>
 
-      {/* Input field */}
+      {/* Emoji button */}
+      <button
+        className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full transition-colors"
+        style={{ color: 'var(--chat-text-2)' }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--chat-green)')}
+        onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--chat-text-2)')}
+        aria-label="Emoji"
+      >
+        <Smile size={20} />
+      </button>
+
+      {/* Text input — vuetify-chat style textarea */}
       <div
-        className="flex-1 rounded-xl px-4 py-2.5"
+        className="flex-1 flex items-end rounded-2xl px-4 py-2"
         style={{
           background: 'var(--chat-search-bg)',
           border: '1px solid var(--chat-border)',
@@ -80,14 +87,11 @@ export default function MessageInput({ onSend, onTyping }: MessageInputProps) {
         <textarea
           ref={textareaRef}
           value={input}
-          onChange={(e) => {
-            setInput(e.target.value);
-            onTyping?.();
-          }}
+          onChange={handleChange}
           onKeyDown={handleKeyDown}
-          placeholder="Type a message"
+          placeholder="Type your text"
           rows={1}
-          className="w-full bg-transparent text-[14.5px] resize-none focus:outline-none leading-relaxed placeholder:opacity-50"
+          className="flex-1 bg-transparent text-[14px] focus:outline-none resize-none leading-[1.4] placeholder:opacity-50"
           style={{
             color: 'var(--chat-text-1)',
             maxHeight: '120px',
@@ -95,28 +99,27 @@ export default function MessageInput({ onSend, onTyping }: MessageInputProps) {
         />
       </div>
 
-      {/* Send / Mic button */}
-      <div className="flex-shrink-0">
-        {hasText ? (
-          <button
-            onClick={handleSend}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-95"
-            style={{ background: 'var(--chat-green)' }}
-            aria-label="Send message"
-          >
-            <Send size={18} className="text-white translate-x-[1px]" />
-          </button>
-        ) : (
-          <button
-            onClick={() => {}}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-[var(--chat-hover)]"
-            style={{ color: 'var(--chat-text-2)' }}
-            aria-label="Voice message"
-          >
-            <Mic size={22} />
-          </button>
-        )}
-      </div>
+      {/* Send button — vuetify-chat style */}
+      <button
+        onClick={handleSend}
+        disabled={!hasContent}
+        className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full transition-all duration-150"
+        style={{
+          background: hasContent ? 'var(--color-accent)' : 'transparent',
+          color: hasContent ? '#fff' : 'var(--chat-text-2)',
+          transform: 'rotate(-5deg)',
+          cursor: hasContent ? 'pointer' : 'default',
+        }}
+        onMouseEnter={(e) => {
+          if (hasContent) e.currentTarget.style.background = 'var(--color-accent-hover)';
+        }}
+        onMouseLeave={(e) => {
+          if (hasContent) e.currentTarget.style.background = 'var(--color-accent)';
+        }}
+        aria-label="Send message"
+      >
+        <Send size={20} />
+      </button>
     </div>
   );
 }

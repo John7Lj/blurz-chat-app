@@ -1,8 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
-import { PenSquare, MoreVertical } from 'lucide-react';
+import { PenSquare, MoreVertical, Search } from 'lucide-react';
 import { useChats } from '../../hooks/use-chats';
 import { useUIStore } from '../../stores/ui.store';
 import { useAuthStore } from '../../stores/auth.store';
+import { Avatar } from '../../components/ui/Avatar';
 import { ChatListSkeleton } from '../../components/ui/Skeleton';
 import ChatListItemComponent from '../../components/ChatListItem';
 
@@ -10,6 +11,7 @@ export default function Sidebar() {
   const { setActiveChat, openContactsPanel } = useUIStore();
   const activeChatId = useUIStore((s) => s.activeChatId);
   const userId = useAuthStore((s) => s.userId);
+  const user = useAuthStore((s) => s.user);
   const { data: chats = [], isLoading } = useChats();
   const [search, setSearch] = useState('');
 
@@ -31,43 +33,53 @@ export default function Sidebar() {
     [setActiveChat],
   );
 
+  const fullName = `${user?.first_name ?? ''} ${user?.last_name ?? ''}`.trim();
+
   return (
     <>
-      {/* ── Header (60px) ─────────────────────────────────────────── */}
+      {/* ── Header (60px — vuetify-chat MenuPanel style) ────────── */}
       <header
-        className="flex items-center justify-between px-4 h-[60px] flex-shrink-0"
+        className="flex items-center justify-between px-3 h-[60px] flex-shrink-0"
         style={{
           background: 'var(--chat-header-bg)',
           borderBottom: '1px solid var(--chat-border)',
         }}
       >
+        {/* Left: Avatar */}
         <div className="flex items-center gap-2.5">
-          <img
-            src="/blurz-logo.png"
-            alt="Blurz Logo"
-            className="w-9 h-9 rounded-full object-cover"
-          />
-          <span
-            className="text-[17px] font-bold tracking-tight"
-            style={{ color: 'var(--chat-text-1)' }}
-          >
-            Blurz
-          </span>
+          <Avatar src={user?.profile_url} name={fullName} size="md" />
         </div>
 
+        {/* Right: Action icons (vuetify-chat style) */}
         <div className="flex items-center gap-1">
           <button
             onClick={() => openContactsPanel()}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-[var(--chat-hover)]"
+            className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
             style={{ color: 'var(--chat-text-2)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'var(--chat-green)';
+              e.currentTarget.style.background = 'var(--chat-hover)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'var(--chat-text-2)';
+              e.currentTarget.style.background = 'transparent';
+            }}
             aria-label="New chat"
             title="New Chat"
           >
             <PenSquare size={20} />
           </button>
           <button
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:bg-[var(--chat-hover)]"
+            className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
             style={{ color: 'var(--chat-text-2)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'var(--chat-green)';
+              e.currentTarget.style.background = 'var(--chat-hover)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'var(--chat-text-2)';
+              e.currentTarget.style.background = 'transparent';
+            }}
             aria-label="Menu"
             title="Menu"
           >
@@ -79,23 +91,10 @@ export default function Sidebar() {
       {/* ── Search bar ────────────────────────────────────────────── */}
       <div className="px-2 py-2 flex-shrink-0" style={{ background: 'var(--chat-sidebar-bg)' }}>
         <div
-          className="flex items-center gap-2 rounded-[8px] px-3 h-[35px]"
+          className="flex items-center gap-2 rounded-full px-3 h-[36px]"
           style={{ background: 'var(--chat-search-bg)' }}
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ color: 'var(--chat-text-2)', flexShrink: 0 }}
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.3-4.3" />
-          </svg>
+          <Search size={16} style={{ color: 'var(--chat-text-2)', flexShrink: 0 }} />
           <input
             type="text"
             placeholder="Search or start new chat"
@@ -110,7 +109,7 @@ export default function Sidebar() {
 
       {/* ── Chat list (scrollable) ────────────────────────────────── */}
       <div
-        className="flex-1 overflow-y-auto"
+        className="flex-1 overflow-y-auto py-1"
         style={{ background: 'var(--chat-sidebar-bg)' }}
       >
         {isLoading && (
