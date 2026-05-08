@@ -10,6 +10,19 @@ interface Props {
   currentUserId: string;
 }
 
+function formatTime(dateStr: string): string {
+  try {
+    const t = formatDistanceToNow(new Date(dateStr), { addSuffix: false });
+    return t
+      .replace('about ', '')
+      .replace(' hours', 'h').replace(' hour', 'h')
+      .replace(' minutes', 'm').replace(' minute', 'm')
+      .replace(' days', 'd').replace(' day', 'd');
+  } catch {
+    return '';
+  }
+}
+
 export default function ChatListItemComponent({ chat, isActive, onClick, currentUserId }: Props) {
   const p = chat.participants;
   const name = `${p.first_name} ${p.last_name}`;
@@ -22,23 +35,7 @@ export default function ChatListItemComponent({ chat, isActive, onClick, current
     preview = isMe ? `You: ${lastMsg.content}` : lastMsg.content;
   }
 
-  let timeAgo = '';
-  if (lastMsg?.sent_at) {
-    try {
-      timeAgo = formatDistanceToNow(new Date(lastMsg.sent_at), { addSuffix: false });
-      timeAgo = timeAgo
-        .replace('about ', '')
-        .replace(' hours', 'h')
-        .replace(' hour', 'h')
-        .replace(' minutes', 'm')
-        .replace(' minute', 'm')
-        .replace(' days', 'd')
-        .replace(' day', 'd');
-    } catch {
-      timeAgo = '';
-    }
-  }
-
+  const timeAgo = lastMsg?.sent_at ? formatTime(lastMsg.sent_at) : '';
   const lastMsgStatus = (lastMsg as Record<string, unknown>)?.status as string | undefined;
   const isRead = lastMsgStatus === 'read';
   const isDelivered = lastMsgStatus === 'delivered' || lastMsgStatus === 'read';
@@ -49,62 +46,69 @@ export default function ChatListItemComponent({ chat, isActive, onClick, current
       data-testid="chat-list-item"
       data-active={isActive ? 'true' : 'false'}
       onClick={onClick}
-      className="w-full flex items-center gap-3 text-left transition-all duration-100 group px-3 py-2.5"
+      className="chat-list-item"
       style={{
         background: isActive ? 'var(--chat-selected)' : 'transparent',
-        borderRadius: '8px',
-        margin: '0 4px',
-        width: 'calc(100% - 8px)',
-      }}
-      onMouseEnter={(e) => {
-        if (!isActive) e.currentTarget.style.background = 'var(--chat-hover)';
-      }}
-      onMouseLeave={(e) => {
-        if (!isActive) e.currentTarget.style.background = 'transparent';
       }}
     >
       {/* Avatar */}
-      <div className="relative flex-shrink-0">
-        <Avatar src={p.profile_url} name={name} size="md" showOnline={true} />
+      <div style={{ flexShrink: 0 }}>
+        <Avatar src={p.profile_url} name={name} size="md" showOnline />
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
-        {/* Top row: name + time */}
-        <div className="flex items-center justify-between gap-2">
+      <div style={{ flex: 1, minWidth: 0 }}>
+        {/* Top row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
           <span
             data-testid="contact-name"
-            className="text-[14px] font-semibold truncate"
-            style={{ color: 'var(--chat-text-1)' }}
+            style={{
+              fontSize: 14,
+              fontWeight: 600,
+              color: 'var(--chat-text-1)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
           >
             {name}
           </span>
           {timeAgo && (
             <span
-              className="text-[11px] flex-shrink-0 font-medium"
-              style={{ color: unreadCount > 0 ? 'var(--chat-green)' : 'var(--chat-text-2)' }}
+              style={{
+                fontSize: 11,
+                fontWeight: 500,
+                flexShrink: 0,
+                color: unreadCount > 0 ? 'var(--chat-green)' : 'var(--chat-text-2)',
+              }}
             >
               {timeAgo}
             </span>
           )}
         </div>
 
-        {/* Bottom row: preview + unread badge */}
-        <div className="flex items-center justify-between gap-2 mt-0.5">
+        {/* Bottom row */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginTop: 2 }}>
           <p
             data-testid="last-message"
-            className="text-[13px] truncate flex-1"
-            style={{ color: 'var(--chat-text-2)' }}
+            style={{
+              fontSize: 13,
+              color: 'var(--chat-text-2)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              flex: 1,
+              margin: 0,
+            }}
           >
             {isMe && lastMsg && (
-              <span className="inline-flex items-center mr-1 align-middle">
-                {isRead ? (
-                  <CheckCheck size={14} style={{ color: '#93c5fd' }} />
-                ) : isDelivered ? (
-                  <CheckCheck size={14} style={{ color: 'var(--chat-tick-sent)' }} />
-                ) : (
-                  <Check size={14} style={{ color: 'var(--chat-tick-sent)' }} />
-                )}
+              <span style={{ display: 'inline-flex', alignItems: 'center', marginRight: 4, verticalAlign: 'middle' }}>
+                {isRead
+                  ? <CheckCheck size={13} style={{ color: '#93c5fd' }} />
+                  : isDelivered
+                    ? <CheckCheck size={13} style={{ color: 'var(--chat-tick-sent)' }} />
+                    : <Check size={13} style={{ color: 'var(--chat-tick-sent)' }} />
+                }
               </span>
             )}
             {preview}
@@ -113,8 +117,8 @@ export default function ChatListItemComponent({ chat, isActive, onClick, current
           {unreadCount > 0 && (
             <span
               data-testid="unread-badge"
-              className="min-w-[20px] h-[20px] rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0 px-1"
-              style={{ background: 'var(--chat-green)' }}
+              className="badge"
+              style={{ flexShrink: 0 }}
             >
               {unreadCount}
             </span>

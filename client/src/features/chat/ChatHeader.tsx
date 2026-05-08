@@ -11,56 +11,64 @@ interface ChatHeaderProps {
 
 export default function ChatHeader({ name, avatarSrc, isOnline = false, lastSeen, onBack }: ChatHeaderProps) {
   const statusText = isOnline ? 'online' : lastSeen || 'offline';
-  const statusColor = isOnline ? 'var(--color-success)' : 'var(--chat-text-2)';
 
   return (
     <header
-      className="flex items-center justify-between px-3 h-[60px] flex-shrink-0"
       style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 12px',
+        height: 60,
+        flexShrink: 0,
         background: 'var(--chat-header-bg)',
         borderBottom: '1px solid var(--chat-border)',
       }}
     >
-      {/* Left side: back + avatar + info */}
-      <div className="flex items-center gap-2.5">
-        {/* Back arrow (always visible on mobile, vuetify-chat style) */}
+      {/* Left: back + avatar + info */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* Back arrow — only on mobile */}
         <button
           onClick={onBack}
-          className="md:hidden w-8 h-8 flex items-center justify-center rounded-full transition-colors"
-          style={{ color: 'var(--chat-text-2)' }}
+          className="icon-btn mobile-only"
           aria-label="Go back"
         >
           <ArrowLeft size={22} />
         </button>
 
-        {/* Avatar with online status */}
         <Avatar src={avatarSrc} name={name} size="md" showOnline={isOnline} />
 
-        {/* Name + status */}
-        <div className="flex-1 min-w-0">
+        <div style={{ minWidth: 0 }}>
           <h3
-            className="text-[15px] font-semibold truncate leading-tight"
-            style={{ color: 'var(--chat-text-1)' }}
+            style={{
+              fontSize: 15,
+              fontWeight: 600,
+              color: 'var(--chat-text-1)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              lineHeight: 1.3,
+              margin: 0,
+            }}
           >
             {name}
           </h3>
           <p
-            className="text-[12px] leading-tight mt-0.5"
-            style={{ color: statusColor }}
+            style={{
+              fontSize: 12,
+              lineHeight: 1.3,
+              marginTop: 1,
+              margin: 0,
+              color: isOnline ? 'var(--color-success)' : 'var(--chat-text-2)',
+            }}
           >
             {statusText}
           </p>
         </div>
       </div>
 
-      {/* Right side: menu button (vuetify-chat style — just dots menu) */}
-      <button
-        className="w-9 h-9 flex items-center justify-center rounded-full transition-colors"
-        style={{ color: 'var(--chat-green)' }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--chat-hover)')}
-        onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-        aria-label="More options"
-      >
+      {/* Right: menu */}
+      <button className="icon-btn" aria-label="More options">
         <MoreVertical size={20} />
       </button>
     </header>

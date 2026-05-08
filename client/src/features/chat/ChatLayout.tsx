@@ -13,36 +13,45 @@ export default function ChatLayout() {
   const contactsPanelOpen = useUIStore((s) => s.contactsPanelOpen);
 
   return (
-    <div className="flex flex-1 min-h-0 h-full w-full">
-      {/* ── Left Sidebar (340px on desktop) ───────────────────────── */}
+    <div style={{ display: 'flex', flex: 1, height: '100%', width: '100%', minHeight: 0 }}>
+      {/*
+       * ── Left Sidebar ──────────────────────────────────────────────
+       * On mobile:
+       *   - If no chat selected → show full width
+       *   - If chat selected   → hide (0 width)
+       * On desktop: always show at 340px
+       */}
       <aside
         data-testid="sidebar"
-        className={[
-          'flex-shrink-0 flex flex-col h-full',
-          'w-full md:w-[340px]',
-          activeChatId ? 'hidden md:flex' : 'flex',
-        ].join(' ')}
+        className="chat-sidebar"
         style={{
-          background: 'var(--chat-sidebar-bg)',
-          borderRight: '1px solid var(--chat-border)',
+          /*
+           * Mobile-first: we use a CSS class to handle show/hide.
+           * On mobile: full width when no chat, hidden when chat active.
+           * On desktop: always 340px.
+           */
+          display: activeChatId ? 'none' : 'flex',
         }}
       >
         <Sidebar />
       </aside>
 
-      {/* ── Right Panel (Chat Window) ─────────────────────────────── */}
+      {/*
+       * ── Right Panel ───────────────────────────────────────────────
+       * On mobile: show only when chat is selected
+       * On desktop: always show
+       */}
       <div
         data-testid="chat-window"
-        className={[
-          'flex-1 flex flex-col min-w-0 h-full',
-          activeChatId ? 'flex' : 'hidden md:flex',
-        ].join(' ')}
-        style={{ background: 'var(--chat-msg-bg)' }}
+        className="chat-panel"
+        style={{
+          display: activeChatId ? 'flex' : 'none',
+        }}
       >
         <ChatWindow />
       </div>
 
-      {/* ── Contacts slide-over panel ────────────────────────────── */}
+      {/* Contacts slide-over */}
       {contactsPanelOpen && <ContactsPanel />}
     </div>
   );

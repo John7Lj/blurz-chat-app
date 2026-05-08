@@ -37,49 +37,34 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* ── Header (60px — vuetify-chat MenuPanel style) ────────── */}
+      {/* ── Header (vuetify-chat MenuPanel style — 60px) ──────── */}
       <header
-        className="flex items-center justify-between px-3 h-[60px] flex-shrink-0"
         style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 12px',
+          height: 60,
+          flexShrink: 0,
           background: 'var(--chat-header-bg)',
           borderBottom: '1px solid var(--chat-border)',
         }}
       >
         {/* Left: Avatar */}
-        <div className="flex items-center gap-2.5">
-          <Avatar src={user?.profile_url} name={fullName} size="md" />
-        </div>
+        <Avatar src={user?.profile_url} name={fullName} size="md" />
 
-        {/* Right: Action icons (vuetify-chat style) */}
-        <div className="flex items-center gap-1">
+        {/* Right: Action icons */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           <button
-            onClick={() => openContactsPanel()}
-            className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
-            style={{ color: 'var(--chat-text-2)' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--chat-green)';
-              e.currentTarget.style.background = 'var(--chat-hover)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--chat-text-2)';
-              e.currentTarget.style.background = 'transparent';
-            }}
+            onClick={openContactsPanel}
+            className="icon-btn"
             aria-label="New chat"
             title="New Chat"
           >
             <PenSquare size={20} />
           </button>
           <button
-            className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
-            style={{ color: 'var(--chat-text-2)' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--chat-green)';
-              e.currentTarget.style.background = 'var(--chat-hover)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--chat-text-2)';
-              e.currentTarget.style.background = 'transparent';
-            }}
+            className="icon-btn"
             aria-label="Menu"
             title="Menu"
           >
@@ -88,50 +73,74 @@ export default function Sidebar() {
         </div>
       </header>
 
-      {/* ── Search bar ────────────────────────────────────────────── */}
-      <div className="px-2 py-2 flex-shrink-0" style={{ background: 'var(--chat-sidebar-bg)' }}>
+      {/* ── Search bar ──────────────────────────────────────────── */}
+      <div
+        style={{
+          padding: '8px 10px',
+          flexShrink: 0,
+          background: 'var(--chat-sidebar-bg)',
+        }}
+      >
         <div
-          className="flex items-center gap-2 rounded-full px-3 h-[36px]"
-          style={{ background: 'var(--chat-search-bg)' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            borderRadius: 9999,
+            padding: '0 12px',
+            height: 36,
+            background: 'var(--chat-search-bg)',
+          }}
         >
-          <Search size={16} style={{ color: 'var(--chat-text-2)', flexShrink: 0 }} />
+          <Search size={15} style={{ color: 'var(--chat-text-2)', flexShrink: 0 }} />
           <input
             type="text"
             placeholder="Search or start new chat"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent text-[13px] focus:outline-none placeholder:opacity-60"
-            style={{ color: 'var(--chat-text-1)' }}
-            aria-label="Search or start new chat"
+            style={{
+              flex: 1,
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              fontSize: 13,
+              color: 'var(--chat-text-1)',
+            }}
+            aria-label="Search chats"
           />
         </div>
       </div>
 
-      {/* ── Chat list (scrollable) ────────────────────────────────── */}
+      {/* ── Chat list (scrollable) ───────────────────────────────── */}
       <div
-        className="flex-1 overflow-y-auto py-1"
-        style={{ background: 'var(--chat-sidebar-bg)' }}
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          background: 'var(--chat-sidebar-bg)',
+          paddingTop: 4,
+          paddingBottom: 4,
+        }}
       >
-        {isLoading && (
-          <div className="space-y-0">
-            {Array.from({ length: 7 }).map((_, i) => (
-              <ChatListSkeleton key={i} />
-            ))}
-          </div>
-        )}
+        {isLoading &&
+          Array.from({ length: 7 }).map((_, i) => <ChatListSkeleton key={i} />)
+        }
 
         {!isLoading && filteredChats.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16 px-6 text-center animate-fade-in">
-            <p
-              className="text-[14px] font-medium"
-              style={{ color: 'var(--chat-text-2)' }}
-            >
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '48px 24px',
+              textAlign: 'center',
+            }}
+            className="animate-fade-in"
+          >
+            <p style={{ fontSize: 14, color: 'var(--chat-text-2)', fontWeight: 500 }}>
               {search ? 'No chats found' : 'No conversations yet'}
             </p>
-            <p
-              className="text-[12px] mt-1"
-              style={{ color: 'var(--chat-text-2)', opacity: 0.7 }}
-            >
+            <p style={{ fontSize: 12, marginTop: 4, color: 'var(--chat-text-2)', opacity: 0.7 }}>
               {search ? 'Try a different search' : 'Start a new chat to begin'}
             </p>
           </div>

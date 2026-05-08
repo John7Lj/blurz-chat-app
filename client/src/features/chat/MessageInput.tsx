@@ -15,10 +15,7 @@ export default function MessageInput({ onSend, onTyping }: MessageInputProps) {
     if (!trimmed) return;
     onSend(trimmed);
     setInput('');
-    // Reset textarea height
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-    }
+    if (textareaRef.current) textareaRef.current.style.height = 'auto';
   }, [input, onSend]);
 
   const handleKeyDown = useCallback(
@@ -31,12 +28,10 @@ export default function MessageInput({ onSend, onTyping }: MessageInputProps) {
     [handleSend],
   );
 
-  // Auto-grow textarea
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setInput(e.target.value);
       onTyping?.();
-
       const el = e.target;
       el.style.height = 'auto';
       el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
@@ -48,38 +43,34 @@ export default function MessageInput({ onSend, onTyping }: MessageInputProps) {
 
   return (
     <div
-      className="flex items-end gap-2 px-3 py-2.5 flex-shrink-0"
       style={{
+        display: 'flex',
+        alignItems: 'flex-end',
+        gap: 6,
+        padding: '8px 10px',
+        flexShrink: 0,
         background: 'var(--chat-input-bg)',
         borderTop: '1px solid var(--chat-border)',
       }}
     >
-      {/* Attachment button */}
-      <button
-        className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full transition-colors"
-        style={{ color: 'var(--chat-text-2)' }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--chat-green)')}
-        onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--chat-text-2)')}
-        aria-label="Attach file"
-      >
+      {/* Attachment */}
+      <button className="icon-btn" aria-label="Attach file">
         <Paperclip size={20} />
       </button>
 
-      {/* Emoji button */}
-      <button
-        className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full transition-colors"
-        style={{ color: 'var(--chat-text-2)' }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--chat-green)')}
-        onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--chat-text-2)')}
-        aria-label="Emoji"
-      >
+      {/* Emoji */}
+      <button className="icon-btn" aria-label="Emoji">
         <Smile size={20} />
       </button>
 
-      {/* Text input — vuetify-chat style textarea */}
+      {/* Textarea */}
       <div
-        className="flex-1 flex items-end rounded-2xl px-4 py-2"
         style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'flex-end',
+          borderRadius: 20,
+          padding: '6px 14px',
           background: 'var(--chat-search-bg)',
           border: '1px solid var(--chat-border)',
         }}
@@ -89,33 +80,28 @@ export default function MessageInput({ onSend, onTyping }: MessageInputProps) {
           value={input}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          placeholder="Type your text"
+          placeholder="Type your message"
           rows={1}
-          className="flex-1 bg-transparent text-[14px] focus:outline-none resize-none leading-[1.4] placeholder:opacity-50"
           style={{
+            flex: 1,
+            background: 'transparent',
+            border: 'none',
+            outline: 'none',
+            fontSize: 14,
             color: 'var(--chat-text-1)',
-            maxHeight: '120px',
+            resize: 'none',
+            lineHeight: 1.4,
+            maxHeight: 120,
+            fontFamily: 'inherit',
           }}
         />
       </div>
 
-      {/* Send button — vuetify-chat style */}
+      {/* Send */}
       <button
         onClick={handleSend}
         disabled={!hasContent}
-        className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full transition-all duration-150"
-        style={{
-          background: hasContent ? 'var(--color-accent)' : 'transparent',
-          color: hasContent ? '#fff' : 'var(--chat-text-2)',
-          transform: 'rotate(-5deg)',
-          cursor: hasContent ? 'pointer' : 'default',
-        }}
-        onMouseEnter={(e) => {
-          if (hasContent) e.currentTarget.style.background = 'var(--color-accent-hover)';
-        }}
-        onMouseLeave={(e) => {
-          if (hasContent) e.currentTarget.style.background = 'var(--color-accent)';
-        }}
+        className={`send-btn ${hasContent ? 'has-content' : ''}`}
         aria-label="Send message"
       >
         <Send size={20} />

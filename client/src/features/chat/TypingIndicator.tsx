@@ -5,24 +5,26 @@ interface TypingIndicatorProps {
 export function TypingIndicator({ name }: TypingIndicatorProps) {
   return (
     <div
-      className="flex items-center gap-2 px-4 py-1.5 animate-fade-in"
-      style={{ minHeight: '28px' }}
+      className="animate-fade-in"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        padding: '6px 16px',
+        minHeight: 28,
+        background: 'var(--chat-input-bg)',
+        borderTop: '1px solid var(--chat-border)',
+      }}
     >
-      {/* Three bouncing dots — vuetify-chat ThreeDots style */}
       <div className="typing-dots">
         <span />
         <span />
         <span />
       </div>
-      <span
-        className="text-[12px] font-semibold"
-        style={{ color: 'var(--color-accent-light)' }}
-      >
-        {name ? `${name}` : 'typing'}
+      <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-accent-light)' }}>
+        {name || 'Someone'}
       </span>
-      <span className="text-[12px]" style={{ color: 'var(--chat-text-2)' }}>
-        is typing
-      </span>
+      <span style={{ fontSize: 12, color: 'var(--chat-text-2)' }}>is typing</span>
     </div>
   );
 }

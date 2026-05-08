@@ -19,9 +19,34 @@ const NotFoundPage = lazy(() => import('./features/notifications/NotFoundPage'))
 // ── Loading Fallback ────────────────────────────────────────────────
 function LoadingFallback() {
   return (
-    <div className="min-h-dvh flex items-center justify-center bg-[var(--color-bg-primary)]">
-      <div className="flex flex-col items-center gap-3 animate-fade-in">
-        <div className="w-10 h-10 rounded-full border-2 border-[var(--color-accent)] border-t-transparent animate-spin" />
+    <div
+      style={{
+        minHeight: '100dvh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--color-bg-primary)',
+      }}
+    >
+      <div
+        className="animate-fade-in"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 12,
+        }}
+      >
+        <div
+          className="animate-spin"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: '50%',
+            border: '2px solid var(--color-accent)',
+            borderTopColor: 'transparent',
+          }}
+        />
       </div>
     </div>
   );

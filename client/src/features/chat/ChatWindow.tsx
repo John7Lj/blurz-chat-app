@@ -37,13 +37,17 @@ export default function ChatWindow() {
     setActiveChat(null);
   }, [setActiveChat]);
 
-  // Empty state when no chat is selected
   if (!activeChatId) {
     return (
       <div
         data-testid="empty-chat-state"
-        className="flex-1 flex items-center justify-center"
-        style={{ background: 'var(--chat-msg-bg)' }}
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'var(--chat-msg-bg)',
+        }}
       >
         <EmptyState />
       </div>
@@ -52,13 +56,11 @@ export default function ChatWindow() {
 
   const p = activeChat?.participants;
   const participantName = p ? `${p.first_name} ${p.last_name}` : '';
-
-  // Check if someone is typing in this chat
   const typingUserId = typingUsers[activeChatId];
   const isPartnerTyping = !!typingUserId;
 
   return (
-    <div className="flex flex-col h-full w-full">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
       <ChatHeader
         name={participantName}
         avatarSrc={p?.profile_url}
@@ -76,10 +78,7 @@ export default function ChatWindow() {
         onMessageRead={sendRead}
       />
 
-      {/* Typing indicator — positioned between message list and input */}
-      {isPartnerTyping && (
-        <TypingIndicator name={p?.first_name || participantName} />
-      )}
+      {isPartnerTyping && <TypingIndicator name={p?.first_name || participantName} />}
 
       <MessageInput onSend={handleSend} onTyping={handleTyping} />
     </div>

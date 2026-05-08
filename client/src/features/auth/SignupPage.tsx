@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { Eye, EyeOff, ArrowRight, ArrowLeft } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
 import { useSignup } from '../../hooks/use-auth';
 
 export default function SignupPage() {
@@ -29,231 +27,190 @@ export default function SignupPage() {
   const isStep1Valid = form.first_name && form.last_name && form.email;
   const isStep2Valid = form.username && form.phone && form.password.length >= 8;
 
+  const labelStyle: React.CSSProperties = {
+    display: 'block',
+    fontSize: 12,
+    fontWeight: 600,
+    color: 'var(--color-text-secondary)',
+    marginBottom: 6,
+  };
+
   return (
     <div
-      className="min-h-dvh flex items-center justify-center relative overflow-hidden px-4"
-      style={{ background: 'var(--color-bg-primary)' }}
+      className="animate-fade-in"
+      style={{
+        minHeight: '100dvh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--color-bg-primary)',
+        padding: '16px',
+      }}
     >
-      {/* Background glow */}
-      <div className="aurora-bg" />
-
-      {/* Auth card — vuetify-chat centered card style */}
-      <div
-        className="w-full max-w-[420px] relative z-10 rounded-2xl p-8 sm:p-10 animate-slide-up"
-        style={{
-          background: 'var(--color-bg-card)',
-          border: '1px solid var(--color-border)',
-          boxShadow: 'var(--shadow-lg)',
-        }}
-      >
+      <div className="auth-card">
         {/* Logo + Title */}
-        <div className="flex flex-col items-center mb-6">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 24 }}>
           <div
-            className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 overflow-hidden"
             style={{
+              width: 56,
+              height: 56,
+              borderRadius: 14,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: 14,
               background: 'linear-gradient(135deg, #6d28d9, #8b5cf6)',
-              boxShadow: '0 4px 24px rgba(109,40,217,0.4)',
+              boxShadow: '0 4px 20px rgba(109,40,217,0.4)',
+              overflow: 'hidden',
             }}
           >
-            <img
-              src="/blurz-logo.png"
-              alt="Blurz"
-              className="w-10 h-10 object-contain"
-            />
+            <img src="/blurz-logo.png" alt="Blurz" style={{ width: 40, height: 40, objectFit: 'contain' }} />
           </div>
-          <h1
-            className="text-[24px] font-bold tracking-tight mb-1"
-            style={{ color: 'var(--color-text-primary)' }}
-          >
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--color-text-primary)', margin: '0 0 10px 0' }}>
             Create account
           </h1>
 
           {/* Step indicator */}
-          <div className="flex items-center gap-2 mt-2">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             {[1, 2].map((s) => (
               <div
                 key={s}
-                className="transition-all duration-300 rounded-full"
                 style={{
-                  height: '4px',
-                  width: step === s ? '28px' : '12px',
-                  background:
-                    step === s
-                      ? 'var(--color-accent)'
-                      : s < step
-                      ? 'var(--color-accent-light)'
-                      : 'var(--color-border-strong)',
+                  height: 4,
+                  width: step === s ? 28 : 12,
+                  borderRadius: 9999,
+                  background: step === s ? 'var(--color-accent)' : s < step ? 'var(--color-accent-light)' : 'rgba(139,92,246,0.3)',
                   opacity: s < step ? 0.6 : 1,
+                  transition: 'width 0.3s, background 0.3s',
                 }}
               />
             ))}
-            <span
-              className="text-[12px] ml-1"
-              style={{ color: 'var(--color-text-muted)' }}
-            >
+            <span style={{ fontSize: 12, color: 'var(--color-text-muted)', marginLeft: 4 }}>
               Step {step} of 2
             </span>
           </div>
         </div>
 
-        {/* Steps container */}
-        <div className="relative" style={{ minHeight: '280px' }}>
+        {/* Steps */}
+        <div style={{ position: 'relative', minHeight: 280 }}>
           {/* Step 1 */}
           <div
-            className="transition-all duration-300"
             style={{
               opacity: step === 1 ? 1 : 0,
-              transform: step === 1 ? 'translateX(0)' : 'translateX(-24px)',
+              transform: step === 1 ? 'translateX(0)' : 'translateX(-20px)',
               position: step === 1 ? 'relative' : 'absolute',
               inset: step === 1 ? 'auto' : 0,
               pointerEvents: step === 1 ? 'auto' : 'none',
+              transition: 'opacity 0.25s, transform 0.25s',
             }}
           >
-            <div className="flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-3">
-                <Input
-                  id="signup-first-name"
-                  label="First Name"
-                  value={form.first_name}
-                  onChange={set('first_name')}
-                  placeholder="John"
-                  autoComplete="given-name"
-                />
-                <Input
-                  id="signup-last-name"
-                  label="Last Name"
-                  value={form.last_name}
-                  onChange={set('last_name')}
-                  placeholder="Doe"
-                  autoComplete="family-name"
-                />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div>
+                  <label style={labelStyle}>First Name</label>
+                  <input id="signup-first-name" className="input-field" value={form.first_name} onChange={set('first_name')} placeholder="John" autoComplete="given-name" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Last Name</label>
+                  <input id="signup-last-name" className="input-field" value={form.last_name} onChange={set('last_name')} placeholder="Doe" autoComplete="family-name" />
+                </div>
               </div>
 
-              <Input
-                id="signup-email"
-                type="email"
-                label="Email Address"
-                value={form.email}
-                onChange={set('email')}
-                placeholder="john@example.com"
-                autoComplete="email"
-              />
+              <div>
+                <label style={labelStyle}>Email Address</label>
+                <input id="signup-email" type="email" className="input-field" value={form.email} onChange={set('email')} placeholder="john@example.com" autoComplete="email" />
+              </div>
 
-              <Button
+              <button
                 type="button"
-                size="lg"
-                className="w-full mt-1"
+                className="btn-primary"
                 onClick={() => setStep(2)}
                 disabled={!isStep1Valid}
+                style={{ marginTop: 4 }}
               >
-                Continue <ArrowRight size={15} className="ml-1.5" />
-              </Button>
+                Continue <ArrowRight size={15} style={{ marginLeft: 6 }} />
+              </button>
             </div>
           </div>
 
           {/* Step 2 */}
           <div
-            className="transition-all duration-300"
             style={{
               opacity: step === 2 ? 1 : 0,
-              transform: step === 2 ? 'translateX(0)' : 'translateX(24px)',
+              transform: step === 2 ? 'translateX(0)' : 'translateX(20px)',
               position: step === 2 ? 'relative' : 'absolute',
               inset: step === 2 ? 'auto' : 0,
               pointerEvents: step === 2 ? 'auto' : 'none',
+              transition: 'opacity 0.25s, transform 0.25s',
             }}
           >
-            <div className="flex flex-col gap-4">
-              <Input
-                id="signup-username"
-                label="Username"
-                value={form.username}
-                onChange={set('username')}
-                placeholder="johndoe"
-                maxLength={20}
-              />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div>
+                <label style={labelStyle}>Username</label>
+                <input id="signup-username" className="input-field" value={form.username} onChange={set('username')} placeholder="johndoe" maxLength={20} />
+              </div>
 
-              <Input
-                id="signup-phone"
-                type="tel"
-                label="Phone Number"
-                value={form.phone}
-                onChange={set('phone')}
-                placeholder="+1 234 567 8900"
-              />
+              <div>
+                <label style={labelStyle}>Phone Number</label>
+                <input id="signup-phone" type="tel" className="input-field" value={form.phone} onChange={set('phone')} placeholder="+1 234 567 8900" />
+              </div>
 
-              <Input
-                id="signup-password"
-                type={showPassword ? 'text' : 'password'}
-                label="Password"
-                value={form.password}
-                onChange={set('password')}
-                placeholder="Min 8 characters"
-                rightIcon={
+              <div>
+                <label style={labelStyle}>Password</label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    id="signup-password"
+                    type={showPassword ? 'text' : 'password'}
+                    className="input-field"
+                    value={form.password}
+                    onChange={set('password')}
+                    placeholder="Min 8 characters"
+                    style={{ paddingRight: 40 }}
+                  />
                   <button
                     type="button"
                     tabIndex={-1}
                     onClick={() => setShowPassword((p) => !p)}
-                    className="p-1 transition-colors"
-                    style={{ color: 'var(--color-text-muted)' }}
-                    onMouseEnter={(e) =>
-                      ((e.currentTarget as HTMLElement).style.color =
-                        'var(--color-text-primary)')
-                    }
-                    onMouseLeave={(e) =>
-                      ((e.currentTarget as HTMLElement).style.color =
-                        'var(--color-text-muted)')
-                    }
+                    style={{
+                      position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                      background: 'none', border: 'none', cursor: 'pointer',
+                      color: 'var(--color-text-muted)', display: 'flex', padding: 4,
+                    }}
                   >
                     {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
-                }
-              />
+                </div>
+              </div>
 
-              <div className="flex gap-3 mt-1">
-                <Button
+              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+                <button
                   type="button"
-                  variant="outline"
-                  size="lg"
-                  className="flex-shrink-0 px-4"
                   onClick={() => setStep(1)}
+                  className="btn-primary"
+                  style={{ width: 44, flexShrink: 0, padding: 0, background: 'var(--color-bg-input)', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)' }}
                   aria-label="Go back"
                 >
                   <ArrowLeft size={16} />
-                </Button>
-                <Button
+                </button>
+                <button
                   id="signup-submit"
                   type="button"
-                  size="lg"
-                  className="flex-1"
-                  loading={signupMutation.isPending}
-                  disabled={!isStep2Valid}
+                  className="btn-primary"
+                  disabled={!isStep2Valid || signupMutation.isPending}
                   onClick={handleSubmit}
+                  style={{ flex: 1 }}
                 >
-                  Create Account
-                </Button>
+                  {signupMutation.isPending ? 'Creating…' : 'Create Account'}
+                </button>
               </div>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <p
-          className="mt-6 text-center text-[14px]"
-          style={{ color: 'var(--color-text-secondary)' }}
-        >
+        <p style={{ marginTop: 24, textAlign: 'center', fontSize: 14, color: 'var(--color-text-secondary)' }}>
           Already have an account?{' '}
-          <Link
-            to="/login"
-            className="font-semibold transition-colors"
-            style={{ color: 'var(--color-accent-light)' }}
-            onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLElement).style.color = '#ffffff')
-            }
-            onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLElement).style.color =
-                'var(--color-accent-light)')
-            }
-          >
+          <Link to="/login" style={{ fontWeight: 600, color: 'var(--color-accent-light)' }}>
             Sign in
           </Link>
         </p>

@@ -7,12 +7,20 @@ interface AvatarProps {
   showOnline?: boolean;
 }
 
-const sizeMap = {
-  xs: { box: 'w-6 h-6',   text: '9px',  ring: 1, dot: 'w-2 h-2' },
-  sm: { box: 'w-8 h-8',   text: '11px', ring: 1.5, dot: 'w-2.5 h-2.5' },
-  md: { box: 'w-10 h-10', text: '13px', ring: 2, dot: 'w-3 h-3' },
-  lg: { box: 'w-14 h-14', text: '18px', ring: 2, dot: 'w-3.5 h-3.5' },
-  xl: { box: 'w-20 h-20', text: '26px', ring: 2.5, dot: 'w-4 h-4' },
+const sizeInPx = {
+  xs: 24,
+  sm: 32,
+  md: 40,
+  lg: 56,
+  xl: 80,
+};
+
+const fontSizeMap = {
+  xs: '9px',
+  sm: '11px',
+  md: '13px',
+  lg: '18px',
+  xl: '26px',
 };
 
 function getInitials(name?: string): string {
@@ -41,44 +49,73 @@ function nameToGradient(name?: string): [string, string] {
 }
 
 export function Avatar({ src, name, size = 'md', className = '', onClick, showOnline = false }: AvatarProps) {
-  const s = sizeMap[size];
   const [from, to] = nameToGradient(name);
-  const clickable = onClick ? 'cursor-pointer hover:opacity-90 active:scale-95 transition-all' : '';
+  const px = sizeInPx[size];
+  const fontSize = fontSizeMap[size];
 
-  const base = [
-    s.box, 'rounded-full flex-shrink-0 relative', clickable, className
-  ].join(' ');
-
-  const ring = `ring-[${s.ring}px] ring-[var(--color-border)]`;
+  const containerStyle: React.CSSProperties = {
+    width: px,
+    height: px,
+    borderRadius: '50%',
+    flexShrink: 0,
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: onClick ? 'pointer' : 'default',
+    overflow: 'visible',
+    border: '1px solid var(--color-border)',
+  };
 
   const inner = src ? (
     <img
-      data-testid="avatar-img"
       src={src}
       alt={name || 'Avatar'}
       onClick={onClick}
-      className={`${base} object-cover ${ring}`}
+      style={{
+        width: '100%',
+        height: '100%',
+        borderRadius: '50%',
+        objectFit: 'cover',
+      }}
     />
   ) : (
     <div
-      data-testid="avatar-initials"
       onClick={onClick}
-      className={`${base} flex items-center justify-center font-semibold ${ring}`}
-      style={{ background: `linear-gradient(135deg, ${from}, ${to})`, fontSize: s.text, color: `hsl(${0}, 70%, 90%)` }}
+      style={{
+        width: '100%',
+        height: '100%',
+        borderRadius: '50%',
+        background: `linear-gradient(135deg, ${from}, ${to})`,
+        fontSize: fontSize,
+        color: '#fff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: 600,
+      }}
     >
       {getInitials(name)}
     </div>
   );
 
-  if (!showOnline) return inner;
-
   return (
-    <div className="relative flex-shrink-0">
+    <div style={containerStyle} className={className}>
       {inner}
-      <span
-        className={`absolute bottom-0 right-0 ${s.dot} rounded-full border-[2px] border-[var(--color-bg-secondary)]`}
-        style={{ background: 'var(--color-success)' }}
-      />
+      {showOnline && (
+        <span
+          style={{
+            position: 'absolute',
+            bottom: size === 'xs' ? 0 : 1,
+            right: size === 'xs' ? 0 : 1,
+            width: size === 'xl' ? 14 : size === 'lg' ? 12 : 10,
+            height: size === 'xl' ? 14 : size === 'lg' ? 12 : 10,
+            background: 'var(--color-success)',
+            borderRadius: '50%',
+            border: '2px solid var(--color-bg-primary)',
+          }}
+        />
+      )}
     </div>
   );
 }

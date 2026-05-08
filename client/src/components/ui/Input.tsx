@@ -14,85 +14,71 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
 
     return (
-      <div className="flex flex-col gap-2">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {label && (
           <label
             htmlFor={inputId}
-            className="text-[13px] font-semibold"
-            style={{ color: 'var(--color-text-secondary)' }}
+            style={{ fontSize: 12, fontWeight: 600, color: 'var(--color-text-secondary)' }}
           >
             {label}
           </label>
         )}
 
-        <div className="relative group">
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
           {icon && (
-            <span
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-200"
-              style={{ color: 'var(--color-text-muted)' }}
+            <div
+              style={{
+                position: 'absolute',
+                left: 12,
+                display: 'flex',
+                alignItems: 'center',
+                color: 'var(--color-text-muted)',
+                pointerEvents: 'none',
+              }}
             >
               {icon}
-            </span>
+            </div>
           )}
 
           <input
             ref={ref}
             id={inputId}
-            className={[
-              'w-full h-12 rounded-xl text-[14px] transition-all duration-200',
-              'focus:outline-none',
-              'placeholder:opacity-40',
-              icon ? 'pl-10' : 'pl-4',
-              rightIcon ? 'pr-11' : 'pr-4',
-              className,
-            ].join(' ')}
+            className={`input-field ${className}`}
             style={{
-              background: 'var(--color-bg-input)',
-              color: 'var(--color-text-primary)',
-              border: error
-                ? '1px solid rgba(239,68,68,0.5)'
-                : '1px solid var(--color-border)',
-              boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.15)',
-            }}
-            onFocus={(e) => {
-              e.currentTarget.style.border = error
-                ? '1px solid rgba(239,68,68,0.7)'
-                : '1px solid var(--color-border-focus)';
-              e.currentTarget.style.boxShadow = error
-                ? 'inset 0 1px 2px rgba(0,0,0,0.15), 0 0 0 3px rgba(239,68,68,0.1)'
-                : 'inset 0 1px 2px rgba(0,0,0,0.15), 0 0 0 3px rgba(139,92,246,0.12)';
-              props.onFocus?.(e);
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.border = error
-                ? '1px solid rgba(239,68,68,0.5)'
-                : '1px solid var(--color-border)';
-              e.currentTarget.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.15)';
-              props.onBlur?.(e);
+              paddingLeft: icon ? 38 : 14,
+              paddingRight: rightIcon ? 38 : 14,
+              borderColor: error ? 'var(--color-danger)' : undefined,
             }}
             {...props}
           />
 
           {rightIcon && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <div
+              style={{
+                position: 'absolute',
+                right: 12,
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
               {rightIcon}
             </div>
           )}
         </div>
 
         {error && (
-          <p className="text-[12px] flex items-center gap-1" style={{ color: 'var(--color-danger)' }}>
+          <p style={{ fontSize: 12, color: 'var(--color-danger)', margin: 0, display: 'flex', alignItems: 'center', gap: 4 }}>
             <span>⚠</span> {error}
           </p>
         )}
         {hint && !error && (
-          <p className="text-[12px]" style={{ color: 'var(--color-text-muted)' }}>
+          <p style={{ fontSize: 12, color: 'var(--color-text-muted)', margin: 0 }}>
             {hint}
           </p>
         )}
       </div>
     );
-  },
+  }
 );
 
 Input.displayName = 'Input';

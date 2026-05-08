@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { Eye, EyeOff } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
 import { useLogin } from '../../hooks/use-auth';
 
 export default function LoginPage() {
@@ -22,123 +20,122 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-dvh flex items-center justify-center relative overflow-hidden px-4"
-      style={{ background: 'var(--color-bg-primary)' }}
+      className="animate-fade-in"
+      style={{
+        minHeight: '100dvh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--color-bg-primary)',
+        padding: '16px',
+      }}
     >
-      {/* Background glow */}
-      <div className="aurora-bg" />
-
-      {/* Auth card — vuetify-chat centered card style */}
-      <div
-        className="w-full max-w-[420px] relative z-10 rounded-2xl p-8 sm:p-10 animate-slide-up"
-        style={{
-          background: 'var(--color-bg-card)',
-          border: '1px solid var(--color-border)',
-          boxShadow: 'var(--shadow-lg)',
-        }}
-      >
-        {/* Logo + App name */}
-        <div className="flex flex-col items-center mb-8">
+      <div className="auth-card">
+        {/* Logo */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 28 }}>
           <div
-            className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 overflow-hidden"
             style={{
+              width: 56,
+              height: 56,
+              borderRadius: 14,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: 14,
               background: 'linear-gradient(135deg, #6d28d9, #8b5cf6)',
-              boxShadow: '0 4px 24px rgba(109,40,217,0.4)',
+              boxShadow: '0 4px 20px rgba(109,40,217,0.4)',
+              overflow: 'hidden',
             }}
           >
-            <img
-              src="/blurz-logo.png"
-              alt="Blurz"
-              className="w-10 h-10 object-contain"
-            />
+            <img src="/blurz-logo.png" alt="Blurz" style={{ width: 40, height: 40, objectFit: 'contain' }} />
           </div>
-          <h1
-            className="text-[24px] font-bold tracking-tight"
-            style={{ color: 'var(--color-text-primary)' }}
-          >
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--color-text-primary)', margin: 0 }}>
             Login to continue
           </h1>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <Input
-            id="login-email"
-            type="email"
-            label="Email Address"
-            value={form.email}
-            onChange={set('email')}
-            placeholder="you@example.com"
-            autoComplete="email"
-            required
-          />
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {/* Email */}
+          <div>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: 6 }}>
+              Email Address
+            </label>
+            <input
+              id="login-email"
+              type="email"
+              className="input-field"
+              value={form.email}
+              onChange={set('email')}
+              placeholder="you@example.com"
+              autoComplete="email"
+              required
+            />
+          </div>
 
-          <Input
-            id="login-password"
-            type={showPassword ? 'text' : 'password'}
-            label="Password"
-            value={form.password}
-            onChange={set('password')}
-            placeholder="Enter your password"
-            rightIcon={
+          {/* Password */}
+          <div>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: 6 }}>
+              Password
+            </label>
+            <div style={{ position: 'relative' }}>
+              <input
+                id="login-password"
+                type={showPassword ? 'text' : 'password'}
+                className="input-field"
+                value={form.password}
+                onChange={set('password')}
+                placeholder="Enter your password"
+                autoComplete="current-password"
+                required
+                style={{ paddingRight: 40 }}
+              />
               <button
                 type="button"
                 tabIndex={-1}
                 onClick={() => setShowPassword((p) => !p)}
-                className="p-1 transition-colors"
-                style={{ color: 'var(--color-text-muted)' }}
-                onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLElement).style.color =
-                  'var(--color-text-primary)')
-                }
-                onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLElement).style.color =
-                  'var(--color-text-muted)')
-                }
+                style={{
+                  position: 'absolute',
+                  right: 10,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--color-text-muted)',
+                  display: 'flex',
+                  padding: 4,
+                }}
               >
                 {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
-            }
-            autoComplete="current-password"
-            required
-          />
+            </div>
+          </div>
 
-          <Button
+          <button
             id="login-submit"
             type="submit"
-            size="lg"
-            className="w-full mt-2"
-            loading={loginMutation.isPending}
-            disabled={!isValid}
+            className="btn-primary"
+            disabled={!isValid || loginMutation.isPending}
+            style={{ marginTop: 6 }}
           >
-            Login
-          </Button>
+            {loginMutation.isPending ? 'Logging in…' : 'Login'}
+          </button>
         </form>
 
         {/* Divider */}
-        <div className="flex items-center gap-3 my-6">
-          <div className="flex-1 h-px" style={{ background: 'var(--color-border)' }} />
-          <span className="text-[12px]" style={{ color: 'var(--color-text-muted)', userSelect: 'none' }}>or</span>
-          <div className="flex-1 h-px" style={{ background: 'var(--color-border)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '20px 0' }}>
+          <div className="divider" />
+          <span style={{ fontSize: 12, color: 'var(--color-text-muted)', flexShrink: 0, userSelect: 'none' }}>or</span>
+          <div className="divider" />
         </div>
 
         {/* Footer */}
-        <p
-          className="text-center text-[14px]"
-          style={{ color: 'var(--color-text-secondary)' }}
-        >
+        <p style={{ textAlign: 'center', fontSize: 14, color: 'var(--color-text-secondary)', margin: 0 }}>
           Don't have an account?{' '}
           <Link
             to="/signup"
-            className="font-semibold transition-colors"
-            style={{ color: 'var(--color-accent-light)' }}
-            onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLElement).style.color = '#ffffff')
-            }
-            onMouseLeave={(e) =>
-            ((e.currentTarget as HTMLElement).style.color =
-              'var(--color-accent-light)')
-            }
+            style={{ fontWeight: 600, color: 'var(--color-accent-light)' }}
           >
             Register
           </Link>

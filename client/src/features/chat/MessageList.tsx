@@ -16,8 +16,6 @@ interface MessageListProps {
   onMessageRead?: (chatId: string, messageId: string) => void;
 }
 
-// ── Helpers ────────────────────────────────────────────────────────
-
 function getDateLabel(dateStr: string): string {
   try {
     const d = new Date(dateStr);
@@ -29,22 +27,16 @@ function getDateLabel(dateStr: string): string {
   }
 }
 
-/** Check if two dates are the same calendar day */
 function isSameDay(a: string, b: string): boolean {
   try {
     const da = new Date(a);
     const db = new Date(b);
-    return (
-      da.getFullYear() === db.getFullYear() &&
-      da.getMonth() === db.getMonth() &&
-      da.getDate() === db.getDate()
-    );
+    return da.getFullYear() === db.getFullYear() && da.getMonth() === db.getMonth() && da.getDate() === db.getDate();
   } catch {
     return false;
   }
 }
 
-/** Two messages are in the same group if same sender & within 5 min */
 function inSameGroup(a: Message, b: Message): boolean {
   if (a.sender_id !== b.sender_id) return false;
   try {
@@ -54,8 +46,6 @@ function inSameGroup(a: Message, b: Message): boolean {
     return false;
   }
 }
-
-// ── Component ─────────────────────────────────────────────────────
 
 export default function MessageList({
   messages,
@@ -72,7 +62,6 @@ export default function MessageList({
   const [newMsgCount, setNewMsgCount] = useState(0);
   const prevLenRef = useRef(messages.length);
 
-  // ── IntersectionObserver for read receipts ─────────────────────
   useMessageObserver({
     containerRef,
     messages,
@@ -81,17 +70,14 @@ export default function MessageList({
     onMessageRead: onMessageRead ?? (() => {}),
   });
 
-  // ── Scroll tracking ───────────────────────────────────────────
   const handleScroll = useCallback(() => {
     const el = containerRef.current;
     if (!el) return;
-    const threshold = 80;
-    const atBot = el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
+    const atBot = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
     setIsAtBottom(atBot);
     if (atBot) setNewMsgCount(0);
   }, []);
 
-  // Auto-scroll to bottom on new message (if user is at bottom)
   useEffect(() => {
     const newLen = messages.length;
     if (newLen > prevLenRef.current) {
@@ -104,7 +90,6 @@ export default function MessageList({
     prevLenRef.current = newLen;
   }, [messages.length, isAtBottom]);
 
-  // Scroll to bottom on initial load
   useEffect(() => {
     if (!isLoading && messages.length > 0) {
       bottomRef.current?.scrollIntoView({ behavior: 'instant' });
@@ -116,7 +101,6 @@ export default function MessageList({
     setNewMsgCount(0);
   }, []);
 
-  // ── Render items with date dividers and grouping ──────────────
   const renderItems = useMemo(() => {
     const items: React.ReactNode[] = [];
     let lastDate = '';
@@ -125,13 +109,11 @@ export default function MessageList({
       const msg = messages[i];
       const dateLabel = getDateLabel(msg.sent_at);
 
-      // Insert date divider
       if (i === 0 || !isSameDay(msg.sent_at, messages[i - 1].sent_at)) {
         lastDate = dateLabel;
         items.push(<DateDivider key={`date-${lastDate}-${i}`} label={lastDate} />);
       }
 
-      // Determine grouping
       const prev = i > 0 ? messages[i - 1] : null;
       const next = i < messages.length - 1 ? messages[i + 1] : null;
 
@@ -154,21 +136,24 @@ export default function MessageList({
         />,
       );
     }
-
     return items;
   }, [messages, currentUserId, participantName, participantAvatar]);
 
-  // ── Loading skeleton ─────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="flex-1 overflow-y-auto chat-bg-pattern p-4">
+      <div style={{ flex: 1, overflowY: 'auto', padding: 16, background: 'var(--chat-msg-bg)' }}>
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className={`flex ${i % 3 === 0 ? 'justify-end' : 'justify-start'} px-[4%] py-1`}
+            style={{
+              display: 'flex',
+              justifyContent: i % 3 === 0 ? 'flex-end' : 'flex-start',
+              padding: '4px 16px',
+            }}
           >
             <div
-              className={`h-9 ${i % 3 === 0 ? 'w-36' : 'w-52'} rounded-[8px] skeleton`}
+              className="skeleton"
+              style={{ height: 36, width: i % 3 === 0 ? 140 : 200, borderRadius: 8 }}
             />
           </div>
         ))}
@@ -181,14 +166,32 @@ export default function MessageList({
       ref={containerRef}
       data-testid="message-list"
       onScroll={handleScroll}
-      className="flex-1 overflow-y-auto chat-bg-pattern relative pt-2 pb-4"
+      className="chat-bg-pattern"
+      style={{
+        flex: 1,
+        overflowY: 'auto',
+        position: 'relative',
+        paddingTop: 8,
+        paddingBottom: 16,
+      }}
     >
-      {/* Empty state */}
       {messages.length === 0 && (
-        <div className="flex flex-col items-center justify-center h-full gap-3">
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            gap: 12,
+          }}
+        >
           <div
-            className="px-4 py-2 rounded-lg text-[13px] font-medium shadow-sm"
             style={{
+              padding: '6px 16px',
+              borderRadius: 8,
+              fontSize: 13,
+              fontWeight: 500,
               background: 'var(--chat-divider-bg)',
               color: 'var(--chat-divider-text)',
             }}
@@ -201,18 +204,30 @@ export default function MessageList({
       {renderItems}
       <div ref={bottomRef} />
 
-      {/* "New messages" floating button */}
+      {/* New messages floating button */}
       {newMsgCount > 0 && !isAtBottom && (
         <button
           onClick={scrollToBottom}
-          className="sticky bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full text-[13px] font-semibold shadow-lg flex items-center gap-1.5 transition-all z-10 hover:brightness-110"
           style={{
+            position: 'sticky',
+            bottom: 16,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            padding: '8px 16px',
+            borderRadius: 9999,
+            fontSize: 13,
+            fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
             background: 'var(--chat-header-bg)',
             color: 'var(--chat-green)',
             border: '1px solid var(--chat-border)',
+            cursor: 'pointer',
+            zIndex: 10,
           }}
         >
-          {newMsgCount} new message{newMsgCount > 1 ? 's' : ''} <ChevronDown size={16} />
+          {newMsgCount} new {newMsgCount > 1 ? 'messages' : 'message'} <ChevronDown size={16} />
         </button>
       )}
     </div>
