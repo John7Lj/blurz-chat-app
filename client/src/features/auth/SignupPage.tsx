@@ -214,6 +214,11 @@ export default function SignupPage() {
           </div>
         </div>
 
+        {/* Legal */}
+        <p style={{ marginTop: 20, textAlign: 'center', fontSize: 12, color: 'var(--color-text-muted)' }}>
+          By signing up, you agree to our <Link to="/terms" style={{ color: 'var(--color-accent-light)', textDecoration: 'underline' }}>Terms of Service</Link>, <Link to="/privacy" style={{ color: 'var(--color-accent-light)', textDecoration: 'underline' }}>Privacy Policy</Link>, and <Link to="/license" style={{ color: 'var(--color-accent-light)', textDecoration: 'underline' }}>License</Link>.
+        </p>
+
         {/* Footer */}
         <p style={{ marginTop: 24, textAlign: 'center', fontSize: 14, color: 'var(--color-text-secondary)' }}>
           Already have an account?{' '}

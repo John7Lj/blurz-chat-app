@@ -112,6 +112,8 @@ See the [Deployment Walkthrough](.github/DEPLOYMENT.md) for the full step-by-ste
 | SSL | Let's Encrypt (Certbot) |
 | CI/CD | GitHub Actions |
 
-## 📄 License
+## 📄 Legal
 
-This project is licensed under the [MIT License](LICENSE).
+- [License](LICENSE) - MIT License
+- [Terms of Service](TERMS_OF_SERVICE.md)
+- [Privacy Policy](PRIVACY_POLICY.md)

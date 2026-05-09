@@ -22,7 +22,9 @@ const ContactsPage = lazy(() => import('./features/contacts/ContactsPage'));
 const SettingsPage = lazy(() => import('./features/settings/SettingsPage'));
 const NotificationsPage = lazy(() => import('./features/notifications/NotificationsPage'));
 const NotFoundPage = lazy(() => import('./features/notifications/NotFoundPage'));
-
+const TermsOfServicePage = lazy(() => import('./features/legal/TermsOfServicePage'));
+const PrivacyPolicyPage = lazy(() => import('./features/legal/PrivacyPolicyPage'));
+const LicensePage = lazy(() => import('./features/legal/LicensePage'));
 // ── Loading Fallback ────────────────────────────────────────────────
 function LoadingFallback() {
   return (
@@ -99,6 +101,9 @@ export default function App() {
         {/* Public Routes */}
         <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
+        <Route path="/terms" element={<TermsOfServicePage />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/license" element={<LicensePage />} />
 
         {/* Protected App Shell Layout */}
         <Route path="/" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
