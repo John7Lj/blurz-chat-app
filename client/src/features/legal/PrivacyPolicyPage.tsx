@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router';
 export default function PrivacyPolicyPage() {
   const navigate = useNavigate();
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: 24, color: 'var(--color-text-primary)' }}>
+    <div style={{ height: '100dvh', overflowY: 'auto', background: 'var(--color-bg-primary)' }}>
+      <div style={{ maxWidth: 800, margin: '0 auto', padding: '24px 24px 60px', color: 'var(--color-text-primary)' }}>
       <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', color: 'var(--color-text-secondary)', cursor: 'pointer', marginBottom: 24 }}>
         <ArrowLeft size={20} /> Back
       </button>
@@ -51,6 +52,7 @@ export default function PrivacyPolicyPage() {
           <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>5. Your Choices</h2>
           <p>You can update your account information and preferences at any time by logging into your account settings. You may also request the deletion of your account and associated data.</p>
         </section>
+      </div>
       </div>
     </div>
   );

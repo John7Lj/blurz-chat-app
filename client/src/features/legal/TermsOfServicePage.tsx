@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router';
 export default function TermsOfServicePage() {
   const navigate = useNavigate();
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: 24, color: 'var(--color-text-primary)' }}>
+    <div style={{ height: '100dvh', overflowY: 'auto', background: 'var(--color-bg-primary)' }}>
+      <div style={{ maxWidth: 800, margin: '0 auto', padding: '24px 24px 60px', color: 'var(--color-text-primary)' }}>
       <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', color: 'var(--color-text-secondary)', cursor: 'pointer', marginBottom: 24 }}>
         <ArrowLeft size={20} /> Back
       </button>
@@ -50,6 +51,7 @@ export default function TermsOfServicePage() {
           <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12 }}>6. Limitation of Liability</h2>
           <p>In no event shall Blurz, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the service.</p>
         </section>
+      </div>
       </div>
     </div>
   );
