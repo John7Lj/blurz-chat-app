@@ -1,3 +1,8 @@
+# Copyright (c) 2026 Blurz
+# 
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
 """
 Unit tests for server/chats/service.py
 Tests: get_user_chats_with_others, find_existing_chat, create_chat_with_message,

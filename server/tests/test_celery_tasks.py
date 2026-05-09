@@ -1,3 +1,8 @@
+# Copyright (c) 2026 Blurz
+# 
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
 """
 Unit tests for server/celery_service/celery_tasks.py
 Tests: bg_send_mail, bg_save_profile_picture (with mocked Celery/DB/Mail)

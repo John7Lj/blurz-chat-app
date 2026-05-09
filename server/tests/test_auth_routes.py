@@ -1,3 +1,8 @@
+# Copyright (c) 2026 Blurz
+# 
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
 """
 Integration tests for server/auth/routes.py
 Uses FastAPI TestClient with mocked DB/Redis/Celery.

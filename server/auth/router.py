@@ -1,3 +1,8 @@
+# Copyright (c) 2026 Blurz
+# 
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
 from fastapi import APIRouter, Depends, status, HTTPException
 from db.main import get_session
 from .service import User_Service

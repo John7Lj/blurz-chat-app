@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2026 Blurz
+ * 
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import { Search, MessageCircle } from 'lucide-react';
 import { useSearchUsers } from '../../hooks/use-contacts';
 import { useStartChat } from '../../hooks/use-chats';

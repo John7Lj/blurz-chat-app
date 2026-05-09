@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2026 Blurz
+ * 
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProviders, createTestQueryClient } from '../helpers/render';

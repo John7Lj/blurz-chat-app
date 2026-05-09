@@ -100,3 +100,7 @@ See the [Deployment Walkthrough](.github/DEPLOYMENT.md) for the full step-by-ste
 | Reverse Proxy | Nginx |
 | SSL | Let's Encrypt (Certbot) |
 | CI/CD | GitHub Actions |
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).

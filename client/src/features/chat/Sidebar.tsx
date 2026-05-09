@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2026 Blurz
+ * 
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import { useState, useMemo, useCallback } from 'react';
 import { PenSquare, MoreVertical, Search } from 'lucide-react';
 import { useChats } from '../../hooks/use-chats';
