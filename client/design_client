@@ -1,0 +1,235 @@
+first of all dont forget the logo at here client\assets
+
+
+You are a senior frontend engineer and UI/UX designer.
+
+Build a WhatsApp-style chat application layout in React with Tailwind CSS.
+Focus on the full two-column layout — sidebar on the left, chat window 
+on the right. Production-quality code, not a tutorial prototype.
+
+---
+
+## Overall Layout
+
+Desktop (≥768px):
+- Fixed full-height two-column layout (no page scroll)
+- Left sidebar: exactly 340px wide, fixed height, internal scroll
+- Right panel: fills remaining width, fixed height, internal scroll
+- No gap between sidebar and chat panel
+
+Mobile (<768px):
+- Sidebar and chat panel are separate full-screen views
+- Sidebar is the default view
+- Clicking a chat slides in the chat panel (CSS transition)
+- Back button in chat header returns to sidebar
+
+---
+
+## Left Sidebar
+
+### Top header bar
+- Left: app logo or name ("ChatApp")
+- Right: two icon buttons — new chat (pencil icon), menu (three dots)
+- Height: 60px
+- Bottom border separating from content below
+
+### Search bar
+- Full width, below header
+- Rounded pill input with search icon on the left inside
+- Placeholder: "Search or start new chat"
+- Padding: 8px 16px
+- Filters chat list in real time as user types
+
+### Chat list
+- Scrollable independently (overflow-y: auto)
+- Takes all remaining sidebar height below search
+
+Each chat list item (72px tall):
+- Left: circular avatar (40px), initials fallback if no photo,
+  small green online dot overlaid on bottom-right of avatar
+- Middle: 
+  - Top row: contact name (bold, 15px) + timestamp (small, gray, right-aligned)
+  - Bottom row: last message preview (13px, gray, truncated) + 
+    unread count badge (green circle, right-aligned, hidden if 0)
+- States:
+  - Default: white background
+  - Hover: #F0F2F5 background, smooth transition
+  - Active/selected: #F0F2F5 background, left accent border (3px green)
+- Clicking sets this chat as active in the right panel
+
+---
+
+## Right Panel — Chat Window
+
+### Chat header (60px tall)
+- Left: avatar (40px) + contact name (bold) + status line 
+  ("online" in green, or "last seen today at 3:42 PM" in gray)
+- Right: icon buttons — video call, phone call, search, three dots menu
+- Bottom border separating from message area
+
+### Message area
+- Takes all space between header and input bar
+- Scrollable independently
+- Background color: #ECE5DD (WhatsApp beige) in light mode,
+  #0B141A in dark mode
+- Newest messages at the bottom
+- Auto-scrolls to bottom when new message arrives
+- If user scrolled up and new message arrives:
+  show floating pill button "1 new message ↓" at bottom center
+
+### Date dividers
+Between messages from different days:
+- Centered gray pill label: "Today", "Yesterday", or "Mon, 12 May"
+- Subtle background, small text (12px)
+
+### Message bubbles
+
+Sent (right-aligned):
+- Background: #DCF8C6 (light green) / #005C4B dark mode
+- Max width: 65% of message area
+- Border radius: 8px, bottom-right corner 2px (WhatsApp tail effect)
+- Content: message text + timestamp (11px, gray, bottom-right) + 
+  read receipt icon (✓ gray / ✓✓ gray / ✓✓ blue)
+- No avatar shown
+
+Received (left-aligned):
+- Background: white / #1F2C34 dark mode
+- Same max width and radius, bottom-left corner 2px
+- Avatar shown to the left of bubble (only on last message in a group)
+
+Grouping rules:
+- Consecutive messages from same sender within 5 minutes = a group
+- Within a group: no avatar repeat, reduced top margin (2px instead of 8px)
+- Last message in group gets the tail corner effect
+- Non-last messages: fully rounded
+
+### Input bar (60px tall)
+- Full width, fixed to bottom of right panel
+- Top border or subtle shadow
+- Left icons: emoji button, attachment (paperclip) button
+- Center: rounded pill input, placeholder "Type a message"
+- Right: when input empty → microphone icon button
+         when input has text → green circle send button (white arrow icon)
+- Pressing Enter sends the message
+- After sending: input clears, message appears, panel scrolls to bottom
+
+---
+
+## Visual Design
+
+Light mode colors:
+- Sidebar bg: #FFFFFF
+- Message area bg: #ECE5DD  
+- Sent bubble: #DCF8C6
+- Received bubble: #FFFFFF
+- Input bar bg: #F0F2F5
+- Selected chat bg: #F0F2F5
+- Primary green: #25D366
+- Header bg: #F0F2F5
+
+Dark mode colors (auto-detected via system preference):
+- Sidebar bg: #111B21
+- Message area bg: #0B141A
+- Sent bubble: #005C4B
+- Received bubble: #1F2C34
+- Input bar bg: #1F2C34
+- Header bg: #202C33
+- Text primary: #E9EDEF
+- Text secondary: #8696A0
+
+Typography:
+- Font: Inter (import from Google Fonts)
+- Contact name: 15px, font-weight 600
+- Last message: 13px, font-weight 400
+- Message text: 14.5px
+- Timestamp: 11px
+
+Transitions:
+- Hover states: 150ms ease
+- Mobile panel slide: 300ms ease
+- New message appear: fade-in + translate-y (200ms)
+
+---
+
+## Components
+
+Build exactly these components:
+
+App.jsx
+- Holds all state: activeChat, chats list, messages per chat
+- Renders Sidebar + ChatWindow side by side
+- On mobile: renders only one at a time based on activeChat
+
+Sidebar.jsx
+- Receives: chats, activeChat, onSelectChat, searchQuery, onSearchChange
+- Renders header + search + scrollable ChatListItem list
+
+ChatListItem.jsx  
+- Receives: chat object, isActive, onClick
+- Renders one row: avatar, name, preview, timestamp, badge
+
+ChatWindow.jsx
+- Receives: chat, messages, onSendMessage, onBack (mobile)
+- Renders ChatHeader + MessageList + MessageInput
+
+ChatHeader.jsx
+- Receives: contact name, avatar, status, onBack
+- Renders the top bar
+
+MessageList.jsx
+- Receives: messages array
+- Groups messages by date and by sender
+- Renders DateDivider + MessageBubble list
+- Auto-scrolls to bottom on new message
+
+MessageBubble.jsx
+- Receives: message, isSent, showAvatar, isLastInGroup
+- Renders the bubble with correct style, timestamp, read receipt
+
+DateDivider.jsx
+- Receives: label string ("Today", "Yesterday", date string)
+- Renders centered date pill
+
+MessageInput.jsx
+- Receives: onSend callback
+- Manages its own input state
+- Renders emoji + attachment + input + send/mic button
+
+---
+
+## Mock Data
+
+Include realistic mock data in a separate mockData.js file:
+- 4 contacts with names, avatars (use ui-avatars.com URLs), online status
+- Each contact has 12-18 messages, mixed sent/received
+- Messages spread across last 3 days so date dividers appear
+- At least one contact with unread messages (badge visible)
+- Varied message lengths: short replies, long paragraphs, single emojis
+
+---
+
+## Code requirements
+
+- TypeScript with proper interfaces for Message, Chat, Contact types
+- Tailwind only — zero inline styles
+- All icon buttons have aria-label
+- No layout shift when messages load
+- Sidebar and message area scroll independently — main page never scrolls
+- useRef for message list scroll behavior
+- useMemo for filtered chat list (search)
+- useCallback for handlers passed as props
+
+---
+
+Deliver in this order:
+1. types.ts
+2. mockData.js  
+3. App.jsx
+4. Sidebar.jsx + ChatListItem.jsx
+5. ChatWindow.jsx + ChatHeader.jsx
+6. MessageList.jsx + MessageBubble.jsx + DateDivider.jsx
+7. MessageInput.jsx
+8. Any required Tailwind config additions
+
+After all code, list exact npm install command for any 
+packages needed beyond React and Tailwind.

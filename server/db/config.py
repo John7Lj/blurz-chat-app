@@ -1,3 +1,8 @@
+# Copyright (c) 2026 Blurz
+# 
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
 from pydantic_settings import BaseSettings,SettingsConfigDict
 
 
@@ -25,7 +30,6 @@ class settings(BaseSettings):
     VALIDATE_CERTS: bool = True
     domain:str
     password_secrete_reset:str
-    profile_picture_path:str
 
     DEBUG: bool = True
     model_config = SettingsConfigDict (env_file=".env",  extra="ignore")

@@ -1,10 +1,15 @@
+# Copyright (c) 2026 Blurz
+# 
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select, or_
 from db.config import config
 from db.models import User as User_Model
-from .schema import Create_User
-from utils import generate_hashed_password
-from errors import UserAlreadyExists, UserAlreadyVerify, UserNotFound
+from .schemas import Create_User
+from core.utils import generate_hashed_password
+from core.errors import UserAlreadyExists, UserAlreadyVerify, UserNotFound
 from fastapi import HTTPException, status
 import uuid
 import logging

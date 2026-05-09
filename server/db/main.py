@@ -1,3 +1,8 @@
+# Copyright (c) 2026 Blurz
+# 
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
 from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncEngine
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -53,7 +58,21 @@ async def close_db() -> None:
 
 
 async def get_session():
-    """FastAPI dependency that yields a session with basic error handling."""
+    async with async_session() as session:
+        try:
+            yield session
+            await session.commit()     # ← only this is worth adding manually
+        except Exception:
+            await session.rollback()   # ← and this
+            raise
+
+# this is for background tasks that are not inside FastAPI's Depends()4
+
+from contextlib import asynccontextmanager
+# we here use contextlib to manage the session because it does not have any dependencies with the FastAPI requests
+@asynccontextmanager
+async def get_session_ctx():
+    """Same as get_session but for WebSockets / background tasks — anywhere outside FastAPI's Depends()."""
     async with async_session() as session:
         try:
             yield session
@@ -62,5 +81,3 @@ async def get_session():
             await session.rollback()
             logger.error(f"Session error, rolling back: {e}")
             raise
-        finally:
-            await session.close()

@@ -22,11 +22,14 @@ from sqlmodel import SQLModel
 target_metadata = SQLModel.metadata
 
 # Build a synchronous DB URL from your async one
-# e.g. postgresql+asyncpg://... -> postgresql+psycopg2://...
+# e.g. postgresql+asyncpg://...?ssl=require -> postgresql+psycopg2://...?sslmode=require
 def get_sync_url() -> str:
     url: str = app_settings.DB_URL
     # Replace async driver with sync driver for alembic
-    return url.replace("postgresql+asyncpg", "postgresql+psycopg2")
+    url = url.replace("postgresql+asyncpg", "postgresql+psycopg2")
+    # Replace asyncpg SSL param with psycopg2 SSL param
+    url = url.replace("?ssl=require", "?sslmode=require")
+    return url
 
 
 def run_migrations_offline() -> None:

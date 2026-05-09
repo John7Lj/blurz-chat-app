@@ -1,16 +1,21 @@
+# Copyright (c) 2026 Blurz
+# 
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
    
 from abc import abstractmethod
 from fastapi.security import HTTPBearer
 from fastapi import status,Request,Depends
 from fastapi.exceptions import HTTPException
-from utils import decode_token
+from core.utils import decode_token
 from db.redis import check_blacklist
 from sqlmodel.ext.asyncio.session import AsyncSession
 from db.main import get_session
 from .service import User_Service
 import logging
 from db.models import User
-from errors import (
+from core.errors import (
     InvalidToken,
     RefreshTokenRequired,
     AccessTokenRequired,
@@ -27,6 +32,8 @@ class BearerToken(HTTPBearer):
     async def __call__(self,request:Request):
         credits = await super().__call__(request)
         
+        if not credits:
+            raise InvalidToken()
         token_data = decode_token(credits.credentials)
     
         if not token_data :
@@ -64,32 +71,42 @@ class RefreshToken(BearerToken):
 
 
 
-async def get_current_user(token: dict = Depends(AccessTokenBearer()),
-                           session: AsyncSession = Depends(get_session)) -> object:
+async def get_current_user(
+    token: dict = Depends(AccessTokenBearer()),
+    session: AsyncSession = Depends(get_session)
+) -> User:
     if not token:
         raise InvalidToken()
+
     email = token['user']['email']
+
     try:
-        user = await User_Service().get_user_by_email(email, session)
-        
+        user: User = await User_Service().get_user_by_email(email, session)
+
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User not found"
             )
-        
+
+        if not user.is_verified:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Account not verified. Please verify your email."
+            )
+
         return user
-        
+
     except HTTPException:
-        raise  # Re-raise HTTP exceptions
-        
+        raise
+
     except Exception as e:
         logging.exception(f'Error fetching user: {e}')
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch user"
         )
- 
+        
 class CheckRoler :
     def __init__ (self,allowd_rloes:list[str]):
         self.allowd_rloes = allowd_rloes
@@ -100,7 +117,9 @@ class CheckRoler :
             raise EmailNotVerified()
         
         if user_details:
-            if user_details.role in self.allowd_rloes:
+            user_role = getattr(user_details, 'role', 'user')
+            if user_role in self.allowd_rloes:
                 return True
             raise InsufficientPermission()
         
+        raise InsufficientPermission()
