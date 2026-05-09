@@ -59,11 +59,22 @@ Copy `server/.env.example` to `server/.env` and fill in your values:
 | `DB_URL` | PostgreSQL connection string (asyncpg format) |
 | `jwt_secret` | Secret key for JWT signing |
 | `password_secrete_reset` | Secret for password reset tokens |
-| `Redis_Url` | Redis connection URL |
-| `MAIL_USERNAME` | Gmail address for sending emails |
-| `MAIL_PASSWORD` | Gmail App Password (not your login password) |
+| `jwt_algorithm` | Algorithm used for JWT (e.g. `HS256`) |
+| `refresh_token_expiary` | Refresh token expiry in **days** |
+| `access_token_expiary` | Access token expiry in **minutes** |
+| `Redis_Url` | Full Redis connection URL (e.g. `redis://localhost:6379/0`) |
+| `ResisHost` | Redis server hostname (used in some configurations) |
+| `ResdisPort` | Redis server port |
+| `Redis_DB` | Redis database index |
+| `MAIL_USERNAME` | SMTP server username (e.g. Gmail address) |
+| `MAIL_PASSWORD` | SMTP server password (e.g. Gmail App Password) |
+| `MAIL_FROM` | Email address shown in the "From" field |
+| `MAIL_PORT` | SMTP server port (usually 587 for TLS) |
+| `MAIL_SERVER` | SMTP server address |
+| `MAIL_FROM_NAME` | Name shown in the "From" field (e.g. `Blurz_chat`) |
 | `domain` | Public API base URL (e.g. `https://your-domain.com/api/v1`) |
 | `debug` | Set to `False` in production |
+| `profile_picture_path` | Local directory path for storing profile pictures |
 
 ## 🐳 Docker Compose Files
 
