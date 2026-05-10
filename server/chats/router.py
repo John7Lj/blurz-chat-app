@@ -37,7 +37,9 @@ async def get_all_user_chats(session:AsyncSession=Depends(get_session),C_User:Us
                 user_id=user.id,
                 first_name=user.first_name,
                 last_name=user.last_name,
-                profile_url=user.profile_url or ""
+                profile_url=user.profile_url or "",
+                phone=user.phone,
+                bio=user.bio
             )
         )
         for chat, user in chats

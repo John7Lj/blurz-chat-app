@@ -39,6 +39,7 @@ class User(SQLModel, table=True):
     first_name: str = Field(default="new_user") 
     last_name: str = Field(default="new_user") 
     profile_url: Optional[str] = Field(default=None)
+    bio: Optional[str] = Field(default="Hey there! I am using Blurz.", max_length=150)
     password_hash: str = Field(exclude=True)
     is_verified: bool = Field(default=False)
     created_at: datetime = Field(

@@ -72,6 +72,8 @@ class TestGetMyChats:
         mock_other_user.first_name = "Other"
         mock_other_user.last_name = "User"
         mock_other_user.profile_url = ""
+        mock_other_user.phone = "+1234567890"
+        mock_other_user.bio = "Hey there! I am using Blurz."
 
         with patch("chats.router.get_user_chats_with_others", new_callable=AsyncMock,
                     return_value=[(mock_chat, mock_other_user)]):

@@ -171,6 +171,15 @@ export default function ProfilePage() {
                 </div>
 
                 <Input
+                  label="Bio / About"
+                  value={form.bio || ''}
+                  onChange={setFieldValue('bio')}
+                  placeholder="Hey there! I am using Blurz."
+                  maxLength={150}
+                  hint="Max 150 characters"
+                />
+
+                <Input
                   label="Email"
                   type="email"
                   value={user?.email ?? ''}

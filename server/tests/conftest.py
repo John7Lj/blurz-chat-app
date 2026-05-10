@@ -79,6 +79,7 @@ def sample_user_model(sample_user_id):
     user.first_name = "Test"
     user.last_name = "User"
     user.profile_url = None
+    user.bio = "Hey there! I am using Blurz."
     user.password_hash = "$2b$04$fakehashedpassword"
     user.is_verified = True
     user.created_at = datetime.now(timezone.utc)

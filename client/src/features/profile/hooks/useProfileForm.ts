@@ -20,6 +20,7 @@ export function useProfileForm() {
     username: '',
     first_name: '',
     last_name: '',
+    bio: '',
   });
   const [initialized, setInitialized] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -27,9 +28,10 @@ export function useProfileForm() {
 
   if (user && !initialized) {
     setForm({
-      username: user.username,
-      first_name: user.first_name,
-      last_name: user.last_name,
+      username: user.username || '',
+      first_name: user.first_name || '',
+      last_name: user.last_name || '',
+      bio: user.bio || '',
     });
     setInitialized(true);
   }

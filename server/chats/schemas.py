@@ -15,6 +15,8 @@ class Participant(BaseModel):
     first_name:str
     last_name:str
     profile_url:Optional[str]
+    phone: str
+    bio: Optional[str] = None
 
     
 

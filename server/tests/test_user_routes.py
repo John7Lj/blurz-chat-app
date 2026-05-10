@@ -55,6 +55,7 @@ class TestUpdateUser:
         updated.last_name = sample_user_model.last_name
         updated.is_verified = True
         updated.profile_url = None
+        updated.bio = "Hey there! I am using Blurz."
         updated.created_at = datetime.now(timezone.utc)
         updated.updated_at = datetime.now(timezone.utc)
 
@@ -100,6 +101,7 @@ class TestGetContacts:
         contact.first_name = "Contact"
         contact.last_name = "One"
         contact.profile_url = None
+        contact.bio = "Hey there! I am using Blurz."
         contact.created_at = datetime.now(timezone.utc)
 
         with patch("users.router.get_contacts", new_callable=AsyncMock, return_value=[contact]), \
@@ -139,6 +141,7 @@ class TestSearchUser:
         user.first_name = "Found"
         user.last_name = "User"
         user.profile_url = None
+        user.bio = "Hey there! I am using Blurz."
         user.created_at = datetime.now(timezone.utc)
 
         with patch("users.router.search_user", new_callable=AsyncMock, return_value=[user]), \

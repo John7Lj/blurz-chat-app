@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useMessages } from '../../hooks/useMessages';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { useChats } from '../../hooks/useChats';
@@ -16,6 +16,7 @@ import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import EmptyState from './EmptyState';
 import { TypingIndicator } from './TypingIndicator';
+import { UserDetailsModal } from './components/UserDetailsModal';
 
 export default function ChatWindow() {
   const userId = useAuthStore((s) => s.userId);
@@ -26,6 +27,8 @@ export default function ChatWindow() {
   const activeChat = chats.find((c) => c.id === activeChatId);
   const { data: messages = [], isLoading } = useMessages(activeChatId);
   const { sendMessage, sendTyping, sendRead } = useWebSocket();
+
+  const [showUserDetails, setShowUserDetails] = useState(false);
 
   const handleSend = useCallback(
     (text: string) => {
@@ -73,6 +76,7 @@ export default function ChatWindow() {
         avatarSrc={p?.profile_url}
         isOnline={true}
         onBack={handleBack}
+        onClickInfo={() => setShowUserDetails(true)}
       />
 
       <MessageList
@@ -88,6 +92,14 @@ export default function ChatWindow() {
       {isPartnerTyping && <TypingIndicator name={p?.first_name || participantName} />}
 
       <MessageInput onSend={handleSend} onTyping={handleTyping} />
+
+      {p && (
+        <UserDetailsModal
+          participant={p}
+          isOpen={showUserDetails}
+          onClose={() => setShowUserDetails(false)}
+        />
+      )}
     </div>
   );
 }

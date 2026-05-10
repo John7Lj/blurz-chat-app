@@ -15,6 +15,7 @@ class other_users(BaseModel):
     first_name: str
     last_name: str
     profile_url: Optional[str] = None
+    bio: Optional[str] = None
     created_at: datetime | None = None
 
 
@@ -22,6 +23,7 @@ class Update_User(BaseModel):
     username: str | None = Field(max_length=20, default=None)
     first_name: str | None = None
     last_name: str | None = None
+    bio: str | None = Field(max_length=150, default=None)
 
 
 

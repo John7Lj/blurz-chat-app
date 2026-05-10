@@ -13,6 +13,8 @@ export const ParticipantSchema = z.object({
   first_name: z.string(),
   last_name: z.string(),
   profile_url: z.string().nullable().optional(),
+  phone: z.string(),
+  bio: z.string().nullable().optional(),
 });
 export type Participant = z.infer<typeof ParticipantSchema>;
 

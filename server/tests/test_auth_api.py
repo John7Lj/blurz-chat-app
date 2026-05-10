@@ -65,6 +65,7 @@ def user_db():
     u.password_hash = "$2b$04$somefakebcrypthash"
     u.is_verified = True
     u.profile_url = None
+    u.bio = "Hey there! I am using Blurz."
     u.created_at = datetime.now(timezone.utc)
     u.updated_at = datetime.now(timezone.utc)
     return u
@@ -106,6 +107,7 @@ class TestSignup:
             mock_user.last_name = "B"
             mock_user.is_verified = False
             mock_user.profile_url = None
+            mock_user.bio = "Hey there! I am using Blurz."
             mock_user.created_at = None
             mock_user.updated_at = None
             mock_create.return_value = mock_user

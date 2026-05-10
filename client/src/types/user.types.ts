@@ -16,6 +16,7 @@ export const UserSchema = z.object({
   last_name: z.string(),
   is_verified: z.boolean(),
   profile_url: z.string().nullable().optional(),
+  bio: z.string().nullable().optional(),
   created_at: z.string().nullable().optional(),
   updated_at: z.string().nullable().optional(),
 });
@@ -27,6 +28,7 @@ export const ContactUserSchema = z.object({
   first_name: z.string(),
   last_name: z.string(),
   profile_url: z.string().nullable().optional(),
+  bio: z.string().nullable().optional(),
   created_at: z.string().nullable().optional(),
 });
 export type ContactUser = z.infer<typeof ContactUserSchema>;
@@ -35,5 +37,6 @@ export const UpdateUserSchema = z.object({
   username: z.string().max(20).optional(),
   first_name: z.string().optional(),
   last_name: z.string().optional(),
+  bio: z.string().optional(),
 });
 export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;

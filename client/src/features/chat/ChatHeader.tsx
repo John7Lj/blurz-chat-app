@@ -14,9 +14,10 @@ interface ChatHeaderProps {
   isOnline?: boolean;
   lastSeen?: string;
   onBack: () => void;
+  onClickInfo?: () => void;
 }
 
-export default function ChatHeader({ name, avatarSrc, isOnline = false, lastSeen, onBack }: ChatHeaderProps) {
+export default function ChatHeader({ name, avatarSrc, isOnline = false, lastSeen, onBack, onClickInfo }: ChatHeaderProps) {
   const statusText = isOnline ? 'online' : lastSeen || 'offline';
 
   return (
@@ -43,35 +44,40 @@ export default function ChatHeader({ name, avatarSrc, isOnline = false, lastSeen
           <ArrowLeft size={22} />
         </button>
 
-        <Avatar src={avatarSrc} name={name} size="md" showOnline={isOnline} />
+        <button 
+          onClick={onClickInfo}
+          className="flex items-center gap-3 hover:opacity-80 transition-opacity text-left bg-transparent border-none p-0 cursor-pointer"
+        >
+          <Avatar src={avatarSrc} name={name} size="md" showOnline={isOnline} />
 
-        <div style={{ minWidth: 0 }}>
-          <h3
-            style={{
-              fontSize: 15,
-              fontWeight: 600,
-              color: 'var(--chat-text-1)',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              lineHeight: 1.3,
-              margin: 0,
-            }}
-          >
-            {name}
-          </h3>
-          <p
-            style={{
-              fontSize: 12,
-              lineHeight: 1.3,
-              marginTop: 1,
-              margin: 0,
-              color: isOnline ? 'var(--color-success)' : 'var(--chat-text-2)',
-            }}
-          >
-            {statusText}
-          </p>
-        </div>
+          <div style={{ minWidth: 0 }}>
+            <h3
+              style={{
+                fontSize: 15,
+                fontWeight: 600,
+                color: 'var(--chat-text-1)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                lineHeight: 1.3,
+                margin: 0,
+              }}
+            >
+              {name}
+            </h3>
+            <p
+              style={{
+                fontSize: 12,
+                lineHeight: 1.3,
+                marginTop: 1,
+                margin: 0,
+                color: isOnline ? 'var(--color-success)' : 'var(--chat-text-2)',
+              }}
+            >
+              {statusText}
+            </p>
+          </div>
+        </button>
       </div>
 
       {/* Right: menu */}

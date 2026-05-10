@@ -20,6 +20,7 @@ class User(BaseModel):
     last_name: str
     is_verified: bool 
     profile_url: Optional[str] = None
+    bio: Optional[str] = None
     created_at: datetime | None = None  # ✅ Made optional
     updated_at: datetime | None = None  # ✅ Made optional
 
