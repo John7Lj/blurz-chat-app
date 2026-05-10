@@ -17,7 +17,7 @@ const api = axios.create({
 // ── Request Interceptor: Attach JWT ─────────────────────────────────
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token');
+    const token = sessionStorage.getItem('access_token');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -34,8 +34,8 @@ api.interceptors.response.use(
 
     if (status === 401) {
       // Token expired or invalid — clear and redirect
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('user_id');
+      sessionStorage.removeItem('access_token');
+      sessionStorage.removeItem('user_id');
       window.dispatchEvent(new Event('auth-error'));
     }
 
@@ -45,17 +45,52 @@ api.interceptors.response.use(
 
 /**
  * Extract a user-friendly error message from an Axios error.
+ * Handles our custom 422 format, standard FastAPI errors, and generic errors.
  */
 export function extractErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
-    const detail = error.response?.data?.detail;
-    if (typeof detail === 'string') return detail;
+    const data = error.response?.data;
+    const detail = data?.detail;
+
+    // Our custom 422 format: { detail: { message: "...", errors: [...] } }
     if (typeof detail === 'object' && detail?.message) return detail.message;
-    if (error.response?.data?.message) return error.response.data.message;
+
+    // Standard FastAPI string detail
+    if (typeof detail === 'string') return detail;
+
+    // Pydantic default 422 format (array of errors) — before our custom handler
+    if (Array.isArray(detail) && detail.length > 0) {
+      const first = detail[0];
+      const field = first?.loc?.slice(-1)?.[0] || 'field';
+      return `${field}: ${first?.msg || 'Invalid value'}`;
+    }
+
+    // Fallback to top-level message
+    if (data?.message) return data.message;
     if (error.message) return error.message;
   }
   if (error instanceof Error) return error.message;
   return 'Something went wrong';
+}
+
+/**
+ * Extract all field-specific validation errors from an Axios error.
+ * Returns a map of field name → error message for form display.
+ */
+export function extractFieldErrors(error: unknown): Record<string, string> {
+  const fieldErrors: Record<string, string> = {};
+  if (axios.isAxiosError(error)) {
+    const detail = error.response?.data?.detail;
+    // Our custom 422 format with errors array
+    if (typeof detail === 'object' && Array.isArray(detail?.errors)) {
+      for (const err of detail.errors) {
+        if (err.field && err.message) {
+          fieldErrors[err.field] = err.message;
+        }
+      }
+    }
+  }
+  return fieldErrors;
 }
 
 export default api;

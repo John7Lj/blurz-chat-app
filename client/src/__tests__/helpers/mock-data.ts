@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { ChatListItem } from '../../schemas/chat.schema';
-import type { Message } from '../../schemas/message.schema';
+import type { ChatListItem } from '../../types/chat.types';
+import type { Message } from '../../types/message.types';
 
 // ── Users ───────────────────────────────────────────────────────────
 export const CURRENT_USER_ID = '00000000-0000-0000-0000-000000000001';

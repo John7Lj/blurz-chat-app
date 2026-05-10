@@ -5,13 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import { format, isToday, isYesterday } from 'date-fns';
 import { ChevronDown } from 'lucide-react';
-import type { Message } from '../../schemas/message.schema';
-import MessageBubble from '../../components/MessageBubble';
+import type { Message } from '../../types/message.types';
+import MessageBubble from './components/MessageBubble';
 import DateDivider from './DateDivider';
-import { useMessageObserver } from '../../hooks/use-message-observer';
+import { useMessageObserver } from '../../hooks/useMessageObserver';
+import { useMessageList } from './hooks/useMessageList';
 
 interface MessageListProps {
   messages: Message[];
@@ -63,11 +64,14 @@ export default function MessageList({
   chatId,
   onMessageRead,
 }: MessageListProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const [isAtBottom, setIsAtBottom] = useState(true);
-  const [newMsgCount, setNewMsgCount] = useState(0);
-  const prevLenRef = useRef(messages.length);
+  const {
+    containerRef,
+    bottomRef,
+    isAtBottom,
+    newMsgCount,
+    handleScroll,
+    scrollToBottom,
+  } = useMessageList({ messages, isLoading });
 
   useMessageObserver({
     containerRef,
@@ -76,37 +80,6 @@ export default function MessageList({
     chatId: chatId ?? null,
     onMessageRead: onMessageRead ?? (() => {}),
   });
-
-  const handleScroll = useCallback(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const atBot = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
-    setIsAtBottom(atBot);
-    if (atBot) setNewMsgCount(0);
-  }, []);
-
-  useEffect(() => {
-    const newLen = messages.length;
-    if (newLen > prevLenRef.current) {
-      if (isAtBottom) {
-        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        setNewMsgCount((c) => c + (newLen - prevLenRef.current));
-      }
-    }
-    prevLenRef.current = newLen;
-  }, [messages.length, isAtBottom]);
-
-  useEffect(() => {
-    if (!isLoading && messages.length > 0) {
-      bottomRef.current?.scrollIntoView({ behavior: 'instant' });
-    }
-  }, [isLoading, messages.length === 0]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const scrollToBottom = useCallback(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-    setNewMsgCount(0);
-  }, []);
 
   const renderItems = useMemo(() => {
     const items: React.ReactNode[] = [];

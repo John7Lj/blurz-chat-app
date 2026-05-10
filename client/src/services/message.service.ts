@@ -6,7 +6,7 @@
  */
 
 import api from '../lib/axios';
-import type { Message } from '../schemas/message.schema';
+import type { Message } from '../types/message.types';
 
 export const messageService = {
   getMessages: async (
@@ -21,18 +21,19 @@ export const messageService = {
   },
 
   deleteMessages: async (messageIds: string[]): Promise<void> => {
-    await api.delete('/messages/messages', {
+    await api.delete('/messages/delete', {
       params: { message_id: messageIds },
+      paramsSerializer: {
+        indexes: null, // serialize as ?message_id=a&message_id=b
+      },
     });
   },
 
   editMessage: async (messageId: string, content: string): Promise<void> => {
-    await api.patch(`/messages/messages/${messageId}`, null, {
-      params: { content },
-    });
+    await api.patch(`/messages/${messageId}`, { content });
   },
 
   readMessage: async (messageId: string): Promise<void> => {
-    await api.patch(`/messages/messages/${messageId}/read`);
+    await api.patch(`/messages/${messageId}/read`);
   },
 };

@@ -8,7 +8,7 @@
 import { Outlet, useLocation } from 'react-router';
 import NavRail from './NavRail';
 import MobileTabBar from './MobileTabBar';
-import { useUIStore } from '../../stores/ui.store';
+import { useUIStore } from '../../store/ui.store';
 
 export default function AppShell() {
   const activeChatId = useUIStore((s) => s.activeChatId);

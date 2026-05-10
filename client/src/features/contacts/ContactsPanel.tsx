@@ -6,9 +6,9 @@
  */
 
 import { X, MessageCircle } from 'lucide-react';
-import { useUIStore } from '../../stores/ui.store';
-import { useSearchUsers } from '../../hooks/use-contacts';
-import { useStartChat } from '../../hooks/use-chats';
+import { useUIStore } from '../../store/ui.store';
+import { useSearchUsers } from '../../hooks/useContacts';
+import { useStartChat } from '../../hooks/useChats';
 import { Avatar } from '../../components/ui/Avatar';
 import { SearchBar } from '../../components/ui/SearchBar';
 import { Skeleton } from '../../components/ui/Skeleton';

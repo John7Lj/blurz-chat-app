@@ -6,8 +6,8 @@
  */
 
 import api, { extractErrorMessage } from '../lib/axios';
-import type { LoginInput, SignupInput, LoginResponse } from '../schemas/auth.schema';
-import type { User } from '../schemas/user.schema';
+import type { LoginInput, SignupInput, LoginResponse } from '../types/auth.types';
+import type { User } from '../types/user.types';
 
 export const authService = {
   login: async (data: LoginInput): Promise<LoginResponse> => {
@@ -43,6 +43,37 @@ export const authService = {
       current_password: currentPassword,
       new_password: newPassword,
     });
+    return response.data;
+  },
+
+  // ── Resend verification email ───────────────────────────────────────
+  resendVerification: async (email: string): Promise<{ message: string }> => {
+    const response = await api.post('/auth/resend_verify_link', { email });
+    return response.data;
+  },
+
+  // ── Request password reset (forgot password) ───────────────────────
+  requestPasswordReset: async (email: string): Promise<{ message: string }> => {
+    const response = await api.post('/auth/password_reset', { email });
+    return response.data;
+  },
+
+  // ── Confirm password reset with token ──────────────────────────────
+  confirmPasswordReset: async (
+    token: string,
+    newPassword: string,
+    confirmPassword: string,
+  ): Promise<{ message: string }> => {
+    const response = await api.post(`/auth/confirm_password/${token}`, {
+      new_password: newPassword,
+      confirm_password: confirmPassword,
+    });
+    return response.data;
+  },
+
+  // ── Delete account ─────────────────────────────────────────────────
+  deleteAccount: async (): Promise<{ message: string }> => {
+    const response = await api.delete('/users/me');
     return response.data;
   },
 };

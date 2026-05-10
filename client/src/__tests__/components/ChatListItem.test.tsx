@@ -8,7 +8,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProviders } from '../helpers/render';
-import ChatListItemComponent from '../../components/ChatListItem';
+import ChatListItemComponent from '../../features/chat/components/ChatListItem';
 import { mockChat, mockParticipant, CURRENT_USER_ID } from '../helpers/mock-data';
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -98,7 +98,7 @@ describe('ChatListItem', () => {
     expect(onClick).toHaveBeenCalledOnce();
   });
 
-  it('active state applies accent background class', () => {
+  it('active state applies active background via inline style', () => {
     /**
      * WHAT: Active chat item has accent/highlight styling.
      * WHY: User must visually identify which chat is currently open.
@@ -106,13 +106,13 @@ describe('ChatListItem', () => {
      */
     renderItem({ isActive: true });
     const button = screen.getByRole('button');
-    expect(button.className).toContain('bg-[var(--color-accent)]');
+    expect(button.style.background).toBe('var(--chat-selected)');
   });
 
-  it('inactive state does NOT have accent background', () => {
+  it('inactive state does NOT have active background', () => {
     renderItem({ isActive: false });
     const button = screen.getByRole('button');
-    expect(button.className).not.toContain('bg-[var(--color-accent)]');
+    expect(button.style.background).toBe('transparent');
   });
 
   it('renders timestamp from last message', () => {
@@ -155,7 +155,8 @@ describe('ChatListItem', () => {
       participants: mockParticipant({ first_name: longName, last_name: 'Test' }),
     });
     renderItem({ chat });
-    const nameEl = screen.getByText(`${longName} Test`);
-    expect(nameEl.className).toContain('truncate');
+    const nameEl = screen.getByTestId('contact-name');
+    expect(nameEl.style.textOverflow).toBe('ellipsis');
+    expect(nameEl.style.whiteSpace).toBe('nowrap');
   });
 });

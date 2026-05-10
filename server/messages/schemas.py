@@ -34,3 +34,7 @@ class MessageStatus(str, enum.Enum):
     sent = "sent"
     delivered = "delivered"
     read = "read"
+
+
+class EditMessageBody(BaseModel):
+    content: str

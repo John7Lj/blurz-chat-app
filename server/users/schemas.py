@@ -6,7 +6,6 @@
 from pydantic import BaseModel, Field
 import uuid
 from datetime import datetime
-from fastapi import UploadFile
 from typing import Optional
 
 # this class will be the response of other users when u search or open the profile of this user
@@ -27,7 +26,8 @@ class Update_User(BaseModel):
 
 
 class Update_Profile_Picture(BaseModel):
-    profile_picture: UploadFile
+    profile_picture: str  # base64-encoded image data
+    file_extension: str = ".jpg"  # .jpg, .jpeg, .png, .webp
 
 
 class Profile_Picture_Response(BaseModel):

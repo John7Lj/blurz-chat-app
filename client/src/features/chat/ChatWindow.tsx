@@ -6,11 +6,11 @@
  */
 
 import { useCallback } from 'react';
-import { useMessages } from '../../hooks/use-messages';
-import { useWebSocket } from '../../hooks/use-websocket';
-import { useChats } from '../../hooks/use-chats';
-import { useAuthStore } from '../../stores/auth.store';
-import { useUIStore } from '../../stores/ui.store';
+import { useMessages } from '../../hooks/useMessages';
+import { useWebSocket } from '../../hooks/useWebSocket';
+import { useChats } from '../../hooks/useChats';
+import { useAuthStore } from '../../store/auth.store';
+import { useUIStore } from '../../store/ui.store';
 import ChatHeader from './ChatHeader';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';

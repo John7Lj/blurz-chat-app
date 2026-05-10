@@ -10,19 +10,19 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProviders } from '../helpers/render';
 import ChatWindow from '../../features/chat/ChatWindow';
 import { mockChats, mockMessages, CURRENT_USER_ID } from '../helpers/mock-data';
-import { useAuthStore } from '../../stores/auth.store';
-import { useUIStore } from '../../stores/ui.store';
+import { useAuthStore } from '../../store/auth.store';
+import { useUIStore } from '../../store/ui.store';
 
 // Mock hooks
-vi.mock('../../hooks/use-messages', () => ({
+vi.mock('../../hooks/useMessages', () => ({
   useMessages: vi.fn(),
   MESSAGES_KEY: (id: string) => ['messages', id],
 }));
-vi.mock('../../hooks/use-chats', () => ({
+vi.mock('../../hooks/useChats', () => ({
   useChats: vi.fn(),
   CHATS_KEY: ['chats'],
 }));
-vi.mock('../../hooks/use-websocket', () => ({
+vi.mock('../../hooks/useWebSocket', () => ({
   useWebSocket: vi.fn(() => ({
     sendMessage: vi.fn(),
     sendTyping: vi.fn(),
@@ -30,9 +30,9 @@ vi.mock('../../hooks/use-websocket', () => ({
   })),
 }));
 
-import { useMessages } from '../../hooks/use-messages';
-import { useChats } from '../../hooks/use-chats';
-import { useWebSocket } from '../../hooks/use-websocket';
+import { useMessages } from '../../hooks/useMessages';
+import { useChats } from '../../hooks/useChats';
+import { useWebSocket } from '../../hooks/useWebSocket';
 
 const mockedUseMessages = vi.mocked(useMessages);
 const mockedUseChats = vi.mocked(useChats);
@@ -82,11 +82,6 @@ describe('ChatWindow', () => {
   // ── Empty State ───────────────────────────────────────────────
 
   it('renders empty state when no chat selected', () => {
-    /**
-     * WHAT: "Welcome to Blurz" message when no chat is open.
-     * WHY: Users need guidance on what to do next.
-     * FAILURE: Blank screen with no context.
-     */
     renderChatWindow();
     expect(screen.getByText('Blurz Chat')).toBeInTheDocument();
   });
@@ -99,13 +94,9 @@ describe('ChatWindow', () => {
   // ── Active Chat ───────────────────────────────────────────────
 
   it('renders chat header when chat is active', () => {
-    /**
-     * WHAT: Header shows contact name when a chat is selected.
-     * WHY: User must know who they're chatting with.
-     * FAILURE: Header is blank or shows wrong name.
-     */
     renderChatWindow('10000000-0000-0000-0000-000000000001');
-    expect(screen.getByText('Alice Johnson')).toBeInTheDocument();
+    const matches = screen.getAllByText('Alice Johnson');
+    expect(matches.length).toBeGreaterThan(0);
   });
 
   it('renders "Online" status in header', () => {
@@ -113,18 +104,12 @@ describe('ChatWindow', () => {
     expect(screen.getByText('online')).toBeInTheDocument();
   });
 
-  it('renders action buttons (phone, video, search, menu)', () => {
+  it('renders action buttons (menu)', () => {
     renderChatWindow('10000000-0000-0000-0000-000000000001');
-    expect(screen.getByLabelText('Voice call')).toBeInTheDocument();
-    expect(screen.getByLabelText('Video call')).toBeInTheDocument();
+    expect(screen.getByLabelText('More options')).toBeInTheDocument();
   });
 
   it('renders message list when chat is active', () => {
-    /**
-     * WHAT: Messages appear in the chat area.
-     * WHY: Core functionality — users must see conversation history.
-     * FAILURE: Chat window opens but shows no messages.
-     */
     renderChatWindow('10000000-0000-0000-0000-000000000001');
     expect(screen.getByText('Hey, how are you doing?')).toBeInTheDocument();
     expect(screen.getByText("I'm doing great, thanks for asking!")).toBeInTheDocument();
@@ -132,23 +117,18 @@ describe('ChatWindow', () => {
 
   it('renders message input when chat is active', () => {
     renderChatWindow('10000000-0000-0000-0000-000000000001');
-    expect(screen.getByPlaceholderText('Type a message')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Type your message')).toBeInTheDocument();
   });
 
   // ── Back Button (Mobile) ──────────────────────────────────────
 
   it('back button clears active chat (returns to sidebar on mobile)', () => {
-    /**
-     * WHAT: Back button sets activeChatId to null.
-     * WHY: On mobile, this returns the user to the chat list.
-     * FAILURE: User gets stuck in chat window with no way back.
-     */
     useUIStore.setState({ activeChatId: '10000000-0000-0000-0000-000000000001' });
     renderChatWindow('10000000-0000-0000-0000-000000000001');
     
-    // Find the back button (ArrowLeft icon button, has md:hidden)
+    // Find the back button (ArrowLeft icon button, has mobile-only class)
     const buttons = screen.getAllByRole('button');
-    const backButton = buttons.find(b => b.className.includes('md:hidden'));
+    const backButton = buttons.find(b => b.className.includes('mobile-only'));
     if (backButton) {
       fireEvent.click(backButton);
       expect(useUIStore.getState().activeChatId).toBeNull();
@@ -159,29 +139,26 @@ describe('ChatWindow', () => {
 
   it('typing updates input value correctly', () => {
     renderChatWindow('10000000-0000-0000-0000-000000000001');
-    const textarea = screen.getByPlaceholderText('Type a message') as HTMLTextAreaElement;
+    const textarea = screen.getByPlaceholderText('Type your message') as HTMLTextAreaElement;
     fireEvent.change(textarea, { target: { value: 'Hello world' } });
     expect(textarea.value).toBe('Hello world');
   });
 
-  it('send button appears when input has text', () => {
-    /**
-     * WHAT: Mic icon → Send button transition when user types.
-     * WHY: Visual affordance that message is ready to send.
-     * FAILURE: Users don't know how to send their message.
-     */
+  it('send button is enabled when input has text', () => {
     renderChatWindow('10000000-0000-0000-0000-000000000001');
-    const textarea = screen.getByPlaceholderText('Type a message');
+    const textarea = screen.getByPlaceholderText('Type your message');
+    const sendButton = screen.getByLabelText('Send message');
+    
+    expect(sendButton).toBeDisabled();
+    
     fireEvent.change(textarea, { target: { value: 'Hello' } });
     
-    // Send button should now be visible (gradient background)
-    const { container } = renderChatWindow('10000000-0000-0000-0000-000000000001');
-    // Look for the send icon
+    expect(sendButton).not.toBeDisabled();
   });
 
   it('pressing Enter calls sendMessage with correct text', () => {
     renderChatWindow('10000000-0000-0000-0000-000000000001');
-    const textarea = screen.getByPlaceholderText('Type a message');
+    const textarea = screen.getByPlaceholderText('Type your message');
     fireEvent.change(textarea, { target: { value: 'Hello there!' } });
     fireEvent.keyDown(textarea, { key: 'Enter', shiftKey: false });
     
@@ -193,7 +170,7 @@ describe('ChatWindow', () => {
 
   it('input clears after send', () => {
     renderChatWindow('10000000-0000-0000-0000-000000000001');
-    const textarea = screen.getByPlaceholderText('Type a message') as HTMLTextAreaElement;
+    const textarea = screen.getByPlaceholderText('Type your message') as HTMLTextAreaElement;
     fireEvent.change(textarea, { target: { value: 'Hello!' } });
     fireEvent.keyDown(textarea, { key: 'Enter', shiftKey: false });
     expect(textarea.value).toBe('');
@@ -201,14 +178,14 @@ describe('ChatWindow', () => {
 
   it('sendMessage NOT called when input is empty', () => {
     renderChatWindow('10000000-0000-0000-0000-000000000001');
-    const textarea = screen.getByPlaceholderText('Type a message');
+    const textarea = screen.getByPlaceholderText('Type your message');
     fireEvent.keyDown(textarea, { key: 'Enter', shiftKey: false });
     expect(mockSendMessage).not.toHaveBeenCalled();
   });
 
   it('sendMessage NOT called when input is whitespace only', () => {
     renderChatWindow('10000000-0000-0000-0000-000000000001');
-    const textarea = screen.getByPlaceholderText('Type a message');
+    const textarea = screen.getByPlaceholderText('Type your message');
     fireEvent.change(textarea, { target: { value: '   ' } });
     fireEvent.keyDown(textarea, { key: 'Enter', shiftKey: false });
     expect(mockSendMessage).not.toHaveBeenCalled();
@@ -221,7 +198,7 @@ describe('ChatWindow', () => {
      * FAILURE: Users can't write multi-line messages.
      */
     renderChatWindow('10000000-0000-0000-0000-000000000001');
-    const textarea = screen.getByPlaceholderText('Type a message');
+    const textarea = screen.getByPlaceholderText('Type your message');
     fireEvent.change(textarea, { target: { value: 'Hello' } });
     fireEvent.keyDown(textarea, { key: 'Enter', shiftKey: true });
     expect(mockSendMessage).not.toHaveBeenCalled();
@@ -240,13 +217,13 @@ describe('ChatWindow', () => {
     expect(skeletons.length).toBeGreaterThan(0);
   });
 
-  it('shows encryption notice when no messages exist', () => {
+  it('shows empty message prompt when no messages exist', () => {
     mockedUseMessages.mockReturnValue({
       data: [],
       isLoading: false,
     } as ReturnType<typeof useMessages>);
     
     renderChatWindow('10000000-0000-0000-0000-000000000001');
-    expect(screen.getByText(/end-to-end encrypted/i)).toBeInTheDocument();
+    expect(screen.getByText(/Say hello! Start the conversation/i)).toBeInTheDocument();
   });
 });

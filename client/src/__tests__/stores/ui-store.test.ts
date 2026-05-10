@@ -8,7 +8,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '../helpers/render';
-import { useUIStore } from '../../stores/ui.store';
+import { useUIStore } from '../../store/ui.store';
 
 /* ═══════════════════════════════════════════════════════════════════
    Theme / Dark Mode – Unit Tests

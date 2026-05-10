@@ -96,8 +96,7 @@ describe('SearchBar', () => {
      */
     const { container } = renderWithProviders(<SearchBar {...defaultProps} />);
     const outerDiv = container.firstChild as HTMLElement;
-    expect(outerDiv.className).toContain('relative');
-    // Should NOT have padding classes
+    expect(outerDiv.style.position).toBe('relative');
     expect(outerDiv.className).not.toContain('px-');
     expect(outerDiv.className).not.toContain('py-');
   });

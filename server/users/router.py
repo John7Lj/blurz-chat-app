@@ -11,7 +11,6 @@ from .service import update_user, get_contacts, search_user
 from db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from celery_service.celery_tasks import bg_save_profile_picture
-from pathlib import Path
 import base64
 
 user_router = APIRouter()
@@ -52,25 +51,44 @@ async def Search_user(query: str, session: AsyncSession = Depends(get_session)):
                     dependencies=[Depends(AccessTokenBearer())])
 async def Update_profile_picture(update_data: Update_Profile_Picture,
                              user_details: User = Depends(get_current_user)):
+    ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
+    
     if not update_data.profile_picture:
         raise HTTPException(status_code=400, detail="No profile picture is provided")
     
-    total_size = 0
-    all_chunks = []
+    ext = update_data.file_extension.lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported file type '{ext}'. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"
+        )
     
-    while True:
-        chunk = await update_data.profile_picture.read(CHUNK_SIZE)
-        if not chunk:
-            break
-        total_size += len(chunk)
-        if total_size > MAX_FILE_SIZE:
-            raise HTTPException(status_code=400, detail="File size exceeds maximum allowed size")
-        all_chunks.append(chunk)
+    # Decode base64 to check size
+    try:
+        file_bytes = base64.b64decode(update_data.profile_picture)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid base64 image data")
     
-    file_bytes = b''.join(all_chunks)
-    ext = Path(update_data.profile_picture.filename).suffix.lower()
+    if len(file_bytes) > MAX_FILE_SIZE:
+        raise HTTPException(status_code=400, detail="File size exceeds 5MB limit")
     
-    # Encode bytes to base64 string for JSON serialization via Celery
-    file_bytes_b64 = base64.b64encode(file_bytes).decode('utf-8')
+    # Re-encode for Celery transport (it's already base64, but we validated it)
+    file_bytes_b64 = update_data.profile_picture
     bg_save_profile_picture.delay(file_bytes_b64, ext, str(user_details.id))
     return {"message": "Profile picture is being uploaded"}
+
+
+@user_router.delete('/me', dependencies=[Depends(AccessTokenBearer())])
+async def delete_account(
+    user_details: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    """Permanently delete the current user's account and all associated data."""
+    from .service import delete_user_account
+    
+    deleted = await delete_user_account(user_details.id, session)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    return {"message": "Account deleted successfully"}
+

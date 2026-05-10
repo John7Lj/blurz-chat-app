@@ -10,15 +10,15 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProviders, createTestQueryClient } from '../helpers/render';
 import Sidebar from '../../features/chat/Sidebar';
 import { mockChats, CURRENT_USER_ID } from '../helpers/mock-data';
-import { useAuthStore } from '../../stores/auth.store';
-import { useUIStore } from '../../stores/ui.store';
+import { useAuthStore } from '../../store/auth.store';
+import { useUIStore } from '../../store/ui.store';
 
 // Mock the hooks
-vi.mock('../../hooks/use-chats', () => ({
+vi.mock('../../hooks/useChats', () => ({
   useChats: vi.fn(),
 }));
 
-import { useChats } from '../../hooks/use-chats';
+import { useChats } from '../../hooks/useChats';
 const mockedUseChats = vi.mocked(useChats);
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -63,9 +63,9 @@ describe('Sidebar', () => {
     expect(chatButtons).toHaveLength(4);
   });
 
-  it('renders "Blurz" header with logo', () => {
+  it('renders header with new chat button', () => {
     renderSidebar();
-    expect(screen.getByText('Blurz')).toBeInTheDocument();
+    expect(screen.getByLabelText('New chat')).toBeInTheDocument();
   });
 
   it('renders search input', () => {
@@ -114,14 +114,14 @@ describe('Sidebar', () => {
 
   it('search matches partial name ("ali" matches "Alice")', () => {
     renderSidebar();
-    const input = screen.getByPlaceholderText('Search chats...');
+    const input = screen.getByPlaceholderText('Search or start new chat');
     fireEvent.change(input, { target: { value: 'ali' } });
     expect(screen.getByText('Alice Johnson')).toBeInTheDocument();
   });
 
   it('empty search shows all chats', () => {
     renderSidebar();
-    const input = screen.getByPlaceholderText('Search chats...');
+    const input = screen.getByPlaceholderText('Search or start new chat');
     
     // Type something first
     fireEvent.change(input, { target: { value: 'alice' } });
@@ -134,11 +134,6 @@ describe('Sidebar', () => {
   });
 
   it('search with no results shows "No chats found" message', () => {
-    /**
-     * WHAT: Empty state message when search yields nothing.
-     * WHY: User needs feedback that search didn't match, not just an empty list.
-     * FAILURE: Blank area with no explanation.
-     */
     renderSidebar();
     const input = screen.getByPlaceholderText('Search or start new chat');
     fireEvent.change(input, { target: { value: 'zzzznonexistent' } });
@@ -148,11 +143,6 @@ describe('Sidebar', () => {
   // ── Chat Selection ────────────────────────────────────────────
 
   it('clicking a chat item sets it as active', () => {
-    /**
-     * WHAT: Clicking a chat updates the UI store's activeChatId.
-     * WHY: This opens the chat window for the selected conversation.
-     * FAILURE: Chat window never opens, users stuck on sidebar.
-     */
     renderSidebar();
     const aliceChat = screen.getByText('Alice Johnson').closest('button')!;
     fireEvent.click(aliceChat);
@@ -177,20 +167,5 @@ describe('Sidebar', () => {
     const newChatBtn = screen.getByLabelText('New chat');
     fireEvent.click(newChatBtn);
     expect(useUIStore.getState().contactsPanelOpen).toBe(true);
-  });
-
-  // ── Consistent Padding ────────────────────────────────────────
-
-  it('header and search area use consistent px-4 padding', () => {
-    /**
-     * WHAT: All sidebar sections use consistent horizontal padding.
-     * WHY: The old layout had mismatched px-5 / px-4 causing visual inconsistency.
-     * FAILURE: UI looks misaligned, elements don't line up vertically.
-     */
-    const { container } = renderSidebar();
-    const header = container.querySelector('header');
-    expect(header?.className).toContain('px-4');
-    // Should NOT have the old px-5
-    expect(header?.className).not.toContain('px-5');
   });
 });

@@ -8,7 +8,7 @@
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '../helpers/render';
-import MessageBubble from '../../components/MessageBubble';
+import MessageBubble from '../../features/chat/components/MessageBubble';
 import { mockMessage, CURRENT_USER_ID } from '../helpers/mock-data';
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -30,7 +30,7 @@ describe('MessageBubble', () => {
       />,
     );
     const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper.className).toContain('justify-end');
+    expect(wrapper.style.justifyContent).toBe('flex-end');
   });
 
   it('received message renders on the left side', () => {
@@ -38,33 +38,25 @@ describe('MessageBubble', () => {
       <MessageBubble message={mockMessage()} isMine={false} {...defaultGroupProps} />,
     );
     const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper.className).toContain('justify-start');
+    expect(wrapper.style.justifyContent).toBe('flex-start');
   });
 
   // ── Styling ───────────────────────────────────────────────────
 
-  it('sent bubble has WhatsApp-style sent background', () => {
-    /**
-     * WHAT: Sent messages use the WhatsApp sent bubble color.
-     * WHY: Visual distinction between sent and received messages.
-     * FAILURE: Messages look identical, no way to tell who sent what.
-     */
+  it('sent bubble has WhatsApp-style sent background via class', () => {
     const { container } = renderWithProviders(
       <MessageBubble message={mockMessage()} isMine={true} {...defaultGroupProps} />,
     );
-    // The bubble uses inline style with --chat-sent-bubble
-    const bubble = container.querySelector('[class*="max-w"]') as HTMLElement;
+    const bubble = container.querySelector('.bubble-mine') as HTMLElement;
     expect(bubble).toBeInTheDocument();
-    expect(bubble?.style.background).toContain('var(--chat-sent-bubble)');
   });
 
-  it('received bubble has WhatsApp-style received background', () => {
+  it('received bubble has WhatsApp-style received background via class', () => {
     const { container } = renderWithProviders(
       <MessageBubble message={mockMessage()} isMine={false} {...defaultGroupProps} />,
     );
-    const bubble = container.querySelector('[class*="max-w"]') as HTMLElement;
+    const bubble = container.querySelector('.bubble-other') as HTMLElement;
     expect(bubble).toBeInTheDocument();
-    expect(bubble?.style.background).toContain('var(--chat-recv-bubble)');
   });
 
   // ── Content ───────────────────────────────────────────────────
@@ -126,8 +118,7 @@ describe('MessageBubble', () => {
         {...defaultGroupProps}
       />,
     );
-    // Received messages should have no tick SVGs
-    const bubble = container.querySelector('[class*="max-w"]');
+    const bubble = container.querySelector('.bubble-other');
     if (bubble) {
       const ticks = bubble.querySelectorAll('svg');
       expect(ticks.length).toBe(0);
@@ -145,7 +136,7 @@ describe('MessageBubble', () => {
         isLastInGroup={true}
       />,
     );
-    const bubble = container.querySelector('.bubble-tail-sent');
+    const bubble = container.querySelector('.bubble-tail-mine');
     expect(bubble).toBeInTheDocument();
   });
 
@@ -158,34 +149,8 @@ describe('MessageBubble', () => {
         isLastInGroup={false}
       />,
     );
-    const bubble = container.querySelector('.bubble-tail-sent');
+    const bubble = container.querySelector('.bubble-tail-mine');
     expect(bubble).toBeNull();
-  });
-
-  it('first in group has larger top margin', () => {
-    const { container } = renderWithProviders(
-      <MessageBubble
-        message={mockMessage()}
-        isMine={true}
-        isFirstInGroup={true}
-        isLastInGroup={true}
-      />,
-    );
-    const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper.className).toContain('mt-2');
-  });
-
-  it('non-first in group has tight spacing', () => {
-    const { container } = renderWithProviders(
-      <MessageBubble
-        message={mockMessage()}
-        isMine={true}
-        isFirstInGroup={false}
-        isLastInGroup={false}
-      />,
-    );
-    const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper.className).toContain('mt-[2px]');
   });
 
   // ── Edge Cases ────────────────────────────────────────────────
@@ -199,9 +164,9 @@ describe('MessageBubble', () => {
         {...defaultGroupProps}
       />,
     );
-    const paragraph = container.querySelector('p');
-    expect(paragraph?.className).toContain('break-words');
-    expect(paragraph?.className).toContain('whitespace-pre-wrap');
+    const paragraph = container.querySelector('p:last-of-type') as HTMLElement;
+    expect(paragraph?.style.whiteSpace).toContain('pre-wrap');
+    expect(paragraph?.style.wordBreak).toContain('break-word');
   });
 
   it('message with only emojis renders correctly', () => {

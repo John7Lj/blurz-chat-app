@@ -59,3 +59,32 @@ async def get_user_by_id(id:uuid.UUID,session:AsyncSession):
     user = result.scalar_one_or_none()
     return user
 
+
+async def delete_user_account(user_id: uuid.UUID, session: AsyncSession) -> bool:
+    """Delete user and all associated data (chats, messages, participants)."""
+    from sqlmodel import delete
+    from db.models import ChatParticipants, Message, Chat
+    
+    try:
+        user = await get_user_by_id(user_id, session)
+        if not user:
+            return False
+        
+        # 1. Delete all messages sent by this user
+        await session.execute(
+            delete(Message).where(Message.sender_id == user_id)
+        )
+        
+        # 2. Delete all chat_participants entries for this user
+        await session.execute(
+            delete(ChatParticipants).where(ChatParticipants.user_id == user_id)
+        )
+        
+        # 3. Delete the user
+        await session.delete(user)
+        await session.commit()
+        return True
+        
+    except Exception as e:
+        await session.rollback()
+        raise e

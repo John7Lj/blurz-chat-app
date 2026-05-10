@@ -298,37 +298,37 @@ class TestDeleteMessages:
         """Delete owned messages should succeed."""
         mid = uuid.uuid4()
         with patch("messages.router.delete_messages_byID", new_callable=AsyncMock, return_value=True):
-            resp = await authed_client.delete(f"/api/v1/messages/messages?message_id={mid}")
+            resp = await authed_client.delete(f"/api/v1/messages/delete?message_id={mid}")
         assert resp.status_code == 200
 
     @pytest.mark.asyncio
     async def test_delete_without_ids(self, authed_client):
         """Missing message_id should return 422."""
-        resp = await authed_client.delete("/api/v1/messages/messages")
+        resp = await authed_client.delete("/api/v1/messages/delete")
         assert resp.status_code == 422
 
 
 class TestEditMessage:
-    """PATCH /messages/messages/{message_id}"""
+    """PATCH /messages/{message_id}"""
 
     @pytest.mark.asyncio
     async def test_edit_nonexistent_message(self, authed_client):
         """Editing non-existent message should return 404."""
         mid = uuid.uuid4()
         with patch("messages.router.edit_message_byID", new_callable=AsyncMock, return_value=False):
-            resp = await authed_client.patch(f"/api/v1/messages/messages/{mid}?content=updated")
+            resp = await authed_client.patch(f"/api/v1/messages/{mid}", json={"content": "updated"})
         assert resp.status_code == 404
 
 
 class TestReadMessage:
-    """PATCH /messages/messages/{message_id}/read"""
+    """PATCH /messages/{message_id}/read"""
 
     @pytest.mark.asyncio
     async def test_read_success(self, authed_client):
         """Marking a message as read should return 200."""
         mid = uuid.uuid4()
         with patch("messages.router.read_message_byID", new_callable=AsyncMock, return_value=True):
-            resp = await authed_client.patch(f"/api/v1/messages/messages/{mid}/read")
+            resp = await authed_client.patch(f"/api/v1/messages/{mid}/read")
         assert resp.status_code == 200
 
     @pytest.mark.asyncio
@@ -336,5 +336,5 @@ class TestReadMessage:
         """Marking non-existent message as read should return 404."""
         mid = uuid.uuid4()
         with patch("messages.router.read_message_byID", new_callable=AsyncMock, return_value=False):
-            resp = await authed_client.patch(f"/api/v1/messages/messages/{mid}/read")
+            resp = await authed_client.patch(f"/api/v1/messages/{mid}/read")
         assert resp.status_code == 404

@@ -6,7 +6,7 @@
  */
 
 import api from '../lib/axios';
-import type { ChatListItem, StartChatResponse } from '../schemas/chat.schema';
+import type { ChatListItem, StartChatResponse } from '../types/chat.types';
 
 export const chatService = {
   getMyChats: async (): Promise<ChatListItem[]> => {
@@ -23,6 +23,11 @@ export const chatService = {
   },
 
   deleteChats: async (ids: string[]): Promise<void> => {
-    await api.delete('/chats/delete', { params: { ids } });
+    await api.delete('/chats/delete', {
+      params: { ids },
+      paramsSerializer: {
+        indexes: null, // serialize as ?ids=a&ids=b (FastAPI Query format)
+      },
+    });
   },
 };

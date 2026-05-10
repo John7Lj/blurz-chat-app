@@ -7,24 +7,26 @@
 
 import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router';
-import { useAuthStore } from './stores/auth.store';
-import { useUIStore } from './stores/ui.store';
+import { useAuthStore } from './store/auth.store';
+import { useUIStore } from './store/ui.store';
 import AppShell from './components/layout/AppShell';
 import type { ReactNode } from 'react';
-import { Toaster } from 'react-hot-toast';
+
 
 // Lazy loaded pages
-const LoginPage = lazy(() => import('./features/auth/LoginPage'));
-const SignupPage = lazy(() => import('./features/auth/SignupPage'));
-const ChatLayout = lazy(() => import('./features/chat/ChatLayout'));
-const ProfilePage = lazy(() => import('./features/profile/ProfilePage'));
-const ContactsPage = lazy(() => import('./features/contacts/ContactsPage'));
-const SettingsPage = lazy(() => import('./features/settings/SettingsPage'));
-const NotificationsPage = lazy(() => import('./features/notifications/NotificationsPage'));
-const NotFoundPage = lazy(() => import('./features/notifications/NotFoundPage'));
-const TermsOfServicePage = lazy(() => import('./features/legal/TermsOfServicePage'));
-const PrivacyPolicyPage = lazy(() => import('./features/legal/PrivacyPolicyPage'));
-const LicensePage = lazy(() => import('./features/legal/LicensePage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const SignupPage = lazy(() => import('./pages/SignupPage'));
+const ChatPage = lazy(() => import('./pages/ChatPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const ContactsPage = lazy(() => import('./pages/ContactsPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
+const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const LicensePage = lazy(() => import('./pages/LicensePage'));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 // ── Loading Fallback ────────────────────────────────────────────────
 function LoadingFallback() {
   return (
@@ -96,11 +98,12 @@ export default function App() {
 
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
         <Route path="/signup" element={<PublicRoute><SignupPage /></PublicRoute>} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
+        <Route path="/reset-password/:token" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
         <Route path="/terms" element={<TermsOfServicePage />} />
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path="/license" element={<LicensePage />} />
@@ -108,8 +111,8 @@ export default function App() {
         {/* Protected App Shell Layout */}
         <Route path="/" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
           <Route index element={<Navigate to="/chat" replace />} />
-          <Route path="chat" element={<ChatLayout />} />
-          <Route path="chat/:id" element={<ChatLayout />} />
+          <Route path="chat" element={<ChatPage />} />
+          <Route path="chat/:id" element={<ChatPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="contacts" element={<ContactsPage />} />
           <Route path="notifications" element={<NotificationsPage />} />

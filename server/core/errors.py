@@ -224,6 +224,82 @@ def register_error_handlers(app: FastAPI):
         ),
     )
 
+    # ── Pydantic validation errors (422) → human-readable messages ────
+    from fastapi.exceptions import RequestValidationError
+    
+    FIELD_LABELS = {
+        "username": "Username",
+        "email": "Email",
+        "phone": "Phone number",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "password": "Password",
+        "new_password": "New password",
+        "confirm_password": "Confirm password",
+        "current_password": "Current password",
+        "content": "Message content",
+        "profile_picture": "Profile picture",
+    }
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        errors = []
+        for error in exc.errors():
+            # Extract field name from location tuple (e.g., ('body', 'phone'))
+            loc = error.get("loc", ())
+            field_name = loc[-1] if loc else "unknown"
+            field_label = FIELD_LABELS.get(str(field_name), str(field_name).replace("_", " ").title())
+            
+            error_type = error.get("type", "")
+            ctx = error.get("ctx", {})
+            
+            # Build human-readable message based on error type
+            if error_type == "string_too_short":
+                min_len = ctx.get("min_length", "")
+                msg = f"{field_label} must be at least {min_len} characters"
+            elif error_type == "string_too_long":
+                max_len = ctx.get("max_length", "")
+                msg = f"{field_label} must be at most {max_len} characters"
+            elif error_type == "string_pattern_mismatch":
+                if field_name == "phone":
+                    msg = "Phone number must be a valid international number (e.g., +1234567890)"
+                else:
+                    msg = f"{field_label} format is invalid"
+            elif error_type == "value_error" and "email" in str(field_name).lower():
+                msg = "Please enter a valid email address"
+            elif error_type in ("value_error.email", "value_error"):
+                msg = f"{field_label} is invalid"
+            elif error_type == "missing":
+                msg = f"{field_label} is required"
+            elif error_type == "type_error.none.not_allowed":
+                msg = f"{field_label} cannot be empty"
+            else:
+                # Fallback: use Pydantic's message but prefix with field name
+                raw_msg = error.get("msg", "Invalid value")
+                msg = f"{field_label}: {raw_msg}"
+            
+            errors.append({
+                "field": str(field_name),
+                "message": msg,
+                "error_code": "validation_error",
+            })
+        
+        # Return the first error as the primary message for simple toast display
+        primary = errors[0] if errors else {"message": "Invalid input", "field": "unknown"}
+        
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={
+                "status_code": 422,
+                "detail": {
+                    "message": primary["message"],
+                    "error_code": "validation_error",
+                    "field": primary["field"],
+                    "errors": errors,
+                },
+            },
+        )
+
     @app.exception_handler(500)
     async def internal_server_error(request, exc):
         import traceback

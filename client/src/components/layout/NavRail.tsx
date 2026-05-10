@@ -7,7 +7,7 @@
 
 import { useLocation, useNavigate } from 'react-router';
 import { MessageCircle, Users, Bell, Settings } from 'lucide-react';
-import { useAuthStore } from '../../stores/auth.store';
+import { useAuthStore } from '../../store/auth.store';
 import { Avatar } from '../ui/Avatar';
 
 const navItems = [

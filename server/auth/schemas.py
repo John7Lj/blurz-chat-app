@@ -33,11 +33,11 @@ class UserInfo(User):
 
 
 class Create_User(BaseModel): 
-    username: str = Field(max_length=20)
+    username: str = Field(min_length=3, max_length=20, pattern=r"^[a-zA-Z0-9_]+$")
     email: EmailStr
     phone: str = Field(pattern=r"^\+?[1-9]\d{1,14}$")
-    first_name: str
-    last_name: str
+    first_name: str = Field(min_length=1, max_length=50, pattern=r"^[a-zA-Z\s\-']+$")
+    last_name: str = Field(min_length=1, max_length=50, pattern=r"^[a-zA-Z\s\-']+$")
     password: str = Field(min_length=8, max_length=72) 
     profile_picture: Optional[UploadFile] = None
 

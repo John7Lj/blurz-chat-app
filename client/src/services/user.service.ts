@@ -6,7 +6,7 @@
  */
 
 import api from '../lib/axios';
-import type { ContactUser, UpdateUserInput, User } from '../schemas/user.schema';
+import type { ContactUser, UpdateUserInput, User } from '../types/user.types';
 
 export const userService = {
   getContacts: async (): Promise<ContactUser[]> => {
@@ -24,9 +24,13 @@ export const userService = {
     return response.data;
   },
 
-  updateProfilePicture: async (pictureBase64: string): Promise<{ message: string }> => {
+  updateProfilePicture: async (
+    pictureBase64: string,
+    fileExtension: string = '.jpg',
+  ): Promise<{ message: string }> => {
     const response = await api.patch('/users/update-profile-picture', {
       profile_picture: pictureBase64,
+      file_extension: fileExtension,
     });
     return response.data;
   },

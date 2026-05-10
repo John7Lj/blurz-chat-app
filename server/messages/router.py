@@ -10,7 +10,7 @@ from auth.dependencies import get_current_user
 from db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .service import get_message_by_chatId ,delete_messages_byID,edit_message_byID,read_message_byID
-from .schemas import MessageOut
+from .schemas import MessageOut, EditMessageBody
 import uuid
 
 
@@ -48,7 +48,7 @@ async def get_messages(
 
 # need to implment edit and delete in service and routes
 
-@msg_router.delete("/messages")
+@msg_router.delete("/delete")
 async def delete_message(
     message_id:List[uuid.UUID]=Query(default=[]),
     user =Depends(get_current_user),
@@ -74,15 +74,15 @@ async def delete_message(
         )
 
 
-@msg_router.patch("/messages/{message_id}")
+@msg_router.patch("/{message_id}")
 async def edit_message(
     message_id:uuid.UUID,
-    content:str,
+    body: EditMessageBody,
     user=Depends(get_current_user),
     session:AsyncSession = Depends(get_session)
     ):
     try:
-        is_edited=await edit_message_byID(message_id,user.id,content,session)
+        is_edited=await edit_message_byID(message_id,user.id,body.content,session)
         if not is_edited:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -101,7 +101,7 @@ async def edit_message(
         )
 
 
-@msg_router.patch("/messages/{message_id}/read")
+@msg_router.patch("/{message_id}/read")
 async def read_message(
     message_id:uuid.UUID,
     user=Depends(get_current_user),

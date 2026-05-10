@@ -6,7 +6,7 @@
  */
 
 import { MessageCircle, PenSquare } from 'lucide-react';
-import { useUIStore } from '../../stores/ui.store';
+import { useUIStore } from '../../store/ui.store';
 
 export default function EmptyState() {
   const openContactsPanel = useUIStore((s) => s.openContactsPanel);

@@ -7,12 +7,12 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { PenSquare, MoreVertical, Search } from 'lucide-react';
-import { useChats } from '../../hooks/use-chats';
-import { useUIStore } from '../../stores/ui.store';
-import { useAuthStore } from '../../stores/auth.store';
+import { useChats } from '../../hooks/useChats';
+import { useUIStore } from '../../store/ui.store';
+import { useAuthStore } from '../../store/auth.store';
 import { Avatar } from '../../components/ui/Avatar';
 import { ChatListSkeleton } from '../../components/ui/Skeleton';
-import ChatListItemComponent from '../../components/ChatListItem';
+import ChatListItemComponent from './components/ChatListItem';
 
 export default function Sidebar() {
   const { setActiveChat, openContactsPanel } = useUIStore();

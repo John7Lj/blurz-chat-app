@@ -108,9 +108,9 @@ describe('WebSocketService', () => {
      * WHY: Network interruptions shouldn't crash the app.
      * FAILURE: App throws error or crashes when offline.
      */
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     wsService.send({ type: 'message', content: 'test' });
-    expect(consoleSpy).toHaveBeenCalledWith('[WS] Cannot send: socket not open');
+    expect(consoleSpy).toHaveBeenCalledWith('[WS] Cannot send: socket not open (state=%s)', undefined);
     consoleSpy.mockRestore();
   });
 
