@@ -8,12 +8,14 @@
 import { Avatar } from '../../../components/ui/Avatar';
 import type { ChatListItem } from '../../../types/chat.types';
 import { formatDistanceToNow } from 'date-fns';
-import { Check, CheckCheck } from 'lucide-react';
+import { Check, CheckCheck, Trash2 } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
 
 interface Props {
   chat: ChatListItem;
   isActive: boolean;
   onClick: () => void;
+  onDelete?: (chatId: string) => void;
   currentUserId: string;
 }
 
@@ -30,10 +32,31 @@ function formatTime(dateStr: string): string {
   }
 }
 
-export default function ChatListItemComponent({ chat, isActive, onClick, currentUserId }: Props) {
+export default function ChatListItemComponent({ chat, isActive, onClick, onDelete, currentUserId }: Props) {
   const p = chat.participants;
   const name = `${p.first_name} ${p.last_name}`;
   const lastMsg = chat.last_message;
+  const [showMenu, setShowMenu] = useState(false);
+  const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu on outside click
+  useEffect(() => {
+    if (!showMenu) return;
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showMenu]);
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setMenuPos({ x: e.clientX, y: e.clientY });
+    setShowMenu(true);
+  };
 
   let preview = 'No messages yet';
   let isMe = false;
@@ -53,11 +76,58 @@ export default function ChatListItemComponent({ chat, isActive, onClick, current
       data-testid="chat-list-item"
       data-active={isActive ? 'true' : 'false'}
       onClick={onClick}
+      onContextMenu={handleContextMenu}
       className="chat-list-item"
       style={{
         background: isActive ? 'var(--chat-selected)' : 'transparent',
+        position: 'relative',
       }}
     >
+      {/* Right-click context menu */}
+      {showMenu && (
+        <div
+          ref={menuRef}
+          style={{
+            position: 'fixed',
+            left: menuPos.x,
+            top: menuPos.y,
+            zIndex: 100,
+            background: 'var(--color-bg-panel)',
+            border: '1px solid var(--color-border)',
+            borderRadius: 10,
+            padding: '4px 0',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
+            minWidth: 160,
+          }}
+        >
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowMenu(false);
+              onDelete?.(chat.id);
+            }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              width: '100%',
+              padding: '10px 14px',
+              border: 'none',
+              background: 'transparent',
+              color: 'var(--color-danger)',
+              fontSize: 13,
+              fontWeight: 500,
+              cursor: 'pointer',
+              textAlign: 'left',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(239,68,68,0.1)')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+          >
+            <Trash2 size={15} />
+            Delete Chat
+          </button>
+        </div>
+      )}
       {/* Avatar */}
       <div style={{ flexShrink: 0 }}>
         <Avatar src={p.profile_url} name={name} size="md" showOnline />

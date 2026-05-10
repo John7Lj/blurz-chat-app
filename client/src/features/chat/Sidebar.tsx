@@ -7,12 +7,15 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { PenSquare, MoreVertical, Search } from 'lucide-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 import { useChats } from '../../hooks/useChats';
 import { useUIStore } from '../../store/ui.store';
 import { useAuthStore } from '../../store/auth.store';
 import { Avatar } from '../../components/ui/Avatar';
 import { ChatListSkeleton } from '../../components/ui/Skeleton';
 import ChatListItemComponent from './components/ChatListItem';
+import { chatService } from '../../services/chat.service';
 
 export default function Sidebar() {
   const { setActiveChat, openContactsPanel } = useUIStore();
@@ -21,6 +24,25 @@ export default function Sidebar() {
   const user = useAuthStore((s) => s.user);
   const { data: chats = [], isLoading } = useChats();
   const [search, setSearch] = useState('');
+  const queryClient = useQueryClient();
+
+  const deleteChatMutation = useMutation({
+    mutationFn: (chatId: string) => chatService.deleteChats([chatId]),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['chats'] });
+      toast.success('Chat deleted');
+    },
+    onError: () => {
+      toast.error('Failed to delete chat');
+    },
+  });
+
+  const handleDeleteChat = useCallback((chatId: string) => {
+    if (activeChatId === chatId) {
+      setActiveChat(null as unknown as string);
+    }
+    deleteChatMutation.mutate(chatId);
+  }, [activeChatId, setActiveChat, deleteChatMutation]);
 
   const filteredChats = useMemo(() => {
     if (!search.trim()) return chats;
@@ -160,6 +182,7 @@ export default function Sidebar() {
               chat={chat}
               isActive={chat.id === activeChatId}
               onClick={() => handleSelectChat(chat.id)}
+              onDelete={handleDeleteChat}
               currentUserId={userId ?? ''}
             />
           ))}

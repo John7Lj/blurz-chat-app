@@ -34,7 +34,7 @@ async def is_username_exist(username: str, session: AsyncSession):
 async def update_user(user_id: uuid.UUID, session: AsyncSession, update_data: Update_User):
     if update_data.username:
         existing = await is_username_exist(update_data.username, session)
-        if existing:
+        if existing and existing.id != user_id:
             raise UserAlreadyExists()
     
     query = select(User).where(User.id == user_id)

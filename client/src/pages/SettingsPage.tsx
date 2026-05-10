@@ -25,6 +25,9 @@ export default function SettingsPage() {
     toggleTheme,
     setTheme,
     logout,
+    showDeleteConfirm,
+    setShowDeleteConfirm,
+    deleteAccountMutation,
   } = useSettings();
   
   return (
@@ -230,17 +233,42 @@ export default function SettingsPage() {
                   >
                     <h3 className="text-[14px] font-bold mb-2" style={{ color: 'var(--color-danger)' }}>Danger Zone</h3>
                     <p className="text-[13px] mb-4" style={{ color: 'var(--color-text-secondary)' }}>Once you delete your account, there is no going back. Please be certain.</p>
-                    <button
-                      className="px-4 py-2 rounded-lg font-medium text-[13px] transition-colors"
-                      style={{
-                        background: 'rgba(239,68,68,0.1)',
-                        color: 'var(--color-danger)',
-                      }}
-                      onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(239,68,68,0.2)')}
-                      onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(239,68,68,0.1)')}
-                    >
-                      Delete Account
-                    </button>
+                    
+                    {!showDeleteConfirm ? (
+                      <button
+                        onClick={() => setShowDeleteConfirm(true)}
+                        className="px-4 py-2 rounded-lg font-medium text-[13px] transition-colors"
+                        style={{
+                          background: 'rgba(239,68,68,0.1)',
+                          color: 'var(--color-danger)',
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(239,68,68,0.2)')}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(239,68,68,0.1)')}
+                      >
+                        Delete Account
+                      </button>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        <p className="text-[13px] font-medium" style={{ color: 'var(--color-danger)' }}>Are you sure?</p>
+                        <button
+                          onClick={() => deleteAccountMutation.mutate()}
+                          disabled={deleteAccountMutation.isPending}
+                          className="px-4 py-2 rounded-lg font-bold text-[13px] text-white transition-colors"
+                          style={{ background: '#ef4444' }}
+                          onMouseEnter={(e) => (e.currentTarget.style.background = '#dc2626')}
+                          onMouseLeave={(e) => (e.currentTarget.style.background = '#ef4444')}
+                        >
+                          {deleteAccountMutation.isPending ? 'Deleting...' : 'Yes, Delete'}
+                        </button>
+                        <button
+                          onClick={() => setShowDeleteConfirm(false)}
+                          className="px-4 py-2 rounded-lg font-medium text-[13px] transition-colors"
+                          style={{ color: 'var(--color-text-secondary)' }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
