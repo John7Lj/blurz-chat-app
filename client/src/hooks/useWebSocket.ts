@@ -73,6 +73,20 @@ export function useWebSocket() {
           },
         );
 
+        // ── Browser Notification (background tab only) ──────────
+        if (
+          msg.sender_id !== userId &&
+          document.hidden &&
+          Notification.permission === 'granted'
+        ) {
+          const senderName = (data.sender_name as string) || 'New message';
+          new Notification(senderName, {
+            body: msg.content || 'Sent a message',
+            icon: '/blurz-logo.png',
+            tag: `blurz-msg-${realId}`, // prevent duplicate notifications
+          });
+        }
+
         // Invalidate chat list to refresh last_message
         queryClient.invalidateQueries({ queryKey: CHATS_KEY });
       }

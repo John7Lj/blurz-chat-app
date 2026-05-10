@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { Palette, Bell, Shield, User, LogOut, ChevronRight, Sun, Moon } from 'lucide-react';
+import { Palette, Bell, Shield, User, LogOut, ChevronRight, Sun, Moon, Lock, Eye, EyeOff } from 'lucide-react';
 import { useSettings } from '../features/settings/hooks/useSettings';
 import { Avatar } from '../components/ui/Avatar';
 
@@ -28,6 +28,10 @@ export default function SettingsPage() {
     showDeleteConfirm,
     setShowDeleteConfirm,
     deleteAccountMutation,
+    passwordForm,
+    setPasswordField,
+    handleChangePassword,
+    isChangingPassword,
   } = useSettings();
   
   return (
@@ -222,6 +226,74 @@ export default function SettingsPage() {
             {activeSection === 'account' && (
               <div className="animate-fade-in">
                 <h2 className="text-xl font-bold mb-6" style={{ color: 'var(--color-text-primary)' }}>Account Settings</h2>
+                <div className="glass-card p-6 mb-6">
+                  <h3 className="text-[14px] font-bold mb-4" style={{ color: 'var(--color-text-primary)' }}>
+                    <Lock size={15} style={{ display: 'inline', marginRight: 8, verticalAlign: 'middle' }} />
+                    Change Password
+                  </h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-[12px] font-medium mb-1 block" style={{ color: 'var(--color-text-secondary)' }}>Current Password</label>
+                      <input
+                        type="password"
+                        value={passwordForm.currentPassword}
+                        onChange={setPasswordField('currentPassword')}
+                        placeholder="Enter current password"
+                        className="w-full px-3 py-2.5 rounded-lg text-[13px]"
+                        style={{
+                          background: 'var(--color-bg-input)',
+                          border: '1px solid var(--color-border)',
+                          color: 'var(--color-text-primary)',
+                          outline: 'none',
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[12px] font-medium mb-1 block" style={{ color: 'var(--color-text-secondary)' }}>New Password</label>
+                      <input
+                        type="password"
+                        value={passwordForm.newPassword}
+                        onChange={setPasswordField('newPassword')}
+                        placeholder="Enter new password (min 8 chars)"
+                        className="w-full px-3 py-2.5 rounded-lg text-[13px]"
+                        style={{
+                          background: 'var(--color-bg-input)',
+                          border: '1px solid var(--color-border)',
+                          color: 'var(--color-text-primary)',
+                          outline: 'none',
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[12px] font-medium mb-1 block" style={{ color: 'var(--color-text-secondary)' }}>Confirm New Password</label>
+                      <input
+                        type="password"
+                        value={passwordForm.confirmPassword}
+                        onChange={setPasswordField('confirmPassword')}
+                        placeholder="Confirm new password"
+                        className="w-full px-3 py-2.5 rounded-lg text-[13px]"
+                        style={{
+                          background: 'var(--color-bg-input)',
+                          border: '1px solid var(--color-border)',
+                          color: 'var(--color-text-primary)',
+                          outline: 'none',
+                        }}
+                      />
+                    </div>
+                    <button
+                      onClick={handleChangePassword}
+                      disabled={isChangingPassword}
+                      className="px-4 py-2.5 rounded-lg font-medium text-[13px] text-white transition-colors mt-2"
+                      style={{
+                        background: 'var(--color-accent)',
+                        opacity: isChangingPassword ? 0.6 : 1,
+                      }}
+                    >
+                      {isChangingPassword ? 'Changing...' : 'Change Password'}
+                    </button>
+                  </div>
+                </div>
+
                 <div className="glass-card p-6">
                   <p className="text-[14px] mb-6" style={{ color: 'var(--color-text-secondary)' }}>To update your profile information and avatar, please visit your Profile page.</p>
                   <div

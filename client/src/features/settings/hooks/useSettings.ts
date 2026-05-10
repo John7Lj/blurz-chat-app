@@ -13,6 +13,7 @@ import { useAuthStore } from '../../../store/auth.store';
 import { useUIStore } from '../../../store/ui.store';
 import { useLogout } from '../../../hooks/useAuth';
 import { authService } from '../../../services/auth.service';
+import { extractErrorMessage } from '../../../lib/axios';
 
 export function useSettings() {
   const [activeSection, setActiveSection] = useState('appearance');
@@ -25,6 +26,50 @@ export function useSettings() {
   const logout = useLogout();
   const navigate = useNavigate();
 
+  // ── Change Password ─────────────────────────────────────────────
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+
+  const setPasswordField = (key: keyof typeof passwordForm) =>
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setPasswordForm(prev => ({ ...prev, [key]: e.target.value }));
+
+  const changePasswordMutation = useMutation({
+    mutationFn: () =>
+      authService.changePassword(passwordForm.currentPassword, passwordForm.newPassword),
+    onSuccess: () => {
+      toast.success('Password changed successfully');
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    },
+    onError: (err) => {
+      toast.error(extractErrorMessage(err));
+    },
+  });
+
+  const handleChangePassword = () => {
+    if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+    if (passwordForm.newPassword.length < 8) {
+      toast.error('New password must be at least 8 characters');
+      return;
+    }
+    if (passwordForm.newPassword.length > 72) {
+      toast.error('New password must be at most 72 characters');
+      return;
+    }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+    changePasswordMutation.mutate();
+  };
+
+  // ── Delete Account ──────────────────────────────────────────────
   const deleteAccountMutation = useMutation({
     mutationFn: () => authService.deleteAccount(),
     onSuccess: () => {
@@ -48,5 +93,9 @@ export function useSettings() {
     showDeleteConfirm,
     setShowDeleteConfirm,
     deleteAccountMutation,
+    passwordForm,
+    setPasswordField,
+    handleChangePassword,
+    isChangingPassword: changePasswordMutation.isPending,
   };
 }

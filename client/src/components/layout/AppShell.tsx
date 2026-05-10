@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import NavRail from './NavRail';
 import MobileTabBar from './MobileTabBar';
@@ -14,6 +15,13 @@ export default function AppShell() {
   const activeChatId = useUIStore((s) => s.activeChatId);
   const location = useLocation();
   const isInChat = location.pathname.startsWith('/chat') && !!activeChatId;
+
+  // Request notification permission once for authenticated users
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
 
   return (
     <div
