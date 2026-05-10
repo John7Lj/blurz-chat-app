@@ -9,17 +9,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Check Connectivity
-        run: |
-          echo "Testing connection to host..."
-          nc -zv -w 5 ${{ secrets.HOST_DNS }} 22 || echo "Port 22 is unreachable"
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          debug: true
           script: |
             cd ~/blurz-chat-app/server
             git pull origin main
