@@ -7,7 +7,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Send, Smile, Paperclip } from 'lucide-react';
-import EmojiPicker, { Theme, EmojiClickData } from 'emoji-picker-react';
+import EmojiPicker, { Theme } from 'emoji-picker-react';
 import { useUIStore } from '../../store/ui.store';
 
 interface MessageInputProps {
@@ -63,7 +63,7 @@ export default function MessageInput({ onSend, onTyping }: MessageInputProps) {
     [onTyping],
   );
 
-  const onEmojiClick = (emojiData: EmojiClickData) => {
+  const onEmojiClick = (emojiData: { emoji: string }) => {
     setInput((prev) => prev + emojiData.emoji);
     if (textareaRef.current) {
       // Small timeout to allow state to update before focusing
