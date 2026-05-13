@@ -57,3 +57,14 @@ class Publisher:
             "user_id": str(user_id),
         }
         await self.redis.publish(f"chat:{chat_id}", json.dumps(payload))
+
+    async def publish_delete(
+        self, chat_id: uuid.UUID, message_ids: list[uuid.UUID]
+    ):
+        """Publish a message deletion event to the chat channel."""
+        payload = {
+            "type": "message_deleted",
+            "chat_id": str(chat_id),
+            "message_ids": [str(mid) for mid in message_ids],
+        }
+        await self.redis.publish(f"chat:{chat_id}", json.dumps(payload))

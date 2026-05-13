@@ -137,6 +137,20 @@ export function useWebSocket() {
       if (type === 'new_chat') {
         queryClient.invalidateQueries({ queryKey: CHATS_KEY });
       }
+
+      // ── Message deleted ────────────────────────────────────────
+      if (type === 'message_deleted') {
+        const chatId = data.chat_id as string;
+        const deletedIds = data.message_ids as string[];
+        if (chatId && deletedIds) {
+          queryClient.setQueryData<Message[]>(
+            MESSAGES_KEY(chatId),
+            (old = []) => old.filter((m) => !deletedIds.includes(m.id))
+          );
+          // Also invalidate chat list to refresh last_message preview
+          queryClient.invalidateQueries({ queryKey: CHATS_KEY });
+        }
+      }
     });
 
     return () => {

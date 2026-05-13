@@ -45,20 +45,25 @@ async def delete_messages_byID(
     session:AsyncSession
     ):
     try:
-        verify_query=select(Message.id).where(
+        verify_query = select(Message.id, Message.chat_id).where(
             Message.id.in_(message_ids),
             Message.sender_id == user_id
-            )
+        )
         result = await session.execute(verify_query)
-        valid_ids = result.scalars().all()
-        if len(valid_ids) != len(set(message_ids)):
+        rows = result.all()  # List of (id, chat_id)
+        
+        if len(rows) != len(set(message_ids)):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="One or more message IDs are invalid or unauthorized."
             )
+        
+        valid_ids = [row[0] for row in rows]
+        chat_id = rows[0][1] if rows else None
+        
         await session.execute(delete(Message).where(Message.id.in_(valid_ids)))
         await session.commit()
-        return True
+        return chat_id, valid_ids
     except HTTPException:
         raise
     except Exception as e:

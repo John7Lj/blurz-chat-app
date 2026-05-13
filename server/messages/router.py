@@ -5,7 +5,7 @@
 
 from fastapi.responses import JSONResponse
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException,status,Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 from auth.dependencies import get_current_user
 from db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -50,9 +50,10 @@ async def get_messages(
 
 @msg_router.delete("/delete")
 async def delete_message(
-    message_id:List[uuid.UUID]=Query(default=[]),
-    user =Depends(get_current_user),
-    session:AsyncSession = Depends(get_session)
+    request: Request,
+    message_id: List[uuid.UUID] = Query(default=[]),
+    user = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
     ):
     if not message_id:
         raise HTTPException(
@@ -60,7 +61,13 @@ async def delete_message(
             detail="At least one message ID is required."
         )
     try:
-        await delete_messages_byID(message_id,user.id,session)
+        chat_id, deleted_ids = await delete_messages_byID(message_id, user.id, session)
+        
+        # Notify other participants via PubSub/WebSockets
+        if chat_id:
+            publisher = request.app.state.publisher
+            await publisher.publish_delete(chat_id, deleted_ids)
+
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={"message": "Message deleted successfully."}
