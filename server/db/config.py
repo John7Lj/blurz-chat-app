@@ -29,6 +29,7 @@ class settings(BaseSettings):
     USE_CREDENTIALS: bool = True
     VALIDATE_CERTS: bool = True
     domain:str
+    FRONTEND_URL: str
     password_secrete_reset:str
 
     DEBUG: bool = True

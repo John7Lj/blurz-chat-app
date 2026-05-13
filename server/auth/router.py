@@ -304,9 +304,8 @@ async def passsword_reset(Email: Password_Reset, session: AsyncSession = Depends
     try:
         token = password_reset_link.create_safe_url({"email": email})
         
-        # Point to CLIENT URL (strip /api/v1 if present)
-        frontend_url = config.domain.replace('/api/v1', '')
-        link = f'{frontend_url}/reset-password/{token}'
+        # Point to CLIENT URL
+        link = f'{config.FRONTEND_URL}/reset-password/{token}'
         
         data = {"link": link}
         
