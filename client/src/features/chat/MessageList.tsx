@@ -22,6 +22,7 @@ interface MessageListProps {
   isLoading?: boolean;
   chatId?: string | null;
   onMessageRead?: (chatId: string, messageId: string) => void;
+  onDeleteMessage?: (messageId: string) => void;
 }
 
 function getDateLabel(dateStr: string): string {
@@ -63,6 +64,7 @@ export default function MessageList({
   isLoading,
   chatId,
   onMessageRead,
+  onDeleteMessage,
 }: MessageListProps) {
   const {
     containerRef,
@@ -113,11 +115,12 @@ export default function MessageList({
           showAvatar={showAvatar}
           senderName={participantName}
           senderAvatar={participantAvatar}
+          onDelete={onDeleteMessage}
         />,
       );
     }
     return items;
-  }, [messages, currentUserId, participantName, participantAvatar]);
+  }, [messages, currentUserId, participantName, participantAvatar, onDeleteMessage]);
 
   if (isLoading) {
     return (

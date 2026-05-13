@@ -6,11 +6,14 @@
  */
 
 import { useCallback, useState } from 'react';
-import { useMessages } from '../../hooks/useMessages';
+import { useMessages, MESSAGES_KEY } from '../../hooks/useMessages';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import { useChats } from '../../hooks/useChats';
 import { useAuthStore } from '../../store/auth.store';
 import { useUIStore } from '../../store/ui.store';
+import { useQueryClient } from '@tanstack/react-query';
+import { messageService } from '../../services/message.service';
+import toast from 'react-hot-toast';
 import ChatHeader from './ChatHeader';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
@@ -19,6 +22,7 @@ import { TypingIndicator } from './TypingIndicator';
 import { UserDetailsModal } from './components/UserDetailsModal';
 
 export default function ChatWindow() {
+  const queryClient = useQueryClient();
   const userId = useAuthStore((s) => s.userId);
   const activeChatId = useUIStore((s) => s.activeChatId);
   const setActiveChat = useUIStore((s) => s.setActiveChat);
@@ -29,6 +33,17 @@ export default function ChatWindow() {
   const { sendMessage, sendTyping, sendRead } = useWebSocket();
 
   const [showUserDetails, setShowUserDetails] = useState(false);
+
+  const handleDeleteMessage = useCallback(async (messageId: string) => {
+    if (!activeChatId) return;
+    try {
+      await messageService.deleteMessages([messageId]);
+      queryClient.invalidateQueries({ queryKey: MESSAGES_KEY(activeChatId) });
+      toast.success('Message deleted');
+    } catch (error) {
+      toast.error('Failed to delete message');
+    }
+  }, [activeChatId, queryClient]);
 
   const handleSend = useCallback(
     (text: string) => {
@@ -87,6 +102,7 @@ export default function ChatWindow() {
         isLoading={isLoading}
         chatId={activeChatId}
         onMessageRead={sendRead}
+        onDeleteMessage={handleDeleteMessage}
       />
 
       {isPartnerTyping && <TypingIndicator name={p?.first_name || participantName} />}

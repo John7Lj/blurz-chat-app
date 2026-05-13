@@ -138,9 +138,16 @@ async def delete_chats_service(
                 detail="One or more chat IDs are invalid or unauthorized."
             )
 
-        # 3. Perform the bulk delete
+        # 3. Delete in order to respect FK constraints:
+        #    messages → chat_participants → chats
         await session.execute(
-            delete(Chat).where(Chat.id.in_(ids))
+            delete(Message).where(Message.chat_id.in_(valid_ids))
+        )
+        await session.execute(
+            delete(ChatParticipants).where(ChatParticipants.chat_id.in_(valid_ids))
+        )
+        await session.execute(
+            delete(Chat).where(Chat.id.in_(valid_ids))
         )
 
         await session.commit()

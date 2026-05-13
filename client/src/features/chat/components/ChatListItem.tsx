@@ -71,12 +71,46 @@ export default function ChatListItemComponent({ chat, isActive, onClick, onDelet
   const isDelivered = lastMsgStatus === 'delivered' || lastMsgStatus === 'read';
   const unreadCount = (chat as Record<string, unknown>).unread_count as number | undefined ?? 0;
 
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const startPress = (x: number, y: number) => {
+    timerRef.current = setTimeout(() => {
+      setMenuPos({ x, y });
+      setShowMenu(true);
+    }, 600); // 600ms for long press
+  };
+
+  const cancelPress = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
   return (
     <button
       data-testid="chat-list-item"
       data-active={isActive ? 'true' : 'false'}
-      onClick={onClick}
+      onClick={(e) => {
+        if (showMenu) {
+          setShowMenu(false);
+          return;
+        }
+        onClick();
+      }}
       onContextMenu={handleContextMenu}
+      onTouchStart={(e) => {
+        const touch = e.touches[0];
+        startPress(touch.clientX, touch.clientY);
+      }}
+      onTouchEnd={cancelPress}
+      onTouchMove={cancelPress}
+      onMouseDown={(e) => {
+        // Only for primary button long press if we wanted it on desktop too
+        // but contextmenu usually handles right click on desktop
+      }}
+      onMouseUp={cancelPress}
+      onMouseLeave={cancelPress}
       className="chat-list-item"
       style={{
         background: isActive ? 'var(--chat-selected)' : 'transparent',
