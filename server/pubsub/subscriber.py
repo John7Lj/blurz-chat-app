@@ -94,6 +94,12 @@ class PubSubListener:
 
         while self._running:
             try:
+                # Avoid calling get_message if there are no active subscriptions to prevent
+                # "pubsub connection not set" RuntimeError spam on startup or when idle.
+                if not self._subscribed_channels:
+                    await asyncio.sleep(self._poll_timeout)
+                    continue
+
                 raw = await self.pubsub.get_message(
                     ignore_subscribe_messages=True,
                     timeout=self._poll_timeout,
@@ -101,6 +107,7 @@ class PubSubListener:
                 if raw is not None:
                     await self._process_one(raw)
                 backoff = 1
+
 
             except asyncio.CancelledError:
                 logger.info("PubSub listener cancelled")

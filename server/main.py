@@ -102,3 +102,13 @@ app.include_router(api_v1)
 @app.get("/")
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+
+@app.head("/")
+async def root_head():
+    return {"status": "ok"}
+
+
+@app.api_route("/healthz", methods=["GET", "HEAD"])
+async def health_check():
+    return {"status": "healthy"}
