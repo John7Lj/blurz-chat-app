@@ -21,10 +21,19 @@ class Participant(BaseModel):
     
 
 
+class LastMessagePreview(BaseModel):
+    content: str | None = None
+    msg_type: str = "text"
+    sender_id: uuid.UUID
+    sent_at: datetime
+    status: str = "sent"
+
 class ChatList(BaseModel):
     id: uuid.UUID
     created_at:datetime
     participants:Participant
+    last_message: LastMessagePreview | None = None
+    unread_count: int = 0
 
 
 

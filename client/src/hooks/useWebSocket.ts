@@ -73,18 +73,23 @@ export function useWebSocket() {
           },
         );
 
-        // ── Browser Notification (background tab only) ──────────
+        // ── Browser Notification ──────────────────────────────
+        // Fire when: it's NOT my message AND (tab is hidden OR I'm viewing a different chat)
         if (
           msg.sender_id !== userId &&
-          document.hidden &&
           Notification.permission === 'granted'
         ) {
-          const senderName = (data.sender_name as string) || 'New message';
-          new Notification(senderName, {
-            body: msg.content || 'Sent a message',
-            icon: '/blurz-logo.png',
-            tag: `blurz-msg-${realId}`, // prevent duplicate notifications
-          });
+          const currentActiveChatId = useUIStore.getState().activeChatId;
+          const isViewingThisChat = currentActiveChatId === chatId && !document.hidden;
+          
+          if (!isViewingThisChat) {
+            const senderName = (data.sender_name as string) || 'New message';
+            new Notification(senderName, {
+              body: msg.content || 'Sent a message',
+              icon: '/blurz-logo.png',
+              tag: `blurz-msg-${realId}`,
+            });
+          }
         }
 
         // Invalidate chat list to refresh last_message

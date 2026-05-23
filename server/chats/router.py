@@ -4,14 +4,14 @@
 # LICENSE file in the root directory of this source tree.
 
 from fastapi.responses import JSONResponse
-from .schemas import ChatList,Participant 
+from .schemas import ChatList,Participant,LastMessagePreview 
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException,status,Query, Request
 from auth.dependencies import get_current_user
 from auth.schemas import User, UserInfo
 from db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
-from .service import  get_user_chats_with_others,add_message_to_chat,find_existing_chat,create_chat_with_message
+from .service import  get_user_chats_with_others,add_message_to_chat,find_existing_chat,create_chat_with_message,get_last_message,get_unread_count
 from .service import delete_chats_service 
 from db.models import User
 from .schemas import StartChatRequest,MessageOut,StartChatResponse
@@ -29,8 +29,20 @@ chat_router = APIRouter(prefix='/chats', tags=["CHATS"])
 @chat_router.get('/mine',response_model=List[ChatList])
 async def get_all_user_chats(session:AsyncSession=Depends(get_session),C_User:User=Depends(get_current_user)):
     chats = await get_user_chats_with_others(session,C_User.id)
-    return [
-        ChatList(
+    result = []
+    for chat, user in chats:
+        last_msg = await get_last_message(session, chat.id)
+        unread = await get_unread_count(session, chat.id, C_User.id)
+        last_message_preview = None
+        if last_msg:
+            last_message_preview = LastMessagePreview(
+                content=last_msg.content,
+                msg_type=last_msg.msg_type.value if last_msg.msg_type else "text",
+                sender_id=last_msg.sender_id,
+                sent_at=last_msg.sent_at,
+                status=last_msg.status.value if last_msg.status else "sent",
+            )
+        result.append(ChatList(
             id=chat.id,
             created_at=chat.created_at,
             participants=Participant(
@@ -40,10 +52,13 @@ async def get_all_user_chats(session:AsyncSession=Depends(get_session),C_User:Us
                 profile_url=user.profile_url or "",
                 phone=user.phone,
                 bio=user.bio
-            )
-        )
-        for chat, user in chats
-    ]
+            ),
+            last_message=last_message_preview,
+            unread_count=unread,
+        ))
+    # Sort by last message time (most recent first)
+    result.sort(key=lambda c: c.last_message.sent_at if c.last_message else c.created_at, reverse=True)
+    return result
 
 """
 the logic of this endpoint will be a little complex cuz we have to check the user 

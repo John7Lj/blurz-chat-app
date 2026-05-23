@@ -1,4 +1,4 @@
-import { Check, CheckCheck, Trash2, MoreVertical, Edit2 } from 'lucide-react';
+import { Check, CheckCheck, Trash2, MoreVertical, Edit2, X as XIcon } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import type { Message } from '../../../types/message.types';
 
@@ -11,6 +11,7 @@ interface Props {
   senderName?: string;
   senderAvatar?: string | null;
   onDelete?: (messageId: string) => void;
+  onEdit?: (messageId: string, newContent: string) => void;
 }
 
 function formatTime(dateStr: string) {
@@ -21,7 +22,7 @@ function formatTime(dateStr: string) {
   }
 }
 
-export default function MessageBubble({ message, isMine, isLastInGroup = true, senderName, onDelete }: Props) {
+export default function MessageBubble({ message, isMine, isLastInGroup = true, senderName, onDelete, onEdit }: Props) {
   const time = formatTime(message.sent_at);
   const isRead = message.status === 'read';
   const isDelivered = message.status === 'delivered' || message.status === 'read';
@@ -29,8 +30,11 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
   const [showMenu, setShowMenu] = useState(false);
   const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editText, setEditText] = useState(message.content || '');
   const menuRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const editInputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (!showMenu) return;
@@ -43,6 +47,13 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
     return () => document.removeEventListener('mousedown', handler);
   }, [showMenu]);
 
+  useEffect(() => {
+    if (isEditing && editInputRef.current) {
+      editInputRef.current.focus();
+      editInputRef.current.setSelectionRange(editText.length, editText.length);
+    }
+  }, [isEditing]);
+
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     setMenuPos({ x: e.clientX, y: e.clientY });
@@ -54,6 +65,37 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
     const rect = e.currentTarget.getBoundingClientRect();
     setMenuPos({ x: rect.left, y: rect.bottom + 4 });
     setShowMenu(true);
+  };
+
+  const handleStartEdit = () => {
+    setShowMenu(false);
+    setEditText(message.content || '');
+    setIsEditing(true);
+  };
+
+  const handleSaveEdit = () => {
+    const trimmed = editText.trim();
+    if (!trimmed || trimmed === message.content) {
+      setIsEditing(false);
+      return;
+    }
+    onEdit?.(message.id, trimmed);
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditText(message.content || '');
+  };
+
+  const handleEditKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSaveEdit();
+    }
+    if (e.key === 'Escape') {
+      handleCancelEdit();
+    }
   };
 
   const startPress = (x: number, y: number) => {
@@ -82,7 +124,7 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
         padding: '2px 12px',
         position: 'relative',
         alignItems: 'center',
-        gap: 8,
+        gap: 4,
       }}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
@@ -96,7 +138,7 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
             left: menuPos.x,
             top: menuPos.y,
             zIndex: 1000,
-            background: 'var(--color-bg-panel)',
+            background: 'var(--color-bg-panel, var(--chat-header-bg))',
             border: '1px solid var(--color-border)',
             borderRadius: 10,
             padding: '4px 0',
@@ -135,9 +177,7 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setShowMenu(false);
-                // TODO: Implement edit logic
-                alert('Edit feature coming soon!');
+                handleStartEdit();
               }}
               style={{
                 display: 'flex',
@@ -147,13 +187,13 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
                 padding: '10px 14px',
                 border: 'none',
                 background: 'transparent',
-                color: 'var(--color-text-primary)',
+                color: 'var(--color-text-primary, var(--chat-text-1))',
                 fontSize: 13,
                 fontWeight: 500,
                 cursor: 'pointer',
                 textAlign: 'left',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--color-bg-hover)')}
+              onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--color-bg-hover, rgba(139,92,246,0.07))')}
               onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
             >
               <Edit2 size={15} />
@@ -163,7 +203,7 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
         </div>
       )}
 
-      {!isMine && isHovering && (
+      {!isMine && isHovering && !isEditing && (
         <button onClick={handleDotsClick} className="icon-btn" style={{ width: 28, height: 28, flexShrink: 0 }}>
           <MoreVertical size={16} />
         </button>
@@ -197,47 +237,108 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
           </p>
         )}
 
-        {/* Content */}
-        <p
-          style={{
-            fontSize: 14,
-            lineHeight: 1.45,
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word',
-            margin: 0,
-            color: isMine ? '#fff' : 'var(--chat-recv-text)',
-          }}
-        >
-          {message.content}
-        </p>
+        {/* Content — editable or static */}
+        {isEditing ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 200 }}>
+            <textarea
+              ref={editInputRef}
+              value={editText}
+              onChange={(e) => setEditText(e.target.value)}
+              onKeyDown={handleEditKeyDown}
+              rows={1}
+              style={{
+                fontSize: 14,
+                lineHeight: 1.45,
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+                margin: 0,
+                color: '#fff',
+                background: 'rgba(255,255,255,0.1)',
+                border: '1px solid rgba(255,255,255,0.3)',
+                borderRadius: 6,
+                padding: '4px 8px',
+                outline: 'none',
+                resize: 'none',
+                fontFamily: 'inherit',
+              }}
+            />
+            <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+              <button
+                onClick={handleCancelEdit}
+                style={{
+                  padding: '3px 10px',
+                  borderRadius: 6,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  background: 'transparent',
+                  color: 'rgba(255,255,255,0.7)',
+                  cursor: 'pointer',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                style={{
+                  padding: '3px 10px',
+                  borderRadius: 6,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  border: 'none',
+                  background: 'rgba(255,255,255,0.2)',
+                  color: '#fff',
+                  cursor: 'pointer',
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p
+            style={{
+              fontSize: 14,
+              lineHeight: 1.45,
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              margin: 0,
+              color: isMine ? '#fff' : 'var(--chat-recv-text)',
+            }}
+          >
+            {message.content}
+          </p>
+        )}
 
         {/* Time + status */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 3,
-            marginTop: 3,
-            justifyContent: isMine ? 'flex-end' : 'flex-start',
-          }}
-        >
-          <span style={{ fontSize: 11, color: isMine ? 'rgba(255,255,255,0.6)' : 'var(--chat-ts-recv)', userSelect: 'none' }}>
-            {time}
-          </span>
-          {isMine && (
-            <span style={{ marginLeft: 1 }}>
-              {isRead
-                ? <CheckCheck size={14} style={{ color: '#93c5fd' }} />
-                : isDelivered
-                  ? <CheckCheck size={14} style={{ color: 'rgba(255,255,255,0.5)' }} />
-                  : <Check size={14} style={{ color: 'rgba(255,255,255,0.5)' }} />
-              }
+        {!isEditing && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 3,
+              marginTop: 3,
+              justifyContent: isMine ? 'flex-end' : 'flex-start',
+            }}
+          >
+            <span style={{ fontSize: 11, color: isMine ? 'rgba(255,255,255,0.6)' : 'var(--chat-ts-recv)', userSelect: 'none' }}>
+              {time}
             </span>
-          )}
-        </div>
+            {isMine && (
+              <span style={{ marginLeft: 1 }}>
+                {isRead
+                  ? <CheckCheck size={14} style={{ color: '#93c5fd' }} />
+                  : isDelivered
+                    ? <CheckCheck size={14} style={{ color: 'rgba(255,255,255,0.5)' }} />
+                    : <Check size={14} style={{ color: 'rgba(255,255,255,0.5)' }} />
+                }
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
-      {isMine && isHovering && (
+      {isMine && isHovering && !isEditing && (
         <button onClick={handleDotsClick} className="icon-btn" style={{ width: 28, height: 28, flexShrink: 0 }}>
           <MoreVertical size={16} />
         </button>

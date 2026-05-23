@@ -32,6 +32,34 @@ async def get_user_chats_with_others(session: AsyncSession, user_id: uuid.UUID):
     return result.all()
 
 
+async def get_last_message(session: AsyncSession, chat_id: uuid.UUID) -> Message | None:
+    """Get the most recent message in a chat."""
+    stmt = (
+        select(Message)
+        .where(Message.chat_id == chat_id)
+        .order_by(Message.sent_at.desc())
+        .limit(1)
+    )
+    result = await session.exec(stmt)
+    return result.first()
+
+
+async def get_unread_count(session: AsyncSession, chat_id: uuid.UUID, user_id: uuid.UUID) -> int:
+    """Count unread messages in a chat that were NOT sent by user_id."""
+    from sqlalchemy import func as sa_func
+    stmt = (
+        select(sa_func.count())
+        .select_from(Message)
+        .where(
+            Message.chat_id == chat_id,
+            Message.sender_id != user_id,
+            Message.status != "read",
+        )
+    )
+    result = await session.execute(stmt)
+    return result.scalar() or 0
+
+
 
 # this for one to one chat only 
 async def find_existing_chat(

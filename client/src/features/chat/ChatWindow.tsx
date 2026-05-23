@@ -45,6 +45,17 @@ export default function ChatWindow() {
     }
   }, [activeChatId, queryClient]);
 
+  const handleEditMessage = useCallback(async (messageId: string, newContent: string) => {
+    if (!activeChatId) return;
+    try {
+      await messageService.editMessage(messageId, newContent);
+      queryClient.invalidateQueries({ queryKey: MESSAGES_KEY(activeChatId) });
+      toast.success('Message edited');
+    } catch (error) {
+      toast.error('Failed to edit message');
+    }
+  }, [activeChatId, queryClient]);
+
   const handleSend = useCallback(
     (text: string) => {
       if (!activeChatId) return;
@@ -103,6 +114,7 @@ export default function ChatWindow() {
         chatId={activeChatId}
         onMessageRead={sendRead}
         onDeleteMessage={handleDeleteMessage}
+        onEditMessage={handleEditMessage}
       />
 
       {isPartnerTyping && <TypingIndicator name={p?.first_name || participantName} />}
