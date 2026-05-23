@@ -94,6 +94,9 @@ export function useWebSocket() {
 
         // Invalidate chat list to refresh last_message
         queryClient.invalidateQueries({ queryKey: CHATS_KEY });
+
+        // Invalidate messages to refetch full data (media fields like file_url, msg_type, etc.)
+        queryClient.invalidateQueries({ queryKey: MESSAGES_KEY(chatId) });
       }
 
       // ── Typing indicator ──────────────────────────────────────
