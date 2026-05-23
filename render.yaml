@@ -46,7 +46,11 @@ services:
       - key: MAIL_FROM
         sync: false
       - key: MAIL_PORT
-        value: 587
+        value: 465
+      - key: MAIL_STARTTLS
+        value: "False"
+      - key: MAIL_SSL_TLS
+        value: "True"
       - key: MAIL_SERVER
         value: smtp.gmail.com
       - key: MAIL_FROM_NAME
