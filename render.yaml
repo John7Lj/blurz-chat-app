@@ -18,7 +18,7 @@ services:
       - key: DB_URL
         sync: false # Set this in the Render dashboard or during blueprint creation
       - key: Redis_Url
-        value: redis://default:g0Jj7lzX6xk0kfdNNSMxCvcEuyJCYJrn@digestion-guitar-beginner-86343.db.redis.io:18373
+        sync: false # Set this securely in the Render dashboard or during blueprint creation
 
       # JWT Security settings
       - key: jwt_secret
