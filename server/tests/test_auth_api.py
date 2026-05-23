@@ -12,7 +12,7 @@
 
 Risk priority: HIGH — auth bugs = total app compromise.
 Every test uses httpx.AsyncClient against a FastAPI TestClient
-with DB/Redis/Celery fully mocked.
+with DB/Redis fully mocked.
 """
 import pytest
 import uuid
@@ -73,7 +73,7 @@ def user_db():
 
 @pytest.fixture
 async def client():
-    """httpx AsyncClient against the real app, with DB and Celery mocked."""
+    """httpx AsyncClient against the real app, with DB mocked."""
     from main import app
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://testserver") as ac:

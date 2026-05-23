@@ -1,7 +1,7 @@
 # render.yaml — Render Infrastructure-as-Code Blueprint
 # Use this to easily deploy the entire backend to Render.
 # In Render, go to Blueprints -> New Blueprint Instance -> Select your repo.
-# This will spin up two services: the API web service and the Celery background worker.
+# This will spin up the API web service.
 
 services:
   # 1. FastAPI Web Service (API & WebSockets)
@@ -53,75 +53,5 @@ services:
         value: Blurz_chat
 
       # App Settings
-      - key: debug
-        value: "False"
-
-  # 2. Celery Background Worker
-  - type: worker
-    name: blurz-chat-celery
-    env: docker
-    dockerfilePath: server/Dockerfile
-    dockerContext: server
-    dockerCommand: celery -A celery_service.celery_tasks.app worker --loglevel=info --concurrency=2
-    plan: starter # Workers are not supported on Render's free tier. Requires starter tier or higher.
-    envVars:
-      # Inherit environment variables from the web service above to avoid duplication!
-      - key: DB_URL
-        fromService:
-          type: web
-          name: blurz-chat-api
-          envVar: DB_URL
-      - key: Redis_Url
-        fromService:
-          type: web
-          name: blurz-chat-api
-          envVar: Redis_Url
-      - key: jwt_secret
-        fromService:
-          type: web
-          name: blurz-chat-api
-          envVar: jwt_secret
-      - key: password_secrete_reset
-        fromService:
-          type: web
-          name: blurz-chat-api
-          envVar: password_secrete_reset
-      - key: jwt_algorithm
-        value: HS256
-      - key: refresh_token_expiary
-        value: 7
-      - key: access_token_expiary
-        value: 30
-      - key: domain
-        fromService:
-          type: web
-          name: blurz-chat-api
-          envVar: domain
-      - key: FRONTEND_URL
-        fromService:
-          type: web
-          name: blurz-chat-api
-          envVar: FRONTEND_URL
-      - key: MAIL_USERNAME
-        fromService:
-          type: web
-          name: blurz-chat-api
-          envVar: MAIL_USERNAME
-      - key: MAIL_PASSWORD
-        fromService:
-          type: web
-          name: blurz-chat-api
-          envVar: MAIL_PASSWORD
-      - key: MAIL_FROM
-        fromService:
-          type: web
-          name: blurz-chat-api
-          envVar: MAIL_FROM
-      - key: MAIL_PORT
-        value: 587
-      - key: MAIL_SERVER
-        value: smtp.gmail.com
-      - key: MAIL_FROM_NAME
-        value: Blurz_chat
       - key: debug
         value: "False"

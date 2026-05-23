@@ -11,11 +11,3 @@ services:
     env_file:
       - .env
     restart: unless-stopped
-
-  celery_worker:
-    build: .
-    command: celery -A celery_service.celery_tasks.app worker --loglevel=info --concurrency=2
-    env_file:
-      - .env
-    restart: unless-stopped
-

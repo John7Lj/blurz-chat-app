@@ -3,14 +3,14 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from auth.dependencies import get_current_user, AccessTokenBearer
 from auth.schemas import User, UserInfo
 from .schemas import other_users, Update_User, Profile_Picture_Response, Update_Profile_Picture
 from .service import update_user, get_contacts, search_user
 from db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
-from celery_service.celery_tasks import bg_save_profile_picture
+from core.tasks import bg_save_profile_picture
 import base64
 
 user_router = APIRouter()
@@ -50,6 +50,7 @@ async def Search_user(query: str, session: AsyncSession = Depends(get_session)):
 @user_router.patch('/update-profile-picture', response_model=Profile_Picture_Response,
                     dependencies=[Depends(AccessTokenBearer())])
 async def Update_profile_picture(update_data: Update_Profile_Picture,
+                             background_tasks: BackgroundTasks,
                              user_details: User = Depends(get_current_user)):
     ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
     
@@ -72,9 +73,9 @@ async def Update_profile_picture(update_data: Update_Profile_Picture,
     if len(file_bytes) > MAX_FILE_SIZE:
         raise HTTPException(status_code=400, detail="File size exceeds 5MB limit")
     
-    # Re-encode for Celery transport (it's already base64, but we validated it)
+    # Re-encode for task transport (it's already base64, but we validated it)
     file_bytes_b64 = update_data.profile_picture
-    bg_save_profile_picture.delay(file_bytes_b64, ext, str(user_details.id))
+    background_tasks.add_task(bg_save_profile_picture, file_bytes_b64, ext, str(user_details.id))
     return {"message": "Profile picture is being uploaded"}
 
 

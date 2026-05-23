@@ -3,7 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status, HTTPException, BackgroundTasks
 from db.main import get_session
 from .service import User_Service
 from .schemas import Create_User as Create_User_Model, User, Login_User, UserInfo, Password_Reset, Password_reset_Confirm, ChangePassword
@@ -17,7 +17,7 @@ from .dependencies import RefreshToken, AccessTokenBearer, get_current_user, Che
 from core.errors import AccessTokenRequired, UserAlreadyExists, UserNotFound, InvalidCredentials, VerificationError, DataNotFound, PasswordAlreadyReset, UserAlreadyVerify, EmailNotVerified
 from db.redis import add_to_blacklist, check_blacklist
 from mailserver.service import send_email, mail
-from celery_service.celery_tasks import bg_send_mail, bg_save_profile_picture
+from core.tasks import bg_send_mail, bg_save_profile_picture
 from db.models import User as User_DB
 from pathlib import Path
 import base64
@@ -45,6 +45,7 @@ access = timedelta(minutes=config.access_token_expiary)
 @auth_router.post("/signup", response_model=User, status_code=status.HTTP_201_CREATED)
 async def create_user(
     user_data: Create_User_Model,
+    background_tasks: BackgroundTasks,
     session: AsyncSession = Depends(get_session)
 ):
     """
@@ -114,12 +115,13 @@ async def create_user(
     # ── Step 4: Dispatch profile picture save (background) ────────
     if picture_bytes:
         picture_bytes_b64 = base64.b64encode(picture_bytes).decode('utf-8')
-        bg_save_profile_picture.delay(picture_bytes_b64, picture_ext, str(new_user.id))
+        background_tasks.add_task(bg_save_profile_picture, picture_bytes_b64, picture_ext, str(new_user.id))
 
     # ── Step 5: Send verification email (background) ─────────────
     token = email_verification_link.create_safe_url({"email": email})
     link = f'{config.domain}/auth/verify/{token}'
-    bg_send_mail.delay(
+    background_tasks.add_task(
+        bg_send_mail,
         rec=[email],
         sub='verify email',
         html_path='verify_message.html',
@@ -157,7 +159,7 @@ async def activation_user(token: str, session: AsyncSession = Depends(get_sessio
 
 
 @auth_router.post('/resend_verify_link')
-async def create_url_verification(email_data: Password_Reset, session: AsyncSession = Depends(get_session)):
+async def create_url_verification(email_data: Password_Reset, background_tasks: BackgroundTasks, session: AsyncSession = Depends(get_session)):
     email = email_data.email
     if not email:
         raise DataNotFound()
@@ -171,7 +173,7 @@ async def create_url_verification(email_data: Password_Reset, session: AsyncSess
         
         data = {"link": link}
         
-        bg_send_mail.delay(rec=[email], sub='verifying mail', html_path='verify_message.html', data_var=data)
+        background_tasks.add_task(bg_send_mail, rec=[email], sub='verifying mail', html_path='verify_message.html', data_var=data)
     
     # Always return success to prevent email enumeration
     return JSONResponse(
@@ -293,7 +295,7 @@ async def logout(token: dict = Depends(AccessTokenBearer())):
     """ 
    # Notice this is for forgetting password and not in normal reset password 
 @auth_router.post('/password_reset')
-async def passsword_reset(Email: Password_Reset, session: AsyncSession = Depends(get_session)):
+async def passsword_reset(Email: Password_Reset, background_tasks: BackgroundTasks, session: AsyncSession = Depends(get_session)):
     email = Email.email
     
     user_existence = await user_service.get_user_by_email(email, session)
@@ -309,7 +311,7 @@ async def passsword_reset(Email: Password_Reset, session: AsyncSession = Depends
         
         data = {"link": link}
         
-        bg_send_mail.delay(rec=[email],
+        background_tasks.add_task(bg_send_mail, rec=[email],
                             data_var=data, html_path='password_reset_link.html',
                             sub='Reset Email Password')
       

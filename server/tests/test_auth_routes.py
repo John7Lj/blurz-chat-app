@@ -5,7 +5,7 @@
 
 """
 Integration tests for server/auth/routes.py
-Uses FastAPI TestClient with mocked DB/Redis/Celery.
+Uses FastAPI TestClient with mocked DB/Redis.
 """
 import pytest
 import uuid
