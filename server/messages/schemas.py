@@ -4,7 +4,7 @@
 # LICENSE file in the root directory of this source tree.
 
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 import uuid 
 from datetime import datetime
 from typing import Optional
@@ -13,6 +13,7 @@ import enum
 
 
 class MessageOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True, use_enum_values=True)
     id: uuid.UUID
     content: str | None
     sender_id: uuid.UUID
