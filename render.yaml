@@ -1,0 +1,154 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Render Blueprint Specification (render.yaml)
+# 🚀 Declares the entire Blurz Chat App infrastructure: PostgreSQL, Redis, FastAPI, & Celery
+# ─────────────────────────────────────────────────────────────────────────────
+
+databases:
+  - name: blurz-postgres
+    databaseName: blurz_chat
+    user: postgres
+    plan: free # Free databases on Render expire after 90 days. Upgrade to Starter ($7/mo) for production.
+
+services:
+  # ─────────────────────────────────────────────────────────────────────────
+  # Redis Service (Internal Cache, Pub/Sub, and Celery Broker)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: redis
+    name: blurz-redis
+    plan: free
+    ipAllowList: [] # Secure: restricted to internal communication within your Render team
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # FastAPI Web Service (Server API & WebSockets)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: blurz-api
+    plan: free
+    env: docker
+    dockerfilePath: Dockerfile
+    dockerContext: server
+    envVars:
+      - key: PORT
+        value: 8000 # Tells Render's router to forward requests to the exposed container port 8000
+
+      - key: DB_URL
+        fromDatabase:
+          name: blurz-postgres
+          property: connectionString
+
+      - key: Redis_Url
+        fromService:
+          type: redis
+          name: blurz-redis
+          property: connectionString
+
+      # JWT and Security Configurations (Generated securely by Render)
+      - key: jwt_secret
+        generateValue: true
+      - key: password_secrete_reset
+        generateValue: true
+      - key: jwt_algorithm
+        value: HS256
+      - key: refresh_token_expiary
+        value: "7"
+      - key: access_token_expiary
+        value: "30"
+      - key: BCRYPT_ROUNDS
+        value: "14"
+
+      # Email Configuration (Requires user input in Render dashboard)
+      - key: MAIL_USERNAME
+        sync: true
+      - key: MAIL_PASSWORD
+        sync: true
+      - key: MAIL_FROM
+        sync: true
+      - key: MAIL_SERVER
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_FROM_NAME
+        value: "Blurz Chat"
+
+      # App URLs
+      - key: domain
+        value: https://blurz-api.onrender.com/api/v1 # Update this in Render Dashboard after deployment with your actual URL
+      - key: FRONTEND_URL
+        value: https://YOUR_APP.vercel.app # Update this with your actual Vercel client URL
+      - key: DEBUG
+        value: "true"
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Celery Background Worker
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: worker
+    name: blurz-celery-worker
+    plan: free
+    env: docker
+    dockerfilePath: Dockerfile
+    dockerContext: server
+    dockerCommand: celery -A celery_service.celery_tasks.app worker --loglevel=info --concurrency=2
+    envVars:
+      - key: DB_URL
+        fromDatabase:
+          name: blurz-postgres
+          property: connectionString
+
+      - key: Redis_Url
+        fromService:
+          type: redis
+          name: blurz-redis
+          property: connectionString
+
+      # Share the same security and config environment variables from the Web API service
+      - key: jwt_secret
+        fromService:
+          type: web
+          name: blurz-api
+          envVarKey: jwt_secret
+      - key: password_secrete_reset
+        fromService:
+          type: web
+          name: blurz-api
+          envVarKey: password_secrete_reset
+      - key: jwt_algorithm
+        value: HS256
+      - key: BCRYPT_ROUNDS
+        value: "14"
+
+      # Share the mail credentials
+      - key: MAIL_USERNAME
+        fromService:
+          type: web
+          name: blurz-api
+          envVarKey: MAIL_USERNAME
+      - key: MAIL_PASSWORD
+        fromService:
+          type: web
+          name: blurz-api
+          envVarKey: MAIL_PASSWORD
+      - key: MAIL_FROM
+        fromService:
+          type: web
+          name: blurz-api
+          envVarKey: MAIL_FROM
+      - key: MAIL_SERVER
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_FROM_NAME
+        value: "Blurz Chat"
+
+      # App URLs
+      - key: domain
+        fromService:
+          type: web
+          name: blurz-api
+          envVarKey: domain
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: blurz-api
+          envVarKey: FRONTEND_URL
+      - key: DEBUG
+        value: "true"
