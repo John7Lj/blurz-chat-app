@@ -1,45 +1,83 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Chat</title>
-        <style>
-            body { font-family: sans-serif; }
-            #messages { list-style-type: none; margin: 0; padding: 0; }
-            #messages li { padding: 5px 10px; }
-            #messages li:nth-child(odd) { background: #eee; }
-        </style>
-    </head>
-    <body>
-        <h1>WebSocket Chat</h1>
-        <form action="" onsubmit="sendMessage(event)">
-            <input type="text" id="messageText" autocomplete="off"/>
-            <button>Send</button>
-        </form>
-        <ul id='messages'>
-        </ul>
-        <script>
-            var ws = new WebSocket("ws://" + location.host + "/ws");
-            ws.onmessage = function(event) {
-                var messages = document.getElementById('messages');
-                var message = document.createElement('li');
-                var data = JSON.parse(event.data);
-                if (data.type === 'welcome' || data.type === 'system') {
-                    message.innerHTML = '<i>' + data.message + '</i>';
-                } else if (data.type === 'chat') {
-                    message.innerHTML = '<b>' + (data.client || 'Unknown') + ':</b> ' + data.message;
-                }
-                messages.appendChild(message);
-            };
-            function sendMessage(event) {
-                var input = document.getElementById("messageText");
-                var message = {
-                    "client": "Client",
-                    "content": input.value
-                };
-                ws.send(JSON.stringify(message));
-                input.value = '';
-                event.preventDefault();
-            }
-        </script>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blurz Chat API</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0f0f13;
+            color: #e4e4e7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            color: #71717a;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            color: #22c55e;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .links {
+            margin-top: 2rem;
+        }
+        .links a {
+            color: #6366f1;
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">Blurz Chat</div>
+        <p class="subtitle">API Server</p>
+        <div class="status">
+            <span class="dot"></span>
+            Operational
+        </div>
+        <div class="links">
+            <a href="/docs">API Documentation</a>
+        </div>
+    </div>
+</body>
 </html>
