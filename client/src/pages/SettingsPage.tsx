@@ -185,31 +185,37 @@ export default function SettingsPage() {
               <div className="animate-fade-in">
                 <h2 className="text-xl font-bold mb-6" style={{ color: 'var(--color-text-primary)' }}>Notifications</h2>
                 <div className="glass-card p-6 space-y-1">
-                  {[
-                    { title: 'Message Alerts', desc: 'Sound and popup when receiving messages' },
-                    { title: 'Desktop Notifications', desc: 'Show native OS notifications' },
-                    { title: 'Unread Badge', desc: 'Show unread count on app icon' }
-                  ].map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between p-4 rounded-xl transition-colors"
-                      style={{ border: '1px solid transparent' }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'var(--color-bg-hover)';
-                        e.currentTarget.style.borderColor = 'var(--color-border)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.borderColor = 'transparent';
-                      }}
-                    >
-                      <div>
-                        <p className="text-[14px] font-medium" style={{ color: 'var(--color-text-primary)' }}>{item.title}</p>
-                        <p className="text-[13px] mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>{item.desc}</p>
-                      </div>
-                      <div className="toggle-switch active" />
+                  <div
+                    className="flex items-center justify-between p-4 rounded-xl transition-colors"
+                    style={{ border: '1px solid transparent' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'var(--color-bg-hover)';
+                      e.currentTarget.style.borderColor = 'var(--color-border)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.borderColor = 'transparent';
+                    }}
+                  >
+                    <div>
+                      <p className="text-[14px] font-medium" style={{ color: 'var(--color-text-primary)' }}>Desktop Notifications</p>
+                      <p className="text-[13px] mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>Show native OS notifications</p>
                     </div>
-                  ))}
+                    <div 
+                      className={`toggle-switch ${Notification.permission === 'granted' ? 'active' : ''}`} 
+                      onClick={() => {
+                        if (Notification.permission !== 'granted') {
+                          Notification.requestPermission();
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+                <div className="glass-card p-6">
+                  <p className="text-[14px] mb-6" style={{ color: 'var(--color-text-secondary)' }}>To update your profile information and avatar, please visit your Profile page.</p>
                 </div>
               </div>
             )}
@@ -217,131 +223,31 @@ export default function SettingsPage() {
             {activeSection === 'privacy' && (
               <div className="animate-fade-in">
                 <h2 className="text-xl font-bold mb-6" style={{ color: 'var(--color-text-primary)' }}>Privacy & Security</h2>
-                <div className="glass-card p-6 flex items-center justify-center min-h-[200px]" style={{ color: 'var(--color-text-muted)' }}>
-                  Privacy settings coming soon.
-                </div>
-              </div>
-            )}
-
-            {activeSection === 'account' && (
-              <div className="animate-fade-in">
-                <h2 className="text-xl font-bold mb-6" style={{ color: 'var(--color-text-primary)' }}>Account Settings</h2>
-                <div className="glass-card p-6 mb-6">
-                  <h3 className="text-[14px] font-bold mb-4" style={{ color: 'var(--color-text-primary)' }}>
-                    <Lock size={15} style={{ display: 'inline', marginRight: 8, verticalAlign: 'middle' }} />
-                    Change Password
-                  </h3>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-[12px] font-medium mb-1 block" style={{ color: 'var(--color-text-secondary)' }}>Current Password</label>
-                      <input
-                        type="password"
-                        value={passwordForm.currentPassword}
-                        onChange={setPasswordField('currentPassword')}
-                        placeholder="Enter current password"
-                        className="w-full px-3 py-2.5 rounded-lg text-[13px]"
-                        style={{
-                          background: 'var(--color-bg-input)',
-                          border: '1px solid var(--color-border)',
-                          color: 'var(--color-text-primary)',
-                          outline: 'none',
-                        }}
-                      />
+                <div className="glass-card p-6 space-y-6">
+                  <section>
+                    <h3 className="text-[16px] font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>Privacy Policy</h3>
+                    <div style={{ color: 'var(--color-text-secondary)', fontSize: 13, lineHeight: 1.6 }}>
+                      <p>Blurz Chat App is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our application.</p>
+                      <ul style={{ paddingLeft: 20, marginTop: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        <li><strong>Account Information:</strong> We collect your email address, username, and password.</li>
+                        <li><strong>Messages:</strong> We store the messages you send and receive.</li>
+                        <li><strong>Data Security:</strong> We take reasonable measures to protect your personal information.</li>
+                      </ul>
                     </div>
-                    <div>
-                      <label className="text-[12px] font-medium mb-1 block" style={{ color: 'var(--color-text-secondary)' }}>New Password</label>
-                      <input
-                        type="password"
-                        value={passwordForm.newPassword}
-                        onChange={setPasswordField('newPassword')}
-                        placeholder="Enter new password (min 8 chars)"
-                        className="w-full px-3 py-2.5 rounded-lg text-[13px]"
-                        style={{
-                          background: 'var(--color-bg-input)',
-                          border: '1px solid var(--color-border)',
-                          color: 'var(--color-text-primary)',
-                          outline: 'none',
-                        }}
-                      />
+                  </section>
+                  <div className="divider" />
+                  <section>
+                    <h3 className="text-[16px] font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>Terms of Service</h3>
+                    <div style={{ color: 'var(--color-text-secondary)', fontSize: 13, lineHeight: 1.6 }}>
+                      <p>By using Blurz, you agree not to use the service to:</p>
+                      <ul style={{ paddingLeft: 20, marginTop: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        <li>Transmit any content that is unlawful, harmful, or invasive of another's privacy.</li>
+                        <li>Impersonate any person or entity.</li>
+                        <li>Transmit viruses or disruptive software.</li>
+                      </ul>
+                      <p style={{ marginTop: 8 }}>We may terminate or suspend access to our service immediately if you breach the Terms.</p>
                     </div>
-                    <div>
-                      <label className="text-[12px] font-medium mb-1 block" style={{ color: 'var(--color-text-secondary)' }}>Confirm New Password</label>
-                      <input
-                        type="password"
-                        value={passwordForm.confirmPassword}
-                        onChange={setPasswordField('confirmPassword')}
-                        placeholder="Confirm new password"
-                        className="w-full px-3 py-2.5 rounded-lg text-[13px]"
-                        style={{
-                          background: 'var(--color-bg-input)',
-                          border: '1px solid var(--color-border)',
-                          color: 'var(--color-text-primary)',
-                          outline: 'none',
-                        }}
-                      />
-                    </div>
-                    <button
-                      onClick={handleChangePassword}
-                      disabled={isChangingPassword}
-                      className="px-4 py-2.5 rounded-lg font-medium text-[13px] text-white transition-colors mt-2"
-                      style={{
-                        background: 'var(--color-accent)',
-                        opacity: isChangingPassword ? 0.6 : 1,
-                      }}
-                    >
-                      {isChangingPassword ? 'Changing...' : 'Change Password'}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="glass-card p-6">
-                  <p className="text-[14px] mb-6" style={{ color: 'var(--color-text-secondary)' }}>To update your profile information and avatar, please visit your Profile page.</p>
-                  <div
-                    className="p-4 rounded-xl"
-                    style={{
-                      border: '1px solid rgba(239,68,68,0.2)',
-                      background: 'rgba(239,68,68,0.05)',
-                    }}
-                  >
-                    <h3 className="text-[14px] font-bold mb-2" style={{ color: 'var(--color-danger)' }}>Danger Zone</h3>
-                    <p className="text-[13px] mb-4" style={{ color: 'var(--color-text-secondary)' }}>Once you delete your account, there is no going back. Please be certain.</p>
-                    
-                    {!showDeleteConfirm ? (
-                      <button
-                        onClick={() => setShowDeleteConfirm(true)}
-                        className="px-4 py-2 rounded-lg font-medium text-[13px] transition-colors"
-                        style={{
-                          background: 'rgba(239,68,68,0.1)',
-                          color: 'var(--color-danger)',
-                        }}
-                        onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(239,68,68,0.2)')}
-                        onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(239,68,68,0.1)')}
-                      >
-                        Delete Account
-                      </button>
-                    ) : (
-                      <div className="flex items-center gap-3">
-                        <p className="text-[13px] font-medium" style={{ color: 'var(--color-danger)' }}>Are you sure?</p>
-                        <button
-                          onClick={() => deleteAccountMutation.mutate()}
-                          disabled={deleteAccountMutation.isPending}
-                          className="px-4 py-2 rounded-lg font-bold text-[13px] text-white transition-colors"
-                          style={{ background: '#ef4444' }}
-                          onMouseEnter={(e) => (e.currentTarget.style.background = '#dc2626')}
-                          onMouseLeave={(e) => (e.currentTarget.style.background = '#ef4444')}
-                        >
-                          {deleteAccountMutation.isPending ? 'Deleting...' : 'Yes, Delete'}
-                        </button>
-                        <button
-                          onClick={() => setShowDeleteConfirm(false)}
-                          className="px-4 py-2 rounded-lg font-medium text-[13px] transition-colors"
-                          style={{ color: 'var(--color-text-secondary)' }}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  </section>
                 </div>
               </div>
             )}

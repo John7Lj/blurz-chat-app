@@ -17,6 +17,9 @@ interface Props {
   onClick: () => void;
   onDelete?: (chatId: string) => void;
   currentUserId: string;
+  isSelectMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelect?: (chatId: string) => void;
 }
 
 function formatTime(dateStr: string): string {
@@ -32,7 +35,7 @@ function formatTime(dateStr: string): string {
   }
 }
 
-export default function ChatListItemComponent({ chat, isActive, onClick, onDelete, currentUserId }: Props) {
+export default function ChatListItemComponent({ chat, isActive, onClick, onDelete, currentUserId, isSelectMode, isSelected, onToggleSelect }: Props) {
   const p = chat.participants;
   const name = `${p.first_name} ${p.last_name}`;
   const lastMsg = chat.last_message;
@@ -92,6 +95,10 @@ export default function ChatListItemComponent({ chat, isActive, onClick, onDelet
       data-testid="chat-list-item"
       data-active={isActive ? 'true' : 'false'}
       onClick={(e) => {
+        if (isSelectMode) {
+          onToggleSelect?.(chat.id);
+          return;
+        }
         if (showMenu) {
           setShowMenu(false);
           return;
@@ -162,9 +169,25 @@ export default function ChatListItemComponent({ chat, isActive, onClick, onDelet
           </button>
         </div>
       )}
-      {/* Avatar */}
-      <div style={{ flexShrink: 0 }}>
-        <Avatar src={p.profile_url} name={name} size="md" showOnline />
+      {/* Avatar or Checkbox */}
+      <div style={{ flexShrink: 0, position: 'relative' }}>
+        {isSelectMode ? (
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: isSelected ? 'var(--color-accent)' : 'var(--color-bg-input)',
+            border: `2px solid ${isSelected ? 'var(--color-accent)' : 'var(--color-border)'}`,
+            color: 'white',
+          }}>
+            {isSelected && <Check size={20} />}
+          </div>
+        ) : (
+          <Avatar src={p.profile_url} name={name} size="md" showOnline />
+        )}
       </div>
 
       {/* Content */}

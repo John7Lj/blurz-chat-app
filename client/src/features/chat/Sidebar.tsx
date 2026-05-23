@@ -6,7 +6,7 @@
  */
 
 import { useState, useMemo, useCallback } from 'react';
-import { PenSquare, MoreVertical, Search } from 'lucide-react';
+import { PenSquare, MoreVertical, Search, X, Trash2 } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useChats } from '../../hooks/useChats';
@@ -26,14 +26,19 @@ export default function Sidebar() {
   const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
 
+  const [isSelectMode, setIsSelectMode] = useState(false);
+  const [selectedChatIds, setSelectedChatIds] = useState<string[]>([]);
+
   const deleteChatMutation = useMutation({
-    mutationFn: (chatId: string) => chatService.deleteChats([chatId]),
+    mutationFn: (chatIds: string[]) => chatService.deleteChats(chatIds),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['chats'] });
-      toast.success('Chat deleted');
+      toast.success('Chat(s) deleted');
+      setIsSelectMode(false);
+      setSelectedChatIds([]);
     },
     onError: () => {
-      toast.error('Failed to delete chat');
+      toast.error('Failed to delete chat(s)');
     },
   });
 
@@ -41,19 +46,41 @@ export default function Sidebar() {
     if (activeChatId === chatId) {
       setActiveChat(null as unknown as string);
     }
-    deleteChatMutation.mutate(chatId);
+    deleteChatMutation.mutate([chatId]);
   }, [activeChatId, setActiveChat, deleteChatMutation]);
 
+  const handleDeleteSelected = useCallback(() => {
+    if (selectedChatIds.length === 0) return;
+    if (selectedChatIds.includes(activeChatId)) {
+      setActiveChat(null as unknown as string);
+    }
+    deleteChatMutation.mutate(selectedChatIds);
+  }, [selectedChatIds, activeChatId, setActiveChat, deleteChatMutation]);
+
+  const sortedChats = useMemo(() => {
+    return [...chats].sort((a, b) => {
+      const timeA = a.last_message?.sent_at || a.created_at;
+      const timeB = b.last_message?.sent_at || b.created_at;
+      return new Date(timeB).getTime() - new Date(timeA).getTime();
+    });
+  }, [chats]);
+
   const filteredChats = useMemo(() => {
-    if (!search.trim()) return chats;
+    if (!search.trim()) return sortedChats;
     const q = search.toLowerCase();
-    return chats.filter((c) => {
+    return sortedChats.filter((c) => {
       const p = c.participants;
       if (!p) return false;
       const name = `${p.first_name || ''} ${p.last_name || ''}`.toLowerCase();
-      return name.includes(q);
+      if (name.includes(q)) return true;
+      if (c.last_message?.content?.toLowerCase().includes(q)) return true;
+      
+      const msgs = queryClient.getQueryData<{content?: string | null}[]>(['messages', c.id]);
+      if (msgs && msgs.some(m => m.content?.toLowerCase().includes(q))) return true;
+
+      return false;
     });
-  }, [chats, search]);
+  }, [sortedChats, search, queryClient]);
 
   const handleSelectChat = useCallback(
     (chatId: string) => {
@@ -62,11 +89,22 @@ export default function Sidebar() {
     [setActiveChat],
   );
 
+  const toggleSelectMode = () => {
+    setIsSelectMode(!isSelectMode);
+    setSelectedChatIds([]);
+  };
+
+  const handleToggleSelect = (id: string) => {
+    setSelectedChatIds((prev) => 
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
   const fullName = `${user?.first_name ?? ''} ${user?.last_name ?? ''}`.trim();
 
   return (
     <>
-      {/* ── Header (vuetify-chat MenuPanel style — 60px) ──────── */}
+      {/* ── Header ──────── */}
       <header
         style={{
           display: 'flex',
@@ -79,27 +117,47 @@ export default function Sidebar() {
           borderBottom: '1px solid var(--chat-border)',
         }}
       >
-        {/* Left: Avatar */}
-        <Avatar src={user?.profile_url} name={fullName} size="md" />
+        {isSelectMode ? (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <button className="icon-btn" onClick={toggleSelectMode}><X size={20} /></button>
+              <span style={{ fontSize: 15, fontWeight: 600 }}>{selectedChatIds.length} Selected</span>
+            </div>
+            <button 
+              className="icon-btn" 
+              onClick={handleDeleteSelected} 
+              disabled={selectedChatIds.length === 0}
+              style={{ color: selectedChatIds.length > 0 ? 'var(--color-danger)' : 'var(--chat-text-2)' }}
+            >
+              <Trash2 size={20} />
+            </button>
+          </>
+        ) : (
+          <>
+            {/* Left: Avatar */}
+            <Avatar src={user?.profile_url} name={fullName} size="md" />
 
-        {/* Right: Action icons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <button
-            onClick={openContactsPanel}
-            className="icon-btn"
-            aria-label="New chat"
-            title="New Chat"
-          >
-            <PenSquare size={20} />
-          </button>
-          <button
-            className="icon-btn"
-            aria-label="Menu"
-            title="Menu"
-          >
-            <MoreVertical size={20} />
-          </button>
-        </div>
+            {/* Right: Action icons */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <button
+                onClick={openContactsPanel}
+                className="icon-btn"
+                aria-label="New chat"
+                title="New Chat"
+              >
+                <PenSquare size={20} />
+              </button>
+              <button
+                className="icon-btn"
+                aria-label="Select chats"
+                title="Select chats"
+                onClick={toggleSelectMode}
+              >
+                <MoreVertical size={20} />
+              </button>
+            </div>
+          </>
+        )}
       </header>
 
       {/* ── Search bar ──────────────────────────────────────────── */}
@@ -124,7 +182,7 @@ export default function Sidebar() {
           <Search size={15} style={{ color: 'var(--chat-text-2)', flexShrink: 0 }} />
           <input
             type="text"
-            placeholder="Search or start new chat"
+            placeholder="Search chats or messages..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
@@ -167,7 +225,7 @@ export default function Sidebar() {
             className="animate-fade-in"
           >
             <p style={{ fontSize: 14, color: 'var(--chat-text-2)', fontWeight: 500 }}>
-              {search ? 'No chats found' : 'No conversations yet'}
+              {search ? 'No results found' : 'No conversations yet'}
             </p>
             <p style={{ fontSize: 12, marginTop: 4, color: 'var(--chat-text-2)', opacity: 0.7 }}>
               {search ? 'Try a different search' : 'Start a new chat to begin'}
@@ -180,10 +238,13 @@ export default function Sidebar() {
             <ChatListItemComponent
               key={chat.id}
               chat={chat}
-              isActive={chat.id === activeChatId}
+              isActive={!isSelectMode && chat.id === activeChatId}
               onClick={() => handleSelectChat(chat.id)}
               onDelete={handleDeleteChat}
               currentUserId={userId ?? ''}
+              isSelectMode={isSelectMode}
+              isSelected={selectedChatIds.includes(chat.id)}
+              onToggleSelect={handleToggleSelect}
             />
           ))}
       </div>

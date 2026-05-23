@@ -11,7 +11,6 @@ import { MessageCircle, Users, Bell, Settings, User } from 'lucide-react';
 const tabs = [
   { path: '/chat',          icon: MessageCircle, label: 'Chats'    },
   { path: '/contacts',      icon: Users,         label: 'People'   },
-  { path: '/notifications', icon: Bell,          label: 'Alerts'   },
   { path: '/settings',      icon: Settings,      label: 'Settings' },
   { path: '/profile',       icon: User,          label: 'Profile'  },
 ];

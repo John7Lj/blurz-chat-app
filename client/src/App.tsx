@@ -20,7 +20,6 @@ const ChatPage = lazy(() => import('./pages/ChatPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const ContactsPage = lazy(() => import('./pages/ContactsPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
-const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
@@ -115,7 +114,6 @@ export default function App() {
           <Route path="chat/:id" element={<ChatPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="contacts" element={<ContactsPage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
 

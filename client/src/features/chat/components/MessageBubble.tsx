@@ -1,4 +1,4 @@
-import { Check, CheckCheck, Trash2 } from 'lucide-react';
+import { Check, CheckCheck, Trash2, MoreVertical, Edit2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import type { Message } from '../../../types/message.types';
 
@@ -28,6 +28,7 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
 
   const [showMenu, setShowMenu] = useState(false);
   const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -45,6 +46,13 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     setMenuPos({ x: e.clientX, y: e.clientY });
+    setShowMenu(true);
+  };
+
+  const handleDotsClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMenuPos({ x: rect.left, y: rect.bottom + 4 });
     setShowMenu(true);
   };
 
@@ -73,7 +81,11 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
         justifyContent: isMine ? 'flex-end' : 'flex-start',
         padding: '2px 12px',
         position: 'relative',
+        alignItems: 'center',
+        gap: 8,
       }}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
     >
       {/* Context Menu */}
       {showMenu && (
@@ -118,7 +130,43 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
             <Trash2 size={15} />
             Delete Message
           </button>
+          
+          {isMine && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowMenu(false);
+                // TODO: Implement edit logic
+                alert('Edit feature coming soon!');
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                width: '100%',
+                padding: '10px 14px',
+                border: 'none',
+                background: 'transparent',
+                color: 'var(--color-text-primary)',
+                fontSize: 13,
+                fontWeight: 500,
+                cursor: 'pointer',
+                textAlign: 'left',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--color-bg-hover)')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+            >
+              <Edit2 size={15} />
+              Edit Message
+            </button>
+          )}
         </div>
+      )}
+
+      {!isMine && isHovering && (
+        <button onClick={handleDotsClick} className="icon-btn" style={{ width: 28, height: 28, flexShrink: 0 }}>
+          <MoreVertical size={16} />
+        </button>
       )}
 
       <div
@@ -188,6 +236,12 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
           )}
         </div>
       </div>
+
+      {isMine && isHovering && (
+        <button onClick={handleDotsClick} className="icon-btn" style={{ width: 28, height: 28, flexShrink: 0 }}>
+          <MoreVertical size={16} />
+        </button>
+      )}
     </div>
   );
 }
