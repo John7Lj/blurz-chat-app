@@ -13,6 +13,8 @@ import { useAuthStore } from '../../store/auth.store';
 import { useUIStore } from '../../store/ui.store';
 import { useQueryClient } from '@tanstack/react-query';
 import { messageService } from '../../services/message.service';
+import { mediaService } from '../../services/media.service';
+import { CHATS_KEY } from '../../hooks/useChats';
 import toast from 'react-hot-toast';
 import ChatHeader from './ChatHeader';
 import MessageList from './MessageList';
@@ -69,6 +71,19 @@ export default function ChatWindow() {
     sendTyping(activeChatId);
   }, [activeChatId, sendTyping]);
 
+  const handleFileUpload = useCallback(async (file: File) => {
+    if (!activeChatId) return;
+    try {
+      await mediaService.uploadChatMedia(activeChatId, file);
+      queryClient.invalidateQueries({ queryKey: MESSAGES_KEY(activeChatId) });
+      queryClient.invalidateQueries({ queryKey: CHATS_KEY });
+      toast.success('File sent');
+    } catch (error: any) {
+      const detail = error?.response?.data?.detail || 'Failed to upload file';
+      toast.error(detail);
+    }
+  }, [activeChatId, queryClient]);
+
   const handleBack = useCallback(() => {
     setActiveChat(null);
   }, [setActiveChat]);
@@ -119,7 +134,7 @@ export default function ChatWindow() {
 
       {isPartnerTyping && <TypingIndicator name={p?.first_name || participantName} />}
 
-      <MessageInput onSend={handleSend} onTyping={handleTyping} />
+      <MessageInput onSend={handleSend} onTyping={handleTyping} onFileUpload={handleFileUpload} />
 
       {p && (
         <UserDetailsModal

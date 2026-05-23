@@ -33,6 +33,8 @@ from auth.router import auth_router
 from users.router import user_router
 from chats.router import chat_router
 from messages.router import msg_router
+from media.router import media_router
+from media.cloudinary_service import configure_cloudinary
 from mailserver.router import mail_router
 from core.middleware import custome_simple_middle
 from core.errors import register_error_handlers
@@ -43,6 +45,7 @@ async def lifespan(app: FastAPI):
 
     # ── Startup ───────────────────────────────────────────────────────────
     await init_db()
+    configure_cloudinary()
 
     # 1. Create each object independently — no references to each other yet
     publisher  = Publisher(redis_client=PubSub_Redis)
@@ -93,6 +96,7 @@ api_v1.include_router(auth_router,  prefix="/auth",  tags=["auth"])
 api_v1.include_router(user_router,  prefix="/users", tags=["users"])
 api_v1.include_router(chat_router)
 api_v1.include_router(msg_router)
+api_v1.include_router(media_router)
 api_v1.include_router(mail_router,  prefix="/mail",  tags=["mail"])
 api_v1.include_router(ws_router)
 

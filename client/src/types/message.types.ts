@@ -17,6 +17,10 @@ export const MessageSchema = z.object({
   status: z.enum(['sent', 'delivered', 'read']).optional().default('sent'),
   file_key: z.string().nullable().optional(),
   file_name: z.string().nullable().optional(),
+  file_url: z.string().nullable().optional(),
+  file_size: z.number().nullable().optional(),
+  file_mime: z.string().nullable().optional(),
+  thumbnail_url: z.string().nullable().optional(),
 });
 export type Message = z.infer<typeof MessageSchema>;
 

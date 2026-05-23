@@ -14,6 +14,10 @@ from sqlmodel import SQLModel, Field, Relationship
 # 1. Enums (Standardized naming)
 class MessageType(str, enum.Enum):
     text = "text"
+    image = "image"
+    video = "video"
+    audio = "audio"
+    document = "document"
     file = "file"
 
 class MessageStatus(str, enum.Enum):
@@ -83,6 +87,10 @@ class Message(SQLModel, table=True):
     content: Optional[str] = Field(default=None)
     file_key: Optional[str] = Field(default=None)
     file_name: Optional[str] = Field(default=None)
+    file_url: Optional[str] = Field(default=None)
+    file_size: Optional[int] = Field(default=None)
+    file_mime: Optional[str] = Field(default=None)
+    thumbnail_url: Optional[str] = Field(default=None)
     
     # Foreign Keys
     sender_id: uuid.UUID = Field(foreign_key="user.id", nullable=False)

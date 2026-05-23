@@ -18,6 +18,14 @@ class MessageOut(BaseModel):
     sender_id: uuid.UUID
     chat_id: uuid.UUID
     sent_at: datetime
+    msg_type: str = "text"
+    status: str = "sent"
+    file_key: str | None = None
+    file_name: str | None = None
+    file_url: str | None = None
+    file_size: int | None = None
+    file_mime: str | None = None
+    thumbnail_url: str | None = None
 
 class StartChatResponse(BaseModel):
     chat_id: uuid.UUID

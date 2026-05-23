@@ -32,6 +32,10 @@ class settings(BaseSettings):
     FRONTEND_URL: str
     password_secrete_reset:str
 
+    CLOUDINARY_CLOUD_NAME: str = ""
+    CLOUDINARY_API_KEY: str = ""
+    CLOUDINARY_API_SECRET: str = ""
+
     DEBUG: bool = True
     model_config = SettingsConfigDict (env_file=".env",  extra="ignore")
 

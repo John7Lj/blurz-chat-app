@@ -1,6 +1,10 @@
 import { Check, CheckCheck, Trash2, MoreVertical, Edit2, X as XIcon } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import type { Message } from '../../../types/message.types';
+import ImageBubble from './ImageBubble';
+import VideoBubble from './VideoBubble';
+import AudioBubble from './AudioBubble';
+import FileBubble from './FileBubble';
 
 interface Props {
   message: Message;
@@ -295,6 +299,20 @@ export default function MessageBubble({ message, isMine, isLastInGroup = true, s
               </button>
             </div>
           </div>
+        ) : message.file_url && message.msg_type === 'image' ? (
+          <ImageBubble src={message.file_url} alt={message.file_name || undefined} isMine={isMine} />
+        ) : message.file_url && message.msg_type === 'video' ? (
+          <VideoBubble src={message.file_url} isMine={isMine} />
+        ) : message.file_url && message.msg_type === 'audio' ? (
+          <AudioBubble src={message.file_url} isMine={isMine} />
+        ) : message.file_url && (message.msg_type === 'document' || message.msg_type === 'file') ? (
+          <FileBubble
+            fileName={message.file_name || 'File'}
+            fileUrl={message.file_url}
+            fileSize={message.file_size}
+            fileMime={message.file_mime}
+            isMine={isMine}
+          />
         ) : (
           <p
             style={{
