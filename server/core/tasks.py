@@ -12,6 +12,26 @@ from db.config import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent / "mailserver" / "templates"
 
+import socket
+import ssl
+
+def get_ipv4_socket(host, port, timeout):
+    """Force IPv4 resolution to prevent 'Network is unreachable' on IPv6 servers."""
+    addr_info = socket.getaddrinfo(host, port, socket.AF_INET, socket.SOCK_STREAM)
+    ip = addr_info[0][4][0]
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(timeout)
+    sock.connect((ip, port))
+    return sock
+
+class IPv4_SMTP_SSL(smtplib.SMTP_SSL):
+    def _get_socket(self, host, port, timeout):
+        return get_ipv4_socket(host, port, timeout)
+
+class IPv4_SMTP(smtplib.SMTP):
+    def _get_socket(self, host, port, timeout):
+        return get_ipv4_socket(host, port, timeout)
+
 def bg_send_mail(rec: list[str], sub: str, html_path: str, data_var: dict = None):
     """
     Runs in a FastAPI threadpool because it's defined as a sync function.
@@ -31,11 +51,11 @@ def bg_send_mail(rec: list[str], sub: str, html_path: str, data_var: dict = None
         msg["To"] = ", ".join(rec)
         msg.attach(MIMEText(html_content, "html"))
 
-        # Connect with a strict 10 second timeout so we don't hang indefinitely
+        # Connect with a strict 10 second timeout using explicit IPv4 sockets
         if config.MAIL_SSL_TLS:
-            server = smtplib.SMTP_SSL(config.MAIL_SERVER, config.MAIL_PORT, timeout=10)
+            server = IPv4_SMTP_SSL(config.MAIL_SERVER, config.MAIL_PORT, timeout=10)
         else:
-            server = smtplib.SMTP(config.MAIL_SERVER, config.MAIL_PORT, timeout=10)
+            server = IPv4_SMTP(config.MAIL_SERVER, config.MAIL_PORT, timeout=10)
             if config.MAIL_STARTTLS:
                 server.starttls()
                 
