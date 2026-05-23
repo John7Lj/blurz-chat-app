@@ -46,13 +46,13 @@ services:
       - key: MAIL_FROM
         sync: false
       - key: MAIL_PORT
-        value: 465
+        value: 2525
       - key: MAIL_STARTTLS
-        value: "False"
-      - key: MAIL_SSL_TLS
         value: "True"
+      - key: MAIL_SSL_TLS
+        value: "False"
       - key: MAIL_SERVER
-        value: smtp.gmail.com
+        value: smtp-relay.brevo.com
       - key: MAIL_FROM_NAME
         value: Blurz_chat
 
