@@ -3,12 +3,45 @@ import logging
 from db.main import async_session
 from db.models import User as User_DB
 from auth.service import save_profile_picture_sync
-from mailserver.service import send_email, mail
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from jinja2 import Template
+from pathlib import Path
+from db.config import config
 
-async def bg_send_mail(rec: list[str], sub: str, html_path: str, data_var: dict = None):
+BASE_DIR = Path(__file__).resolve().parent.parent / "mailserver" / "templates"
+
+def bg_send_mail(rec: list[str], sub: str, html_path: str, data_var: dict = None):
+    """
+    Runs in a FastAPI threadpool because it's defined as a sync function.
+    This prevents the asyncio event loop from hanging and crashing Uvicorn
+    if Google SMTP drops the connection (very common on Render).
+    """
     try:
-        message = send_email(recepients=rec, subject=sub, html_message_path=html_path, data_variables=data_var)
-        await mail.send_message(message)
+        template_path = BASE_DIR / html_path
+        with open(template_path, 'r', encoding='utf-8') as f:
+            html_template = f.read()
+        
+        html_content = Template(html_template).render(**(data_var or {}))
+
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = sub
+        msg["From"] = f"{config.MAIL_FROM_NAME} <{config.MAIL_FROM}>"
+        msg["To"] = ", ".join(rec)
+        msg.attach(MIMEText(html_content, "html"))
+
+        # Connect with a strict 10 second timeout so we don't hang indefinitely
+        if config.MAIL_SSL_TLS:
+            server = smtplib.SMTP_SSL(config.MAIL_SERVER, config.MAIL_PORT, timeout=10)
+        else:
+            server = smtplib.SMTP(config.MAIL_SERVER, config.MAIL_PORT, timeout=10)
+            if config.MAIL_STARTTLS:
+                server.starttls()
+                
+        server.login(config.MAIL_USERNAME, config.MAIL_PASSWORD)
+        server.sendmail(config.MAIL_FROM, rec, msg.as_string())
+        server.quit()
         logging.info(f"Email sent successfully to {rec}")
     except Exception as e:
         logging.error(f"Failed to send email to {rec}: {str(e)}")
