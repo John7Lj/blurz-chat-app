@@ -229,14 +229,13 @@ npx playwright test   # Runs Playwright E2E browser tests
 
 ## 🏭 Production & Deployment Architecture
 
-Blurz is deployed behind an **Nginx reverse proxy** acting as the TLS termination point, utilizing free automated **Let's Encrypt** SSL certificates.
+Blurz is deployed on **Render** (as a managed Web Service for the backend) with the React client hosted on modern static hosting platforms. Render provides automatic **managed TLS/SSL termination** (generating and renewing Let's Encrypt certificates automatically) and routes incoming WebSocket and HTTP traffic securely.
 
 ### CI/CD Workflow
-1. Code pushed to `main` initiates a GitHub Action workflow.
-2. The pipeline runs linting, code formatting checks, and security tests.
-3. Upon approval, deployment is dispatched automatically.
+1. Code pushed or merged to the `main` branch automatically triggers the Render **Continuous Deployment** pipeline.
+2. Render executes the pre-deploy phase to run database migrations (`alembic upgrade head`) and deploys the new Docker container with zero downtime.
 
-For step-by-step installation instructions on a live cloud server, see our [Deployment Walkthrough](.github/DEPLOYMENT.md).
+For step-by-step instructions on configuring the cloud blueprint, see our [Deployment Walkthrough](.github/DEPLOYMENT.md).
 
 ---
 
