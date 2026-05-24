@@ -80,27 +80,4 @@ class User_Service:
         await session.commit()
         await session.refresh(user_exist)
         
-
-def save_profile_picture_sync(picture_bytes: bytes, ext: str) -> str:
-    max_file_size = 1024 * 1024 * 5
-    if len(picture_bytes) > max_file_size:
-        raise ValueError(f"File size exceeds maximum allowed size")
-    allowed_exts = {".jpg", ".jpeg", ".png", ".webp"}
-    if ext.lower() not in allowed_exts:
-        raise ValueError(f"Unsupported extension: {ext}")
-
-    base_path = Path(config.profile_picture_path)
-    base_path.mkdir(parents=True, exist_ok=True)
-
-    file_name = f"{uuid.uuid4()}{ext}"
-    file_path = base_path / file_name
-
-
-    try:
-        with open(file_path, "wb") as f:
-            f.write(picture_bytes)
-        logging.info(f"File saved successfully at {file_path}")
-    except OSError as e:
-        logging.error(f"Failed to save file at {file_path}. Error: {e}")
-        raise
-    return str(file_path)
+

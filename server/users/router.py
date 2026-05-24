@@ -6,12 +6,10 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from auth.dependencies import get_current_user, AccessTokenBearer
 from auth.schemas import User, UserInfo
-from .schemas import other_users, Update_User, Profile_Picture_Response, Update_Profile_Picture
+from .schemas import other_users, Update_User
 from .service import update_user, get_contacts, search_user
 from db.main import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
-from core.tasks import bg_save_profile_picture
-import base64
 
 user_router = APIRouter()
 
@@ -46,37 +44,6 @@ async def Search_user(query: str, session: AsyncSession = Depends(get_session)):
     return await search_user(query, session)
 
 
-# the profile picture is uploaded in background task and return public url
-@user_router.patch('/update-profile-picture', response_model=Profile_Picture_Response,
-                    dependencies=[Depends(AccessTokenBearer())])
-async def Update_profile_picture(update_data: Update_Profile_Picture,
-                             background_tasks: BackgroundTasks,
-                             user_details: User = Depends(get_current_user)):
-    ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
-    
-    if not update_data.profile_picture:
-        raise HTTPException(status_code=400, detail="No profile picture is provided")
-    
-    ext = update_data.file_extension.lower()
-    if ext not in ALLOWED_EXTENSIONS:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Unsupported file type '{ext}'. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"
-        )
-    
-    # Decode base64 to check size
-    try:
-        file_bytes = base64.b64decode(update_data.profile_picture)
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid base64 image data")
-    
-    if len(file_bytes) > MAX_FILE_SIZE:
-        raise HTTPException(status_code=400, detail="File size exceeds 5MB limit")
-    
-    # Re-encode for task transport (it's already base64, but we validated it)
-    file_bytes_b64 = update_data.profile_picture
-    background_tasks.add_task(bg_save_profile_picture, file_bytes_b64, ext, str(user_details.id))
-    return {"message": "Profile picture is being uploaded"}
 
 
 @user_router.delete('/me', dependencies=[Depends(AccessTokenBearer())])

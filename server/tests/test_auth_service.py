@@ -165,33 +165,3 @@ class TestUserServiceActivation:
             await service.activation_user("test@test.com", mock_session)
 
 
-class TestSaveProfilePictureSync:
-    """Tests for save_profile_picture_sync()"""
-
-    def test_saves_file_successfully(self, tmp_path):
-        from auth.service import save_profile_picture_sync
-        with patch("auth.service.config") as mock_config:
-            mock_config.profile_picture_path = str(tmp_path)
-            picture_bytes = b"\x89PNG\r\n\x1a\n" + b"\x00" * 100
-            result = save_profile_picture_sync(picture_bytes, ".png")
-            assert result.endswith(".png")
-            assert os.path.exists(result)
-
-    def test_raises_for_oversized_file(self):
-        from auth.service import save_profile_picture_sync
-        big_data = b"\x00" * (6 * 1024 * 1024)  # 6MB
-        with pytest.raises(ValueError, match="File size exceeds"):
-            save_profile_picture_sync(big_data, ".png")
-
-    def test_raises_for_unsupported_extension(self):
-        from auth.service import save_profile_picture_sync
-        with pytest.raises(ValueError, match="Unsupported extension"):
-            save_profile_picture_sync(b"\x00" * 100, ".exe")
-
-    def test_accepts_valid_extensions(self, tmp_path):
-        from auth.service import save_profile_picture_sync
-        with patch("auth.service.config") as mock_config:
-            mock_config.profile_picture_path = str(tmp_path)
-            for ext in [".jpg", ".jpeg", ".png", ".webp"]:
-                result = save_profile_picture_sync(b"\x00" * 100, ext)
-                assert result.endswith(ext)

@@ -25,12 +25,3 @@ class Update_User(BaseModel):
     last_name: str | None = None
     bio: str | None = Field(max_length=150, default=None)
 
-
-
-class Update_Profile_Picture(BaseModel):
-    profile_picture: str  # base64-encoded image data
-    file_extension: str = ".jpg"  # .jpg, .jpeg, .png, .webp
-
-
-class Profile_Picture_Response(BaseModel):
-    message: str

@@ -23,15 +23,4 @@ export const userService = {
     const response = await api.patch('/users/update', data);
     return response.data;
   },
-
-  updateProfilePicture: async (
-    pictureBase64: string,
-    fileExtension: string = '.jpg',
-  ): Promise<{ message: string }> => {
-    const response = await api.patch('/users/update-profile-picture', {
-      profile_picture: pictureBase64,
-      file_extension: fileExtension,
-    });
-    return response.data;
-  },
 };
