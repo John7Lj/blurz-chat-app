@@ -9,7 +9,7 @@ import { useState, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCurrentUser, useUpdateProfile, ME_KEY } from '../../../hooks/useUser';
-import { userService } from '../../../services/user.service';
+import { mediaService } from '../../../services/media.service';
 
 export function useProfileForm() {
   const { data: user, isLoading } = useCurrentUser();
@@ -62,30 +62,19 @@ export function useProfileForm() {
 
     setIsUploading(true);
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64String = reader.result as string;
-      const base64Data = base64String.split(',')[1];
-      
-      let ext = '.jpg';
-      if (file.type === 'image/png') ext = '.png';
-      else if (file.type === 'image/webp') ext = '.webp';
-
-      toast.promise(
-        userService.updateProfilePicture(base64Data, ext).then(() => {
-          queryClient.invalidateQueries({ queryKey: ME_KEY });
-        }),
-        {
-          loading: 'Uploading...',
-          success: 'Profile picture updated! It may take a moment to process.',
-          error: 'Failed to upload image'
-        }
-      ).finally(() => {
-        setIsUploading(false);
-        if (fileInputRef.current) fileInputRef.current.value = '';
-      });
-    };
-    reader.readAsDataURL(file);
+    toast.promise(
+      mediaService.uploadProfilePicture(file).then(() => {
+        queryClient.invalidateQueries({ queryKey: ME_KEY });
+      }),
+      {
+        loading: 'Uploading to Cloudinary...',
+        success: 'Profile picture updated!',
+        error: 'Failed to upload image'
+      }
+    ).finally(() => {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    });
   };
 
   const fullName = `${user?.first_name ?? ''} ${user?.last_name ?? ''}`.trim();
