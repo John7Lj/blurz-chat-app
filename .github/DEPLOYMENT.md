@@ -1,203 +1,109 @@
-# AWS EC2 Deployment Guide
+# Render Deployment Guide
 
-This guide covers deploying Blurz Chat to AWS EC2 with Docker, Nginx, and SSL.
+This guide covers deploying the **Blurz Chat App** backend to **Render** using the Infrastructure-as-Code Blueprint (`render.yaml`). Render offers a fully managed platform with built-in SSL, automatic database migrations, secure secret generation, and native WebSocket support.
 
 ---
 
 ## Prerequisites
 
-- An AWS EC2 instance (Ubuntu 22.04+).
-- A domain name pointed to your EC2's public IP (e.g. DuckDNS).
-- Your `.pem` key file to SSH into the instance.
-- Ports **22 (SSH)**, **80 (HTTP)**, **443 (HTTPS)** open in your EC2 Security Group.
+Before starting, ensure you have:
+1. A [Render Account](https://render.com/).
+2. A managed **PostgreSQL** database (e.g., [Neon PostgreSQL](https://neon.tech/) which is free and highly compatible).
+3. A managed **Redis** instance (e.g., [Upstash Redis](https://upstash.com/) or a native Render Redis service).
+4. A [Brevo Account](https://www.brevo.com/) (formerly Sendinblue) or another SMTP provider for dispatching verification emails.
 
 ---
 
-## Step 1: Connect to EC2
+## Step 1: Set Up External Databases
 
-```bash
-ssh -i /path/to/your-key.pem ubuntu@YOUR_EC2_IP
-```
+For performance and persistence reliability, it is highly recommended to use dedicated external databases:
 
----
+### A. Neon PostgreSQL Setup
+1. Log in to Neon and create a new project.
+2. Copy the connection string from your dashboard. It should look like this:
+   ```
+   postgresql://neondb_owner:password@ep-withered-truth.aws.neon.tech/neondb?sslmode=require
+   ```
+3. Change the scheme prefix from `postgresql://` to `postgresql+asyncpg://` so FastAPI can use its asynchronous connection pool:
+   ```
+   postgresql+asyncpg://neondb_owner:password@ep-withered-truth.aws.neon.tech/neondb?sslmode=require
+   ```
 
-## Step 2: Install Docker on EC2 (first time only)
-
-```bash
-sudo apt update
-sudo apt install -y docker.io docker-compose-plugin
-sudo systemctl enable docker
-sudo systemctl start docker
-sudo usermod -aG docker ubuntu
-# Log out and back in for the group change to take effect
-```
-
----
-
-## Step 3: Clone the Repository
-
-```bash
-git clone https://github.com/blurz17/blurz-chat-app.git
-cd blurz-chat-app/server
-git checkout main
-```
+### B. Upstash Redis Setup
+1. Log in to Upstash and create a new serverless Redis database.
+2. Copy the **Redis URL** under the Connect section. It should look like:
+   ```
+   redis://default:password@ready-fish-123.upstash.io:6379
+   ```
 
 ---
 
-## Step 4: Upload Your `.env` File
+## Step 2: Deploy Using the Render Blueprint
 
-**Do NOT put your `.env` in Git.** Transfer it securely from your local machine.
+Render parses the [render.yaml](file:///e:/MY-PROJECTS/blurz-chatapp/render.yaml) file in the root of the project to automatically configure all resources.
 
-**Option A: Using SCP (from your local Windows PowerShell)**
-```powershell
-scp -i "C:\path\to\your-key.pem" "E:\path\to\blurz-chatapp\server\.env" ubuntu@YOUR_EC2_IP:~/blurz-chat-app/server/
-```
+1. Navigate to the **Render Dashboard**.
+2. Click **Blueprints** (in the top navigation bar) -> **New Blueprint Instance**.
+3. Connect your GitHub repository (`blurz-chat-app`).
+4. Render will detect `render.yaml` and request values for the environment variables:
 
-**Option B: Create it manually on the server**
-```bash
-nano ~/blurz-chat-app/server/.env
-# Paste your .env content, then Ctrl+X → Y → Enter to save
+| Variable Name | Required Action |
+|---|---|
+| **`DB_URL`** | Paste your Neon PostgreSQL connection string (prefixed with `postgresql+asyncpg://`) |
+| **`Redis_Url`** | Paste your Upstash Redis connection string |
+| **`domain`** | Enter your final Render Web Service public domain with `/api/v1` appended (e.g., `https://blurz-chat-api.onrender.com/api/v1`) |
+| **`FRONTEND_URL`** | The public URL of your React frontend application (e.g., `https://blurz-chat-app.vercel.app`) |
+| **`MAIL_USERNAME`** | Your Brevo/SMTP login email address |
+| **`MAIL_PASSWORD`** | Your Brevo/SMTP SMTP key or account password |
+| **`MAIL_FROM`** | The verified sender email address registered on Brevo |
+
+5. Click **Approve** or **Deploy**.
+
+---
+
+## Step 3: Automatic Setup and Deployment
+
+Once you approve the Blueprint deployment, Render will automatically execute the following steps in sequence:
+
+1. **Provision Container**: Build a Docker image based on [server/Dockerfile](file:///e:/MY-PROJECTS/blurz-chatapp/server/Dockerfile).
+2. **Auto-Generate Secret Keys**: Render will dynamically generate high-entropy keys for `jwt_secret` and `password_secrete_reset`, keeping keys completely secure without hardcoding.
+3. **Run Pre-Deploy Migrations**: Render automatically runs the pre-deploy command:
+   ```bash
+   alembic upgrade head
+   ```
+   This ensures your database tables are created or updated before the new version of the API boots up.
+4. **Boot Server**: Launch the API utilizing the start command:
+   ```bash
+   uvicorn main:app --host 0.0.0.0 --port 8000
+   ```
+
+---
+
+## Step 4: Deploy Frontend Client (e.g., Vercel or Render)
+
+You can deploy the React frontend to Vercel, Netlify, or as a Render Static Site. 
+
+During the build setup, provide the following environment variables pointing to your newly created Render backend:
+
+```env
+VITE_API_URL=https://your-backend-service.onrender.com/api/v1
+VITE_WS_URL=wss://your-backend-service.onrender.com/api/v1/ws
+VITE_MEDIA_URL=https://your-backend-service.onrender.com
 ```
 
 > [!IMPORTANT]
-> Make sure to update `DB_URL` to point to your production database (e.g. Neon),
-> set `Redis_Url=redis://redis:6379/0` (using the Docker service name, not localhost),
-> and set `domain` to `https://your-domain.com/api/v1`.
+> Ensure that the WebSocket protocol uses `wss://` (secure WebSocket) in production to avoid mixed-content blocks by browsers.
 
 ---
 
-## Step 5: Update `.env` for Production
+## Handling Development Workflows & PRs
 
-Before starting Docker, make these changes in your `.env` on the server:
+### Continuous Integration (CI/CD)
+* **Auto-Deploy on Push**: Every commit merged into the `main` branch will automatically trigger a rolling, zero-downtime deployment on Render.
+* **PR Previews**: You can enable **Pull Request Previews** in the Render Web Service settings. This will automatically spin up a temporary instance of your API whenever a PR is opened, allowing you to test changes live before merging.
 
-```env
-# Use your managed PostgreSQL (Neon, RDS, etc.)
-DB_URL=postgresql+asyncpg://user:password@your-db-host/blurz_chat
-
-# Use Docker service name "redis", NOT "localhost"
-Redis_Url=redis://redis:6379/0
-ResisHost=redis
-ResdisPort=6379
-
-# Your public domain
-domain=https://your-domain.com/api/v1
-
-# Turn off debug
-debug=False
-```
-
----
-
-## Step 6: Start the Docker Stack
-
-```bash
-cd ~/blurz-chat-app/server
-sudo docker compose up --build -d
-```
-
-Verify all containers are running:
-```bash
-sudo docker compose ps
-```
-
-You should see `api`, `celery_worker`, and `redis` all with `Up` status.
-
----
-
-## Step 7: Run Database Migrations
-
-```bash
-sudo docker compose exec api alembic upgrade head
-```
-
----
-
-## Step 8: Install and Configure Nginx
-
-```bash
-sudo apt update
-sudo apt install -y nginx certbot python3-certbot-nginx
-
-# Copy your nginx config
-sudo cp ~/blurz-chat-app/server/nginx.conf /etc/nginx/sites-available/blurzchat
-
-# Enable it
-sudo ln -s /etc/nginx/sites-available/blurzchat /etc/nginx/sites-enabled/
-
-# Remove the default config
-sudo rm /etc/nginx/sites-enabled/default
-
-# Test and restart Nginx
-sudo nginx -t
-sudo systemctl restart nginx
-```
-
-> [!NOTE]
-> Before continuing, update `server_name` inside the nginx.conf to match your actual domain name.
-
----
-
-## Step 9: Get SSL Certificate with Certbot
-
-Make sure your domain DNS is already pointing to your EC2 IP.
-
-```bash
-sudo certbot --nginx -d your-domain.com
-```
-
-Follow the prompts (enter your email, accept terms). Certbot will:
-1. Get the SSL certificate from Let's Encrypt.
-2. Automatically update your Nginx config to serve HTTPS.
-3. Set up auto-renewal in the background.
-
----
-
-## Step 10: Set Up GitHub Actions for Auto-Deploy
-
-Go to your GitHub repo → **Settings → Secrets and variables → Actions** and add:
-
-| Secret Name | Value |
-|---|---|
-| `HOST_DNS` | Your EC2 public IP (e.g. `54.198.23.178`) |
-| `USERNAME` | `ubuntu` |
-| `EC2_SSH_KEY` | The **entire contents** of your `.pem` key file |
-
-From now on, every push to `main` will automatically SSH into your EC2 instance, pull the latest code, and restart the Docker containers.
-
----
-
-## Handling Pull Requests (PRs)
-
-When someone contributes to your repo:
-
-1. They fork the repo and push their changes to their own fork.
-2. They open a PR on GitHub targeting `main`.
-3. You review the PR in the GitHub web interface.
-4. If approved, click **"Merge pull request"** — this triggers the GitHub Action and auto-deploys.
-
-**Recommended: Use a `dev` branch for staging**
-- Set up a separate `dev` branch.
-- PRs target `dev`, not `main`.
-- When `dev` is stable, you manually merge `dev → main` to deploy.
-
----
-
-## Useful Commands on EC2
-
-```bash
-# View logs for all services
-sudo docker compose logs -f
-
-# View logs for a specific service
-sudo docker compose logs -f api
-sudo docker compose logs -f celery_worker
-
-# Restart a single service
-sudo docker compose restart api
-
-# Rebuild and restart everything
-sudo docker compose up --build -d
-
-# Stop everything
-sudo docker compose down
-```
+### Useful Logs Inspection
+To monitor or debug your Render app, use the **Logs** tab in the Render Service dashboard to see stdout/stderr in real-time, including:
+* Verification mail dispatches.
+* Pub/Sub connection confirmations.
+* Live WebSocket connection handshakes.
