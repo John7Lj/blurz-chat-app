@@ -1,9 +1,5 @@
-import base64
 import logging
 import httpx
-from db.main import async_session
-from db.models import User as User_DB
-from auth.service import save_profile_picture_sync
 from jinja2 import Template
 from pathlib import Path
 from db.config import config

@@ -17,7 +17,7 @@ from .dependencies import RefreshToken, AccessTokenBearer, get_current_user, Che
 from core.errors import AccessTokenRequired, UserAlreadyExists, UserNotFound, InvalidCredentials, VerificationError, DataNotFound, PasswordAlreadyReset, UserAlreadyVerify, EmailNotVerified
 from db.redis import add_to_blacklist, check_blacklist
 from mailserver.service import send_email, mail
-from core.tasks import bg_send_mail, bg_save_profile_picture
+from core.tasks import bg_send_mail
 from db.models import User as User_DB
 from pathlib import Path
 import base64
