@@ -1,26 +1,14 @@
 import base64
 import logging
+import httpx
 from db.main import async_session
 from db.models import User as User_DB
 from auth.service import save_profile_picture_sync
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from jinja2 import Template
 from pathlib import Path
 from db.config import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent / "mailserver" / "templates"
-
-import socket
-import ssl
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-
-import httpx
-
-import httpx
 
 async def bg_send_mail(rec: list[str], sub: str, html_path: str, data_var: dict = None):
     """
@@ -34,12 +22,15 @@ async def bg_send_mail(rec: list[str], sub: str, html_path: str, data_var: dict 
         
         html_content = Template(html_template).render(**(data_var or {}))
 
+        api_key = config.MAIL_PASSWORD
+        logging.info(f"Brevo API key prefix: {api_key[:12]}... (len={len(api_key)})")
+
         async with httpx.AsyncClient(timeout=15.0) as client:
             resp = await client.post(
                 "https://api.brevo.com/v3/smtp/email",
                 headers={
                     "accept": "application/json",
-                    "api-key": config.MAIL_PASSWORD,  # The Brevo API Key
+                    "api-key": api_key,
                     "content-type": "application/json"
                 },
                 json={
@@ -49,6 +40,8 @@ async def bg_send_mail(rec: list[str], sub: str, html_path: str, data_var: dict 
                     "htmlContent": html_content
                 }
             )
+            if resp.status_code >= 400:
+                logging.error(f"Brevo API error {resp.status_code}: {resp.text}")
             resp.raise_for_status()
 
         logging.info(f"Email sent successfully via Brevo HTTP API to {rec}")
