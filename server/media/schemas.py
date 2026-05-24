@@ -70,3 +70,41 @@ def get_max_size(msg_type: str) -> int:
         "document": MAX_DOCUMENT_SIZE,
         "file": MAX_FILE_SIZE,
     }.get(msg_type, MAX_FILE_SIZE)
+
+
+# ── Direct upload schemas ────────────────────────────────────────────
+
+VALID_CATEGORIES = {"image", "video", "audio", "document", "file", "profile"}
+
+
+class SignUploadRequest(BaseModel):
+    """Client sends the media category to get a short-lived Cloudinary signature."""
+    category: str  # "image" | "video" | "audio" | "document" | "file" | "profile"
+
+
+class SignUploadResponse(BaseModel):
+    timestamp: int
+    signature: str
+    cloud_name: str
+    api_key: str
+    folder: str
+    resource_type: str
+    transformation: Optional[str] = None
+
+
+class ConfirmChatUploadRequest(BaseModel):
+    """After uploading directly to Cloudinary, the client sends metadata here."""
+    chat_id: uuid.UUID
+    secure_url: str
+    public_id: str
+    resource_type: str
+    original_filename: str
+    file_size: int
+    file_mime: str
+
+
+class ConfirmProfileUploadRequest(BaseModel):
+    """After uploading a profile pic directly to Cloudinary."""
+    secure_url: str
+    public_id: str
+

@@ -8,8 +8,10 @@ Cloudinary upload/delete helpers.
 Each media category lives in its own Cloudinary folder.
 """
 
+import time
 import cloudinary
 import cloudinary.uploader
+import cloudinary.utils
 import logging
 from db.config import config
 
@@ -125,3 +127,50 @@ def get_thumbnail_url(secure_url: str, resource_type: str) -> str | None:
         # Cloudinary can generate video thumbnails as .jpg
         return secure_url.replace("/upload/", "/upload/w_200,h_200,c_fill,so_1/").rsplit(".", 1)[0] + ".jpg"
     return None
+
+
+# ── Direct upload signature ──────────────────────────────────────────
+
+# Map category → Cloudinary resource_type for the upload URL
+RESOURCE_TYPES = {
+    "image":    "image",
+    "profile":  "image",
+    "video":    "video",
+    "audio":    "raw",
+    "document": "raw",
+    "file":     "raw",
+}
+
+
+def generate_upload_signature(category: str) -> dict:
+    """
+    Generate a short-lived signed token so the browser can upload
+    directly to Cloudinary without routing file bytes through our server.
+    """
+    folder = FOLDERS.get(category, FOLDERS["file"])
+    resource_type = RESOURCE_TYPES.get(category, "raw")
+    timestamp = int(time.time())
+
+    params_to_sign = {
+        "timestamp": timestamp,
+        "folder": folder,
+    }
+
+    # For profile pics, apply crop + face-detection on upload
+    if category == "profile":
+        params_to_sign["transformation"] = "w_400,h_400,c_fill,g_face/q_auto,f_auto"
+
+    signature = cloudinary.utils.api_sign_request(
+        params_to_sign, config.CLOUDINARY_API_SECRET
+    )
+
+    return {
+        "timestamp": timestamp,
+        "signature": signature,
+        "cloud_name": config.CLOUDINARY_CLOUD_NAME,
+        "api_key": config.CLOUDINARY_API_KEY,
+        "folder": folder,
+        "resource_type": resource_type,
+        "transformation": params_to_sign.get("transformation"),
+    }
+
