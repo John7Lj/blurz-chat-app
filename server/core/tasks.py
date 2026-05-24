@@ -22,7 +22,7 @@ import httpx
 
 async def bg_send_mail(rec: list[str], sub: str, html_path: str, data_var: dict = None):
     """
-    Sends email using the Brevo HTTP API (Port 443) instead of SMTP.
+    Sends email using the SendGrid HTTP API (Port 443).
     This completely bypasses Render's firewall and IP blocking.
     """
     try:
@@ -34,22 +34,21 @@ async def bg_send_mail(rec: list[str], sub: str, html_path: str, data_var: dict 
 
         async with httpx.AsyncClient(timeout=15.0) as client:
             resp = await client.post(
-                "https://api.brevo.com/v3/smtp/email",
+                "https://api.sendgrid.com/v3/mail/send",
                 headers={
-                    "accept": "application/json",
-                    "api-key": config.MAIL_PASSWORD,  # The Brevo API Key
-                    "content-type": "application/json"
+                    "Authorization": f"Bearer {config.MAIL_PASSWORD}",
+                    "Content-Type": "application/json"
                 },
                 json={
-                    "sender": {"name": config.MAIL_FROM_NAME, "email": config.MAIL_FROM},
-                    "to": [{"email": email} for email in rec],
+                    "personalizations": [{"to": [{"email": email} for email in rec]}],
+                    "from": {"email": config.MAIL_FROM, "name": config.MAIL_FROM_NAME},
                     "subject": sub,
-                    "htmlContent": html_content
+                    "content": [{"type": "text/html", "value": html_content}]
                 }
             )
             resp.raise_for_status()
 
-        logging.info(f"Email sent successfully via HTTP API to {rec}")
+        logging.info(f"Email sent successfully via SendGrid HTTP API to {rec}")
     except Exception as e:
         logging.error(f"Failed to send email to {rec}: {str(e)}")
 
