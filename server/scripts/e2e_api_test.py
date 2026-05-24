@@ -53,7 +53,9 @@ async def run_e2e_tests():
         # 2. Verify Users in DB (since we don't have the email token in the response)
         print("\n[2] Verifying users in DB...")
         import asyncpg
-        conn = await asyncpg.connect("postgresql://postgres:blurz2025@localhost:5432/blurzchat")
+        import os
+        db_url = os.getenv("DB_URL", "postgresql://postgres:postgres@localhost:5432/blurzchat")
+        conn = await asyncpg.connect(db_url)
         await conn.execute("UPDATE \"user\" SET is_verified = TRUE WHERE email = $1 OR email = $2", user1_data["email"], user2_data["email"])
         await conn.close()
         print("OK: Users verified")

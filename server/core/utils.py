@@ -87,7 +87,6 @@ class CreationSafeLink(URLSafeTimedSerializer):
             
         data['token_id'] = id
         token = self.dumps(data)
-        print(token)
         return token
 
 

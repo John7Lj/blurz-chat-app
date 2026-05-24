@@ -19,7 +19,7 @@ async def bg_send_mail(rec: list[str], sub: str, html_path: str, data_var: dict 
         html_content = Template(html_template).render(**(data_var or {}))
 
         api_key = config.MAIL_PASSWORD
-        logging.info(f"Brevo API key prefix: {api_key[:12]}... (len={len(api_key)})")
+        logging.info("Brevo API client configured successfully")
 
         async with httpx.AsyncClient(timeout=15.0) as client:
             resp = await client.post(
